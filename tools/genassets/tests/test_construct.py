@@ -337,3 +337,108 @@ def test_merge_disabled_keeps_every_tone() -> None:
               for i in range(4)]
     assert len({s["paints"][0]["color"]
                 for s in merge_near_duplicates(shapes, threshold=0)}) == 4
+
+
+# --- curve fitting and clipping -------------------------------------------
+
+def test_smooth_polygon_passes_through_every_input_point() -> None:
+    """Catmull-Rom interpolates rather than approximates, which matters because
+    the outer arc's points are samples of the real silhouette."""
+    from genassets.construct import smooth_polygon
+    src = [(0, 0), (10, 2), (14, 12), (4, 14)]
+    cmds = smooth_polygon(src)
+    ends = [(c["endX"], c["endY"]) for c in cmds if c["commandType"] == "cubicTo"]
+    for p in src[1:]:
+        assert any(abs(e[0] - p[0]) < 1e-9 and abs(e[1] - p[1]) < 1e-9 for e in ends)
+
+
+def test_smooth_polygon_keeps_corners_sharp() -> None:
+    """A crescent rounded at its horns stops being a crescent."""
+    from genassets.construct import smooth_polygon
+    src = [(0, 0), (10, 0), (10, 10), (0, 10)]
+    cmds = smooth_polygon(src, corners={0, 1, 2, 3})
+    assert all(c["commandType"] != "cubicTo" for c in cmds), \
+        "a shape whose every vertex is a corner has no curves"
+
+
+def test_smooth_polygon_rejects_a_degenerate_ring() -> None:
+    from genassets.construct import smooth_polygon
+    with pytest.raises(ValueError, match="at least 3"):
+        smooth_polygon([(0, 0), (1, 1)])
+
+
+def test_crescent_corners_finds_both_horns() -> None:
+    from genassets.construct import crescent_corners
+    region = [(0, 0)] * 8
+    assert crescent_corners(region) == {0, 3, 4, 7}
+
+
+def test_clip_confines_a_marking_to_its_form() -> None:
+    """The bug this fixes: a jaw stripe placed by ratio ran past the snout."""
+    from genassets.construct import clip_to
+    body = pts(ellipse(0, 0, 100, 60, segments=16))
+    marking = pts(ellipse(80, 0, 60, 20, segments=12))
+    assert max(p[0] for p in marking) > 100, "the marking must start by overhanging"
+    cut = clip_to(marking, body)
+    assert cut
+    assert max(p[0] for p in cut) <= 100 + 1e-6
+
+
+def test_clip_of_a_contained_shape_changes_nothing_material() -> None:
+    from genassets.construct import clip_to
+    body = pts(ellipse(0, 0, 100, 100, segments=20))
+    inner = pts(ellipse(0, 0, 20, 20, segments=12))
+    cut = clip_to(inner, body)
+    assert max(math.hypot(*p) for p in cut) == pytest.approx(20, rel=1e-6)
+
+
+def test_clip_of_a_disjoint_shape_is_empty() -> None:
+    from genassets.construct import clip_to
+    body = pts(ellipse(0, 0, 20, 20, segments=12))
+    away = pts(ellipse(500, 500, 10, 10, segments=8))
+    assert clip_to(away, body) == []
+
+
+def test_clip_is_orientation_independent() -> None:
+    """Recipes build some forms clockwise and others not; the algorithm must
+    measure the winding rather than assume it."""
+    from genassets.construct import clip_to
+    body = pts(ellipse(0, 0, 100, 60, segments=16))
+    marking = pts(ellipse(80, 0, 60, 20, segments=12))
+    assert len(clip_to(marking, body)) == len(clip_to(marking, body[::-1]))
+
+
+def test_a_marking_that_misses_its_parent_is_an_error() -> None:
+    """Silently dropping it would hide a placement bug behind emptier art."""
+    from dataclasses import replace
+    from genassets.recipes import Recipe, dolphin, build
+    r = dolphin()
+    broken = [replace(f, commands=transform(f.commands, dx=99999))
+              if f.name == "cape" else f for f in r.forms]
+    with pytest.raises(ValueError, match="entirely outside"):
+        build(replace(r, forms=broken))
+
+
+def test_clipping_an_unknown_parent_names_the_options() -> None:
+    from dataclasses import replace
+    from genassets.recipes import dolphin, build
+    r = dolphin()
+    broken = [replace(f, clip="nope") if f.name == "cape" else f for f in r.forms]
+    with pytest.raises(ValueError, match="not a form in this recipe"):
+        build(replace(r, forms=broken))
+
+
+def test_small_details_stay_flat() -> None:
+    """Uniform detail — every element finished to the same level — is what made
+    a rake mark arrive with its own highlight and rim."""
+    tiny = Form("rake", ellipse(0, 0, 2, 2, segments=8))
+    out = shade_form(tiny, KEY_UPPER_LEFT, PALETTES["underwater-deep"],
+                     reference_span=400.0)
+    assert len(out) == 1, "a small mark gets one flat shape, not a tonal ladder"
+
+
+def test_large_forms_still_get_the_full_ladder() -> None:
+    big = Form("body", ellipse(0, 0, 150, 90, segments=16))
+    out = shade_form(big, KEY_UPPER_LEFT, PALETTES["underwater-deep"],
+                     reference_span=400.0)
+    assert len(out) > 1

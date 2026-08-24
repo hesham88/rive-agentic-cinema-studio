@@ -23,12 +23,12 @@ is named in the notes as the fundamental sea-turtle error.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from .construct import (
     KEY_UPPER_LEFT, PALETTES, Form, Light, Palette,
-    contact_shadow, ellipse, merge_near_duplicates, shade_form, tapered, tint,
-    transform, wedge,
+    clip_to, contact_shadow, ellipse, merge_near_duplicates, shade_form,
+    smooth_polygon, tapered, tint, transform, wedge,
 )
 
 __all__ = ["Recipe", "Built", "RECIPES", "build", "sea_turtle", "dolphin", "butterfly"]
@@ -223,8 +223,8 @@ def dolphin(u: float = 100.0) -> Recipe:
     forms.append(Form("rostrum",
                       tapered(u * 1.30, u * 0.04, u * 2.16, u * 0.14,
                               u * 0.44, u * 0.16), local=ROSTRUM))
-    forms.append(Form("melon", ellipse(u * 1.16, -u * 0.16, u * 0.42, u * 0.30,
-                                       segments=10), local=MELON, rim=False))
+    forms.append(Form("melon", ellipse(u * 1.06, -u * 0.20, u * 0.36, u * 0.24,
+                                       segments=12), local=MELON, rim=False))
     forms.append(Form("dorsal",
                       wedge((u * 0.16, -u * 1.16), (-u * 0.30, -u * 0.44),
                             (u * 0.42, -u * 0.46), round_base=0.12), local=FIN))
@@ -240,25 +240,25 @@ def dolphin(u: float = 100.0) -> Recipe:
     forms.append(Form("pectoral-near",
                       tapered(u * 0.10, u * 0.28, -u * 0.62, u * 0.94,
                               u * 0.34, u * 0.12), local=FIN))
-    forms.insert(2, Form("cape", ellipse(-u * 0.06, -u * 0.30, u * 1.36, u * 0.36,
-                                         segments=16), local=DORSAL, rim=False))
-    forms.insert(3, Form("belly", ellipse(u * 0.04, u * 0.36, u * 1.16, u * 0.26,
-                                          segments=16), local=VENTRAL, rim=False))
+    forms.insert(2, Form("cape", ellipse(-u * 0.04, -u * 0.34, u * 1.30, u * 0.26,
+                                         segments=18), local=DORSAL, rim=False, clip="body"))
+    forms.insert(3, Form("belly", ellipse(u * 0.06, u * 0.42, u * 1.06, u * 0.18,
+                                          segments=18), local=VENTRAL, rim=False, clip="body"))
     # The eye patch and jaw stripe are the markings that make a bottlenose
     # recognisable; without them the head is a smooth cone.
     forms.append(Form("eye-patch", ellipse(u * 1.00, -u * 0.04, u * 0.22, u * 0.13,
-                                           segments=10), local=DORSAL, rim=False))
+                                           segments=10), local=DORSAL, rim=False, clip="body"))
     forms.append(Form("jaw-stripe",
                       tapered(u * 1.06, u * 0.16, u * 2.02, u * 0.20,
-                              u * 0.16, u * 0.07), local=DORSAL, rim=False))
+                              u * 0.16, u * 0.07), local=DORSAL, rim=False, clip="rostrum"))
     forms.append(Form("lower-jaw",
                       tapered(u * 1.24, u * 0.20, u * 2.06, u * 0.24,
-                              u * 0.20, u * 0.09), local=VENTRAL, rim=False))
+                              u * 0.20, u * 0.09), local=VENTRAL, rim=False, clip="rostrum"))
     forms.append(Form("blowhole", ellipse(u * 0.86, -u * 0.42, u * 0.09, u * 0.05,
                                           segments=8), local=BODY_DARK, shade=False))
     forms.append(Form("peduncle-keel",
                       tapered(-u * 1.40, u * 0.16, -u * 1.98, u * 0.06,
-                              u * 0.16, u * 0.08), local=DORSAL, rim=False))
+                              u * 0.16, u * 0.08), local=DORSAL, rim=False, clip="peduncle"))
     forms.append(Form("fluke-notch",
                       wedge((-u * 2.02, -u * 0.04), (-u * 2.22, -u * 0.18),
                             (-u * 2.20, u * 0.12), round_base=0.10),
@@ -272,14 +272,14 @@ def dolphin(u: float = 100.0) -> Recipe:
             f"rake-{j + 1}",
             tapered(u * rx, u * ry, u * (rx + rl), u * (ry + 0.06),
                     u * 0.028, u * 0.020),
-            local=VENTRAL, shade=False,
+            local=tint(P.key, hue=0, sat=-0.14, val=0.14), shade=False,
         ))
     forms.append(Form("throat-grooves",
                       tapered(u * 1.16, u * 0.30, u * 0.52, u * 0.44,
-                              u * 0.10, u * 0.16), local=VENTRAL, rim=False))
+                              u * 0.10, u * 0.16), local=VENTRAL, rim=False, clip="body"))
     forms.append(Form("dorsal-edge",
                       tapered(u * 0.14, -u * 1.12, -u * 0.24, -u * 0.48,
-                              u * 0.07, u * 0.13), local=DORSAL, rim=False))
+                              u * 0.07, u * 0.13), local=DORSAL, rim=False, clip="dorsal"))
     forms.append(Form("eye", ellipse(u * 1.02, -u * 0.06, u * 0.06, u * 0.07,
                                      segments=8), role="shadow", shade=False))
 
@@ -450,8 +450,43 @@ def build(recipe: Recipe, *, light: Light = KEY_UPPER_LEFT,
     if ground and recipe.footprint:
         shapes.append(contact_shadow(0, unit * 0.9, recipe.footprint * unit,
                                      palette=palette))
+    # The artwork's own width sets the threshold below which a form counts as a
+    # small detail, so the rule scales with the subject instead of carrying a
+    # pixel constant that is wrong at every other size.
+    from .facet import polygon_from_commands
+    span = 0.0
     for form in recipe.forms:
-        shapes.extend(shade_form(form, light, palette))
+        fp = polygon_from_commands(form.commands)
+        if fp:
+            span = max(span, max(p[0] for p in fp) - min(p[0] for p in fp))
+
+    # Cut every marking to the form it belongs to BEFORE shading, so its tonal
+    # regions follow the clipped edge rather than the generous one it was drawn
+    # with. Shading first and clipping after would leave highlights hanging in
+    # the water where the overhang used to be.
+    outlines = {f.name: polygon_from_commands(f.commands) for f in recipe.forms}
+    resolved: list[Form] = []
+    for form in recipe.forms:
+        if form.clip:
+            parent = outlines.get(form.clip)
+            if parent is None:
+                raise ValueError(
+                    f"{form.name!r} clips to {form.clip!r}, which is not a form "
+                    f"in this recipe; known: {sorted(outlines)}"
+                )
+            cut = clip_to(polygon_from_commands(form.commands), parent)
+            if len(cut) < 3:
+                # The marking missed its parent entirely. Silently dropping it
+                # would hide a placement bug behind a slightly emptier drawing.
+                raise ValueError(
+                    f"{form.name!r} lies entirely outside {form.clip!r} - "
+                    f"check the ratios that place it"
+                )
+            form = replace(form, commands=smooth_polygon(cut))
+        resolved.append(form)
+
+    for form in resolved:
+        shapes.extend(shade_form(form, light, palette, reference_span=span))
     shapes = merge_near_duplicates(shapes, threshold=merge)
     return Built(name=recipe.name, shapes=shapes, palette=palette,
                  envelope=recipe.envelope, bones=recipe.bones,

@@ -50,7 +50,8 @@ from .facet import Point, commands_from_polygon, polygon_from_commands, split_po
 __all__ = [
     "KAPPA", "Palette", "PALETTES", "Light", "KEY_UPPER_LEFT",
     "ellipse", "capsule", "tapered", "wedge", "polygon",
-    "transform", "band_polygon", "crescent", "shade_form", "contact_shadow", "tint",
+    "transform", "band_polygon", "crescent", "crescent_corners", "clip_to",
+    "smooth_polygon", "shade_form", "contact_shadow", "tint",
     "delta_e", "merge_near_duplicates",
     "DEFAULT_BANDS", "RIM_BAND", "Form",
 ]
@@ -330,6 +331,131 @@ def band_polygon(points: list[Point], light: Light,
     return bands
 
 
+def clip_to(subject: list[Point], clip: list[Point]) -> list[Point]:
+    """Intersect a polygon with a convex clipping polygon.
+
+    Why the artwork needs this
+    --------------------------
+    Forms are placed by ratio, and a ratio has no way of knowing where the form
+    it sits on actually ends. So a jaw stripe ran past the tip of the snout, a
+    dorsal cape overhung the back, and every one of those overhangs read as a
+    loose plate lying on the animal rather than a marking on it. Twenty such
+    forms is a collage, which is exactly what the first 2.5x render showed.
+
+    Clipping is how vector illustration has always solved this: a marking is
+    drawn generously and then cut to the form it belongs to. Doing it here
+    means a recipe can place a marking approximately — which is the only way
+    ratios can work — and still get an edge that follows the body exactly.
+
+    Sutherland-Hodgman, run once per clip edge. That algorithm requires the
+    CLIP polygon to be convex, which is satisfied here because clipping
+    parents are the body primitives — ellipses and tapered limbs — and never
+    the assembled silhouette. Passing a concave clip would silently produce a
+    wrong region rather than an error, so `Form.clip` names a single parent
+    form rather than accepting arbitrary geometry.
+    """
+    if len(subject) < 3 or len(clip) < 3:
+        return []
+
+    # Orientation decides which side of an edge counts as inside, so measure it
+    # rather than assuming: recipes build some forms clockwise and others not.
+    area2 = sum(clip[i][0] * clip[(i + 1) % len(clip)][1]
+                - clip[(i + 1) % len(clip)][0] * clip[i][1]
+                for i in range(len(clip)))
+    sign = 1.0 if area2 >= 0 else -1.0
+
+    def inside(p: Point, a: Point, b: Point) -> float:
+        return sign * ((b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0]))
+
+    out = list(subject)
+    for i in range(len(clip)):
+        if not out:
+            return []
+        a, b = clip[i], clip[(i + 1) % len(clip)]
+        nxt: list[Point] = []
+        for j, cur in enumerate(out):
+            prv = out[j - 1]
+            dc, dp = inside(cur, a, b), inside(prv, a, b)
+            if dc >= 0:
+                if dp < 0 and abs(dc - dp) > 1e-12:
+                    t = dp / (dp - dc)
+                    nxt.append((prv[0] + t * (cur[0] - prv[0]),
+                                prv[1] + t * (cur[1] - prv[1])))
+                nxt.append(cur)
+            elif dp >= 0 and abs(dc - dp) > 1e-12:
+                t = dp / (dp - dc)
+                nxt.append((prv[0] + t * (cur[0] - prv[0]),
+                            prv[1] + t * (cur[1] - prv[1])))
+        out = nxt
+    return out
+
+
+def smooth_polygon(points: list[Point], *, corners: set[int] | None = None,
+                   tension: float = 1.0) -> list[dict]:
+    """Fit a closed cubic-bezier through a point list.
+
+    Why this exists
+    ---------------
+    The tonal regions were emitted as straight-sided polygons while the base
+    form stayed bezier. Rendered, that reads as low-poly: the silhouette is a
+    true curve but every shadow inside it is a chain of visible chords. It was
+    the last thing standing between this output and the house standard.
+
+    Catmull-Rom, converted to bezier. The tangent at each point is the vector
+    between its neighbours over six, which is the standard conversion and has
+    the property this needs: the curve passes exactly THROUGH every input
+    point. That matters because the outer arc's points are samples of the
+    form's real outline, so an approximating spline would pull the shadow off
+    the silhouette it is supposed to hug.
+
+    `corners` are indices where the curve must stay sharp. A crescent has two —
+    its horns, where the outer arc meets the inner one — and rounding them
+    turns a crescent into a lens. Zeroing the tangent on both sides of a corner
+    is what keeps it a corner.
+    """
+    n = len(points)
+    if n < 3:
+        raise ValueError(f"a closed curve needs at least 3 points, got {n}")
+    corners = corners or set()
+
+    def tangent(i: int) -> tuple[float, float]:
+        """Half the vector between the neighbours, scaled — zero at a corner."""
+        if i in corners:
+            return 0.0, 0.0
+        prv, nxt = points[(i - 1) % n], points[(i + 1) % n]
+        return ((nxt[0] - prv[0]) / 6 * tension, (nxt[1] - prv[1]) / 6 * tension)
+
+    tans = [tangent(i) for i in range(n)]
+    cmds: list[dict] = [{"commandType": "moveTo", "x": points[0][0], "y": points[0][1]}]
+    for i in range(n):
+        j = (i + 1) % n
+        (x0, y0), (x1, y1) = points[i], points[j]
+        # A segment BETWEEN two corners is a genuine straight edge; emitting a
+        # cubic with zero-length handles would be a lie the simplifier cannot
+        # see through.
+        if i in corners and j in corners:
+            cmds.append({"commandType": "lineTo", "x": x1, "y": y1})
+            continue
+        cmds.append({
+            "commandType": "cubicTo",
+            "outX": x0 + tans[i][0], "outY": y0 + tans[i][1],
+            "inX": x1 - tans[j][0], "inY": y1 - tans[j][1],
+            "endX": x1, "endY": y1,
+        })
+    cmds.append({"commandType": "close"})
+    return cmds
+
+
+def crescent_corners(region: list[Point]) -> set[int]:
+    """The two horns of a crescent built by `crescent`.
+
+    It emits the outer arc followed by the reversed inner arc, both the same
+    length, so the joins are always at the ends of each half.
+    """
+    half = len(region) // 2
+    return {0, half - 1, half, len(region) - 1}
+
+
 def crescent(points: list[Point], light: Light, *, inset: float = 0.34,
              coverage: float = 0.42, toward_light: bool = False) -> list[Point]:
     """The shadow (or highlight) region of a rounded form, with a CURVED edge.
@@ -392,6 +518,10 @@ class Form:
     #: An explicit local colour for this material, normally built with `tint`
     #: from a palette entry so the set stays harmonious.
     local: str | None = None
+    #: Name of an earlier form this one is a marking ON. The geometry is cut to
+    #: that form's outline, so a marking placed by ratio still ends where the
+    #: body ends instead of overhanging it.
+    clip: str | None = None
     #: Suppress the rim on a form that sits INSIDE another — a scute set into a
     #: shell has no lit outer edge of its own, and giving it one is what made
     #: the first turtle's scutes read as loose eggs piled on the back.
@@ -441,7 +571,8 @@ def _mix(a: str, b: str, t: float) -> str:
 
 
 def shade_form(form: Form, light: Light, palette: Palette, *,
-               alpha: str = "ff") -> list[dict]:
+               alpha: str = "ff", reference_span: float = 0.0,
+               min_shade_span: float = 0.16) -> list[dict]:
     """Turn one outline into its tonal facets, as createShapes payloads.
 
     Produces the four steps the house standard requires — highlight, key,
@@ -460,6 +591,28 @@ def shade_form(form: Form, light: Light, palette: Palette, *,
     pts = polygon_from_commands(form.commands)
     if len(pts) < 3:
         raise ValueError(f"{form.name!r} has too few points to shade")
+
+    # A small detail does not get its own light study.
+    #
+    # Rendered at 2.5x, a subject built from twenty overlapping forms each
+    # carrying a full five-tone ladder reads as a collage of plates rather than
+    # one animal: a rake mark on a dolphin's flank arrived as a white dash with
+    # its own highlight and rim, competing with the body it sits on.
+    #
+    # That is not a rendering artefact, it is a drawing error with a name. The
+    # craft notes call it uniform detail — the failure where every element is
+    # rendered at the same level of finish, so nothing reads as subordinate to
+    # anything else. Real illustration subordinates: the large forms carry the
+    # light, and small marks sit inside them as flat shapes.
+    #
+    # `min_shade_span` is that rule in one number. Anything whose longest
+    # dimension is under this fraction of the artwork stays flat.
+    span = max(max(p[0] for p in pts) - min(p[0] for p in pts),
+               max(p[1] for p in pts) - min(p[1] for p in pts))
+    if reference_span and span < reference_span * min_shade_span:
+        return [{"name": form.name,
+                 "paths": [{"commands": [dict(c) for c in form.commands]}],
+                 "paints": [{"color": f"#{alpha}{base.lstrip('#')}"}]}]
 
     # Shadow and highlight are crescents whose inner edge follows the form.
     # See `crescent` for why straight-line banding was abandoned.
@@ -518,7 +671,8 @@ def shade_form(form: Form, light: Light, palette: Palette, *,
             continue
         out.append({
             "name": f"{form.name}-{suffix}",
-            "paths": [{"commands": commands_from_polygon(region)}],
+            "paths": [{"commands": smooth_polygon(
+                region, corners=crescent_corners(region))}],
             "paints": [{"color": f"#{alpha}{colour.lstrip('#')}"}],
         })
     return out
