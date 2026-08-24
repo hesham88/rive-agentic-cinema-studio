@@ -1,0 +1,28 @@
+{
+  "name": "rive-engine",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/core/index.ts",
+    "./react": "./src/react/index.ts"
+  },
+  "peerDependencies": {
+    "@rive-app/react-webgl2": "^4.32.1",
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "@rive-app/react-webgl2": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@rive-app/react-webgl2": "^4.32.1",
+    "@types/react": "^19.2.18",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  }
+}
