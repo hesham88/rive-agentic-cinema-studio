@@ -405,7 +405,13 @@ def _channel_union() -> list[str]:
     return list(seen)
 
 
-def ensure_kit_view_model(mcp: RiveMCP, *, verbose: bool = True) -> tuple[str, dict[str, str]]:
+def ensure_kit_view_model(
+    mcp: RiveMCP,
+    *,
+    extra: list[str] | None = None,
+    extra_types: dict[str, str] | None = None,
+    verbose: bool = True,
+) -> tuple[str, dict[str, str]]:
     """Returns (viewModelId, {channel: propertyId}) for the shared kit model.
 
     Why one shared view model rather than one per widget:
@@ -449,14 +455,27 @@ def ensure_kit_view_model(mcp: RiveMCP, *, verbose: bool = True) -> tuple[str, d
 
     vm_id = vm["id"]
     have = {p["name"] for p in vm["viewModelProperties"]}
-    missing = [c for c in _channel_union() if c not in have]
+    # `extra` lets other engines hang their own channels off this same
+    # registered model. They must: a view model created fresh never survives
+    # export (see this function's docstring), so every engine shares this one.
+    # Visual channels are numbers, but `extra` may carry semantic properties of
+    # any type — a toggle's `checked` is a boolean, and creating it as a number
+    # produces a file whose contract LOOKS right (the name is there) while the
+    # runtime types it wrong. `extra_types` names the exceptions.
+    wanted = _channel_union() + list(extra or [])
+    seen: dict[str, None] = {}
+    for c in wanted:
+        seen.setdefault(c, None)
+    missing = [c for c in seen if c not in have]
     if missing:
         mcp.call(
             "viewmodel_editor",
             {"command": "addProperties", "data": {"addProperties": {"viewModels": [
                 {"viewModelId": vm_id,
                  "viewModelProperties": [
-                     {"name": c, "propertyType": "number"} for c in missing]}]}}},
+                     {"name": c,
+                      "propertyType": (extra_types or {}).get(c, "number")}
+                     for c in missing]}]}}},
         )
         b.log(f"added {len(missing)} channels to {KIT_VIEW_MODEL}")
 
