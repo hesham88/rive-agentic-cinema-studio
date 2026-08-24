@@ -37,6 +37,17 @@ export interface RiveControllerState {
   manifest: RiveManifest | null;
   inputs: InputHandle[];
   error: RiveLoadError | null;
+  /**
+   * Bumped every time the instance re-initialises.
+   *
+   * MUST be passed to `useViewModelControls`. The `rive` object keeps its
+   * identity across `load()` and `reset()`, so anything deriving state from it
+   * has no way to know a switch happened — a `useMemo` keyed on `rive` alone
+   * silently keeps the previous artboard's view model. That is not theoretical:
+   * selecting a second artboard used to show the first one's properties, and
+   * both artboards reported identically, which is the tell.
+   */
+  generation: number;
 }
 
 function kindOf(type: number): RiveInputKind {
@@ -227,5 +238,5 @@ export function useRiveController(params: RiveControllerParams): RiveControllerS
       : null;
   }, [manifest, inputError]);
 
-  return { RiveComponent, rive, manifest, inputs, error };
+  return { RiveComponent, rive, manifest, inputs, error, generation };
 }

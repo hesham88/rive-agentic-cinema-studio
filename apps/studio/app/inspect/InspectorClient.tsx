@@ -44,6 +44,7 @@ function RiveWorkspace({ source }: { source: RiveSource }) {
     manifest,
     inputs,
     error: contentError,
+    generation,
   } = useRiveController({
     riveFile,
     artboard: selected?.artboard,
@@ -52,7 +53,10 @@ function RiveWorkspace({ source }: { source: RiveSource }) {
 
   // Rive's second input system: view-model properties via data binding. A file
   // authored that way has zero classic state-machine inputs.
-  const { viewModelName, handles } = useViewModelControls(rive);
+  // `generation` is required, not optional: `rive` keeps its object identity
+  // across a reset, so without it the panel keeps showing the FIRST artboard's
+  // view model after every subsequent selection.
+  const { viewModelName, handles } = useViewModelControls(rive, generation);
 
   // Rive's format has no keyboard listener, so keys are driven from the runtime
   // into view-model properties, which the state machine's conditions react to.
