@@ -10,6 +10,7 @@ Output is exactly the `shapes` payload `path_editor.createShapes` expects.
 
 from __future__ import annotations
 
+import math
 import re
 from dataclasses import dataclass
 
@@ -133,12 +134,87 @@ def _document_size(svg_text: str) -> tuple[float, float]:
     return float(dims.get("width", 0)), float(dims.get("height", 0))
 
 
+@dataclass(frozen=True)
+class MotionEnvelope:
+    """How far the art will travel once it is animated.
+
+    The artboard clips. A mark fitted edge-to-edge has nowhere to go, so the
+    first keyframe that moves it slices pieces off — which is exactly what
+    shipped: a plane that lost a wingtip every time it banked.
+
+    The old fix was a flat 6% margin, which is a guess that knows nothing about
+    the animation. This makes the caller declare the motion instead, and derives
+    the margin from it. Declaring `rotation=25` reserves the room a 25-degree
+    rotation actually needs; declaring nothing reserves almost none, because a
+    static mark should fill its frame.
+
+    All fractions are of the artboard's own dimension, so an envelope is
+    resolution-independent.
+    """
+
+    #: Peak translation away from centre, as a fraction of the artboard.
+    drift_x: float = 0.0
+    drift_y: float = 0.0
+    #: Peak scale multiplier. 1.15 means the art grows 15% at its largest.
+    scale: float = 1.0
+    #: Peak absolute rotation in degrees, either direction.
+    rotation: float = 0.0
+    #: Extra breathing room so nothing kisses the edge. A form that touches the
+    #: frame reads as cropped even when every pixel is technically inside.
+    bleed: float = 0.02
+
+    def rotation_factor(self) -> float:
+        """How much a rotation grows a bounding box.
+
+        A box rotated by theta has half-extent (w|cos| + h|sin|)/2. Treating the
+        art as square is the conservative case and peaks at sqrt(2) near 45
+        degrees, which is the number to reserve for anything that tumbles.
+        """
+        t = math.radians(abs(self.rotation))
+        return abs(math.cos(t)) + abs(math.sin(t))
+
+    def margin(self) -> float:
+        """The fraction of each edge to leave empty.
+
+        Solves for the largest art that still fits after the worst frame:
+
+            (f/2) * rotation * scale + drift  <=  0.5 - bleed
+
+        where f is the fraction of the artboard the resting art occupies.
+        """
+        drift = max(abs(self.drift_x), abs(self.drift_y))
+        room = 0.5 - self.bleed - drift
+        growth = max(self.rotation_factor() * max(self.scale, 1e-6), 1e-6)
+        if room <= 0:
+            # The drift alone overruns the frame. Shrink to the floor and let
+            # the caller see a tiny mark rather than a silently cropped one.
+            return 0.45
+        f = min(2.0 * room / growth, 1.0)
+        return max(0.0, min(0.45, (1.0 - f) / 2.0))
+
+
+#: Sensible envelopes for the motion this pipeline actually emits.
+ENVELOPES = {
+    # A hero that glides along an arc and banks into it.
+    "hero-glide": MotionEnvelope(drift_x=0.10, drift_y=0.06, scale=1.06, rotation=18),
+    # A creature swimming or flying in place — undulation, no travel.
+    "swim-cycle": MotionEnvelope(drift_x=0.04, drift_y=0.05, scale=1.04, rotation=10),
+    # A widget that presses, hovers and settles.
+    "ui-widget": MotionEnvelope(drift_x=0.01, drift_y=0.02, scale=1.08, rotation=0),
+    # Anything that tumbles end over end.
+    "tumble": MotionEnvelope(rotation=45, scale=1.05),
+    # A mark that never moves.
+    "static": MotionEnvelope(bleed=0.04),
+}
+
+
 def to_create_shapes_payload(
     shapes: list[SvgShape],
     *,
     artboard_width: float,
     artboard_height: float,
-    margin: float = 0.06,
+    margin: float | None = None,
+    envelope: "MotionEnvelope | str | None" = None,
     shared_origin: bool = False,
 ) -> list[dict]:
     """Fit shapes to the artboard and emit the createShapes payload.
@@ -153,9 +229,30 @@ def to_create_shapes_payload(
         rotating 10 degrees each tear the artwork apart. With one shared origin,
         an identical transform keyframe on each shape moves them as a rigid body.
         Use this whenever the shapes will be animated together.
+
+    envelope: how far the art will move once animated, as a `MotionEnvelope` or
+        a key of `ENVELOPES`. The margin is derived from it, so art that banks
+        18 degrees is drawn small enough to still be whole at 18 degrees. Pass
+        an explicit `margin` only to override that reasoning.
+
+        Defaults to "static". A caller that animates without declaring an
+        envelope gets the old behaviour, so the failure is visible rather than
+        silent — but every animating caller in this pipeline should name one.
     """
     if not shapes:
         return []
+
+    if margin is None:
+        env = envelope if envelope is not None else "static"
+        if isinstance(env, str):
+            try:
+                env = ENVELOPES[env]
+            except KeyError:
+                raise ValueError(
+                    f"unknown envelope {env!r}; expected one of "
+                    f"{sorted(ENVELOPES)} or a MotionEnvelope"
+                ) from None
+        margin = env.margin()
 
     min_x = min(s.min_x for s in shapes)
     min_y = min(s.min_y for s in shapes)

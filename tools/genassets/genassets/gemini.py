@@ -4,8 +4,8 @@ One client for every call, so metering and the spend cap exist once rather than
 being reimplemented per feature. Generation is the only part of this project that
 costs money per run (BIBLE: the ledger exists from the first call, not retrofitted).
 
-Verified live on 2026-08-23 — all four models exist on the owner's key:
-    gemini-3.1-flash-image    (Nano Banana 2)  generateContent   image gen + edit
+Model list re-read from the API on 2026-08-24; see `Models` for the pins.
+    gemini-3-pro-image                         generateContent   image gen + edit
     gemini-omni-flash-preview                  generateContent   multimodal reasoning
     veo-3.1-generate-preview                   predictLongRunning  video (async, poll)
     lyria-3-pro-preview                        generateContent   music
@@ -40,9 +40,25 @@ class SpendCapExceeded(GeminiError):
 
 
 class Models:
-    IMAGE = "gemini-3.1-flash-image"
+    """Model pins, listed live from the API on 2026-08-24.
+
+    Two image tiers, and the default is the **pro** one. Every asset this
+    project shipped before today was generated on the flash tier and the owner
+    rejected all of them as primitive. Flash is the cheap draft model; it is
+    not what a showcase gets rendered on. `IMAGE_FAST` stays available for
+    throwaway iterations, but it has to be asked for by name — the good tier is
+    what you get by default, so shipping the cheap one is now a deliberate act
+    rather than an accident.
+    """
+
+    #: Feature-quality stills. The default for anything that will be seen.
+    IMAGE = "gemini-3-pro-image"
+    #: Draft tier — fast and cheap, for iterating on composition only.
+    IMAGE_FAST = "gemini-3.1-flash-image"
     OMNI = "gemini-omni-flash-preview"
-    TEXT = "gemini-2.5-flash"
+    #: Was pinned at 2.5-flash long after 3.7 shipped. Text drives the art
+    #: direction prompts, so a stale reasoning model degrades every image.
+    TEXT = "gemini-3.7-flash"
     VIDEO = "veo-3.1-generate-preview"
     MUSIC = "lyria-3-pro-preview"
 
