@@ -8,22 +8,49 @@
  */
 @source '../../../packages/rive-engine/src';
 
-/*
- * Palette sampled from the artwork this studio actually generated — the night
- * scene's sky gradient and the rocket's own colours. Warm key against cool
- * shadow, which is how film lights a subject.
- */
+/* ===========================================================================
+ * A colour-grading suite at 4am.
+ *
+ * Near-black warm walls, instrument-grey surfaces, one lamp burning, and the
+ * footage on the monitor as the only saturated thing in the room.
+ *
+ * That last line is a rule, not a mood. Every generated asset on this page is
+ * full-colour; every piece of chrome around it is achromatic or the lamp. It
+ * means our own output is always the brightest thing on screen, which is the
+ * whole argument the page is making.
+ *
+ * The ground is warm-black (#0a0908), not blue-black. Blue-black reads as a
+ * developer tool; warm-black reads as a room with a light in it.
+ *
+ * DO
+ *   - hairlines for elevation, never shadows
+ *   - the lamp on ONE element per viewport: the active one
+ *   - numbers in mono, always tabular — they are content here, not labels
+ *   - text hierarchy by luminance, not by weight
+ *
+ * DON'T
+ *   - no glass, no blur panels: an instrument has matte surfaces
+ *   - no second accent colour, ever
+ *   - no saturated chrome — colour belongs to the artwork
+ *   - no drop shadows
+ * ======================================================================== */
 @theme {
-  --color-void: #070a18;
-  --color-deep: #0b1026;
-  --color-mid: #1b2a5e;
-  --color-rive: #2a3895;
-  --color-ignite: #ea5a20;
-  --color-flame: #f9d366;
-  --color-paper: #f2f5fa;
-  --color-slate: #7d8aa3;
+  /* Surfaces, darkest to lightest */
+  --color-room: #0a0908;
+  --color-wall: #100f0e;
+  --color-panel: #16151a;
+  --color-rule: #262429;
 
-  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  /* Text, by luminance */
+  --color-dim: #6b6873;
+  --color-read: #a5a1ab;
+  --color-bright: #f4f1ec;
+
+  /* The lamp. One accent. Used on the active element only. */
+  --color-lamp: #ff6a2b;
+  --color-ember: #d9a066;
+
+  --font-display: var(--font-display), Georgia, serif;
   --font-body: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
 }
@@ -32,162 +59,90 @@
   color-scheme: dark;
 }
 
-html,
-body {
-  background: var(--color-void);
-  color: var(--color-paper);
-  font-family: var(--font-body);
-  -webkit-font-smoothing: antialiased;
+html {
+  scroll-behavior: smooth;
 }
 
-/* Numbers are content here, so they get tabular figures and real tracking. */
+html,
+body {
+  background: var(--color-room);
+  color: var(--color-read);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Numbers are the product's texture — frame 110, 868 bytes, 4 shots. They get
+   a real face and tabular figures so columns of them line up. */
 .num {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
+  font-feature-settings: 'zero' 1;
+  letter-spacing: -0.02em;
 }
 
 .eyebrow {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--color-slate);
+  color: var(--color-dim);
 }
 
+/* A high-contrast serif on warm-black reads as a title card, not a dashboard.
+   That is the single decision the page's character rests on. */
 .display {
   font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 0.95;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 0.94;
+  color: var(--color-bright);
+}
+
+.display em {
+  font-style: italic;
+  color: var(--color-ember);
 }
 
 /* ---------------------------------------------------------------------------
- * Glass.
+ * The timeline.
  *
- * The reason this page can carry glass honestly: there is a live WebGL canvas
- * running behind it, so `backdrop-filter` samples moving pixels rather than a
- * static gradient. The saturate() is what stops blurred dark scenes from going
- * muddy grey — it pulls the sky's blue and the rocket's ember back up.
- *
- * The ::before is a one-pixel top highlight. Real glass catches light on its
- * top edge; without it a blurred panel just looks like a translucent rectangle.
- * ------------------------------------------------------------------------- */
-.glass {
-  position: relative;
-  background: color-mix(in srgb, var(--color-deep) 62%, transparent);
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
-  border: 1px solid rgb(255 255 255 / 0.1);
-  border-radius: 14px;
-  box-shadow:
-    0 1px 0 0 rgb(255 255 255 / 0.06) inset,
-    0 18px 50px -20px rgb(0 0 0 / 0.75);
-}
-
-.glass::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 1px;
-  border-radius: inherit;
+ * The page is a shot list. The camera engine genuinely emits shots with frame
+ * ranges, so numbering these sections encodes real sequence rather than
+ * decorating them — each one consumes what the previous produced.
+ * ------------------------------------------------------------------------ */
+.playhead {
   background: linear-gradient(
-    90deg,
+    to bottom,
     transparent,
-    rgb(255 255 255 / 0.35) 22%,
-    rgb(255 255 255 / 0.35) 78%,
+    var(--color-lamp) 12%,
+    var(--color-lamp) 88%,
     transparent
   );
-  pointer-events: none;
+  box-shadow: 0 0 12px -2px var(--color-lamp);
 }
 
-/* Lighter weight for tiles that sit in a grid — full glass twelve times over
-   is noise, so the gallery gets a thinner pane. */
-.glass-thin {
-  background: color-mix(in srgb, var(--color-deep) 45%, transparent);
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
-  border: 1px solid rgb(255 255 255 / 0.08);
-  border-radius: 12px;
+.tick {
   transition:
-    border-color 0.35s ease,
-    transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1),
-    box-shadow 0.35s ease;
-}
-
-.glass-thin:hover {
-  border-color: rgb(255 255 255 / 0.22);
-  transform: translateY(-3px);
-  box-shadow: 0 24px 60px -28px rgb(0 0 0 / 0.9);
+    background-color 0.5s cubic-bezier(0.2, 0.7, 0.3, 1),
+    border-color 0.5s cubic-bezier(0.2, 0.7, 0.3, 1),
+    transform 0.5s cubic-bezier(0.2, 0.7, 0.3, 1);
 }
 
 /* ---------------------------------------------------------------------------
- * Ambient field.
+ * Reveal.
  *
- * Two slow-drifting radial washes in the palette's warm and cool poles. They
- * sit under the glass so the blur always has colour to work with, even in
- * sections where no canvas is playing.
- * ------------------------------------------------------------------------- */
-.aurora {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.aurora::before,
-.aurora::after {
-  content: '';
-  position: absolute;
-  width: 60vw;
-  height: 60vw;
-  border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.35;
-}
-
-.aurora::before {
-  top: -20%;
-  left: -10%;
-  background: radial-gradient(circle, var(--color-rive), transparent 65%);
-  animation: drift-a 28s ease-in-out infinite alternate;
-}
-
-.aurora::after {
-  bottom: -25%;
-  right: -12%;
-  background: radial-gradient(circle, var(--color-ignite), transparent 65%);
-  opacity: 0.22;
-  animation: drift-b 34s ease-in-out infinite alternate;
-}
-
-@keyframes drift-a {
-  to {
-    transform: translate3d(8vw, 6vh, 0) scale(1.15);
-  }
-}
-
-@keyframes drift-b {
-  to {
-    transform: translate3d(-7vw, -5vh, 0) scale(1.1);
-  }
-}
-
-/* A single hairline in the ignition colour, used only to mark the live edge of
-   the timeline. Spending the accent in one place keeps it meaningful. */
-.playhead {
-  box-shadow: 0 0 0 1px var(--color-ignite), 0 0 18px -2px var(--color-ignite);
-}
-
-/* Scroll reveal. The transform is tiny on purpose — content that flies in from
-   far away reads as a template. */
+ * Two moving parts only: opacity and a 10px rise. Elements that fly in from far
+ * away are the clearest tell of a template. The stagger between siblings does
+ * the work instead — 70ms is about four frames at 60fps, the same offset a
+ * hand-animated group uses for overlapping action.
+ * ------------------------------------------------------------------------ */
 .reveal {
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(10px);
   transition:
-    opacity 0.7s cubic-bezier(0.2, 0.7, 0.3, 1),
-    transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+    opacity 0.75s cubic-bezier(0.2, 0.7, 0.3, 1),
+    transform 0.75s cubic-bezier(0.2, 0.7, 0.3, 1);
 }
 
 .reveal[data-shown='true'] {
@@ -195,13 +150,41 @@ body {
   transform: none;
 }
 
+/* Hairline rules do the elevation. `color-mix` keeps them tied to the palette
+   rather than being an arbitrary rgba. */
+.rule-t {
+  border-top: 1px solid var(--color-rule);
+}
+.rule-l {
+  border-left: 1px solid var(--color-rule);
+}
+
+/* The one place a surface is allowed to lift: a matte panel, edge-lit. */
+.panel {
+  background: var(--color-panel);
+  border: 1px solid var(--color-rule);
+  border-radius: 3px;
+}
+
+.panel-lit {
+  border-color: color-mix(in srgb, var(--color-lamp) 45%, var(--color-rule));
+}
+
 *:focus-visible {
-  outline: 2px solid var(--color-flame);
+  outline: 2px solid var(--color-lamp);
   outline-offset: 3px;
   border-radius: 2px;
 }
 
+::selection {
+  background: color-mix(in srgb, var(--color-lamp) 30%, transparent);
+  color: var(--color-bright);
+}
+
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   *,
   *::before,
   *::after {
@@ -209,7 +192,6 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-
   .reveal {
     opacity: 1;
     transform: none;

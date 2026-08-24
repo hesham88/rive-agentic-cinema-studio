@@ -10,7 +10,7 @@ import {
   RiveTabs,
   RiveToggle,
 } from 'rive-engine/react';
-import { useReveal } from './useReveal';
+import { useReveal } from './useScrollProgress';
 
 /**
  * The kit, driving itself.
@@ -28,10 +28,10 @@ const FINISHES = ['Glass', 'Matte', 'Ink', 'Neon'] as const;
 
 function Row({ label, hint, children }: { label: string; hint: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/8 py-5 first:border-t-0 first:pt-0">
+    <div className="flex flex-wrap items-center justify-between gap-4 border-t border-rule py-5 first:border-t-0 first:pt-0">
       <div className="min-w-0">
-        <p className="text-sm font-medium text-paper">{label}</p>
-        <p className="num mt-0.5 text-[11px] text-slate/60">{hint}</p>
+        <p className="text-sm font-medium text-bright">{label}</p>
+        <p className="num mt-0.5 text-[11px] text-dim/60">{hint}</p>
       </div>
       {children}
     </div>
@@ -51,14 +51,14 @@ export function KitShowcase() {
   const [rendering, setRendering] = useState(false);
 
   return (
-    <section id="kit" className="relative border-t border-white/8">
+    <section id="kit" className="relative border-t border-rule">
       <div className="relative z-10 mx-auto max-w-6xl px-6 py-24">
         <div ref={head} className="reveal">
           <p className="eyebrow">Not a single CSS control</p>
           <h2 className="display mt-3 max-w-3xl text-[clamp(1.75rem,3.5vw,2.5rem)]">
             The interface is Rive too.
           </h2>
-          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-slate">
+          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-read">
             The button, the switch, the slider, the field, the tabs and the bar below are
             all artboards from one 4.8&nbsp;KB file. Rive draws them; the engine&rsquo;s
             spring maths — the same law that moves the camera — animates them. Every one
@@ -67,7 +67,7 @@ export function KitShowcase() {
         </div>
 
         <div ref={body} className="reveal mt-12 grid gap-6 lg:grid-cols-[1fr_320px]">
-          <div className="glass p-6 sm:p-8">
+          <div className="panel p-6 sm:p-8">
             <RiveTabs
               tabs={['Render', 'Grade', 'Export']}
               active={tab}
@@ -107,7 +107,7 @@ export function KitShowcase() {
             </div>
           </div>
 
-          <div className="glass flex flex-col p-6">
+          <div className="panel flex flex-col p-6">
             <p className="eyebrow">Output</p>
             <dl className="mt-4 flex flex-col gap-2.5">
               {[
@@ -119,21 +119,21 @@ export function KitShowcase() {
                 ['section', ['render', 'grade', 'export'][tab] ?? '—'],
               ].map(([k, v]) => (
                 <div key={k} className="flex items-baseline justify-between gap-3">
-                  <dt className="num text-[11px] uppercase tracking-wider text-slate/60">
+                  <dt className="num text-[11px] uppercase tracking-wider text-dim/60">
                     {k}
                   </dt>
-                  <dd className="num truncate text-[12px] text-paper">{v}</dd>
+                  <dd className="num truncate text-[12px] text-bright">{v}</dd>
                 </div>
               ))}
             </dl>
 
-            <div className="mt-6 border-t border-white/8 pt-5">
+            <div className="mt-6 border-t border-rule pt-5">
               <RiveProgress
                 value={rendering ? undefined : 0.0}
                 label="Render progress"
                 className="w-full"
               />
-              <p className="num mt-3 text-[11px] text-slate/60">
+              <p className="num mt-3 text-[11px] text-dim/60">
                 {rendering ? 'rendering…' : 'idle'}
               </p>
             </div>
@@ -154,7 +154,7 @@ export function KitShowcase() {
           </div>
         </div>
 
-        <p className="num mt-8 text-[11px] text-slate/50">
+        <p className="num mt-8 text-[11px] text-dim/50">
           ui-kit.riv · 4,822 B · 8 artboards · 21 bound channels
         </p>
       </div>

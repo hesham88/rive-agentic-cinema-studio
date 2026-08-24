@@ -8,19 +8,19 @@ test('capture the landing surface', async ({ page }) => {
 
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/', { waitUntil: 'networkidle' });
-  await page.waitForTimeout(2500);
-  await page.screenshot({ path: 'ui-shots/01-hero.png' });
+  await page.waitForTimeout(3000);
+  await page.screenshot({ path: 'ui-shots/new-01-open.png' });
 
   for (const [file, id, wait] of [
-    ['02-deck.png', '#deck', 2500],
-    ['03-kit.png', '#kit', 3000],
-    ['04-pipeline.png', '#pipeline', 900],
-    ['05-gallery.png', '#gallery', 2500],
+    ['new-02-process.png', '#pipeline', 900],
+    ['new-03-engines.png', '#engines', 900],
+    ['new-04-kit.png', '#kit', 3000],
+    ['new-05-proof.png', '#proof', 3000],
   ] as const) {
     await page.evaluate((sel) => document.querySelector(sel)?.scrollIntoView(), id);
     await page.waitForTimeout(wait);
     await page.screenshot({ path: `ui-shots/${file}` });
   }
 
-  console.log('PAGE ERRORS:', errors.length ? errors.join(' | ') : 'none');
+  console.log('PAGE ERRORS: ' + (errors.length ? errors.join(' | ') : 'none'));
 });

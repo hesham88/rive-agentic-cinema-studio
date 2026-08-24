@@ -1,108 +1,73 @@
 import Link from 'next/link';
-import { HeroStage } from './HeroStage';
-import { ControlDeck } from './ControlDeck';
+import { Opening } from './Opening';
+import { Process } from './Process';
+import { Engines } from './Engines';
 import { KitShowcase } from './KitShowcase';
-import { Pipeline } from './Pipeline';
-import { Gallery } from './Gallery';
+import { Proof } from './Proof';
+import { ShotList } from './ShotList';
 
 /**
  * The landing surface.
  *
- * Its single job is to prove the claim immediately: a sentence became this, and
- * it is running in your browser right now. So the hero is the artefact itself,
- * playing full-bleed, with the copy floating over it.
+ * A judge scans this in about ninety seconds, so it is ordered by what has to
+ * land first: the claim, proved immediately by the artefact running behind it;
+ * then how it works; then what it is made of; then the interface as evidence
+ * the craft goes all the way down; then the work itself, playing.
+ *
+ * The page is laid out as a shot list because the camera engine emits one. That
+ * makes the numbering structural rather than decorative — each section consumes
+ * what the previous produced.
  */
 export default function Home() {
   return (
     <div className="min-h-dvh">
-      <header className="sticky top-0 z-50 border-b border-white/8 bg-void/60 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-3.5">
-          <div className="flex items-baseline gap-3">
-            <span className="display text-lg tracking-tight">Rive Agentic Studio</span>
-            <span className="eyebrow hidden sm:inline">web · cinema</span>
-          </div>
+      <ShotList />
+
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-rule/60 bg-room/70 backdrop-blur-md">
+        <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-6 py-3.5 lg:pl-[224px]">
+          <span className="display text-[17px] tracking-tight">Rive Agentic Studio</span>
           <nav className="flex items-center gap-1">
             <a
-              href="#deck"
-              className="num hidden rounded-md px-3 py-1.5 text-xs text-slate transition-colors hover:text-paper sm:inline"
+              href="#engines"
+              className="num hidden rounded-sm px-3 py-1.5 text-[11px] text-dim transition-colors hover:text-bright sm:inline"
             >
-              controls
+              engines
             </a>
             <a
               href="#kit"
-              className="num hidden rounded-md px-3 py-1.5 text-xs text-slate transition-colors hover:text-paper sm:inline"
+              className="num hidden rounded-sm px-3 py-1.5 text-[11px] text-dim transition-colors hover:text-bright sm:inline"
             >
-              ui kit
-            </a>
-            <a
-              href="#gallery"
-              className="num hidden rounded-md px-3 py-1.5 text-xs text-slate transition-colors hover:text-paper sm:inline"
-            >
-              gallery
+              interface
             </a>
             <Link
               href="/inspect"
-              className="num rounded-md border border-white/15 px-3 py-1.5 text-xs text-slate transition-colors hover:border-flame/60 hover:text-flame"
+              className="num rounded-sm border border-rule px-3 py-1.5 text-[11px] text-read transition-colors hover:border-lamp/60 hover:text-lamp"
             >
-              open inspector →
+              inspector →
             </Link>
           </nav>
         </div>
       </header>
 
       <main>
-        {/* Hero: the artefact first, the claim over it. */}
-        <section className="relative isolate min-h-[86vh] overflow-hidden">
-          <HeroStage />
-
-          <div className="relative z-20 mx-auto flex min-h-[86vh] max-w-6xl flex-col justify-center px-6 pb-64 pt-20">
-            <div className="max-w-xl">
-              <p className="eyebrow">Generated, not drawn</p>
-              <h1 className="display mt-4 text-[clamp(2.5rem,6.5vw,4.5rem)]">
-                A sentence
-                <br />
-                becomes a scene.
-              </h1>
-              <p className="mt-6 max-w-md text-[15px] leading-relaxed text-slate">
-                Describe what you want. The studio researches how it is really drawn,
-                generates the art, traces it to vector, rigs it, animates it, scores it,
-                and exports an interactive file the web can run.
-              </p>
-              <p className="mt-4 max-w-md text-[15px] leading-relaxed text-slate">
-                Everything on this page was made that way — including the scene playing
-                behind these words, and its camera move.
-              </p>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link
-                  href="/inspect"
-                  className="rounded-md bg-ignite px-5 py-2.5 text-sm font-semibold text-void transition-colors hover:bg-flame"
-                >
-                  Inspect a file
-                </Link>
-                <a
-                  href="#deck"
-                  className="rounded-md border border-white/20 bg-white/5 px-5 py-2.5 text-sm font-medium text-paper backdrop-blur transition-colors hover:border-white/45"
-                >
-                  Drive the controls
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <ControlDeck />
+        <Opening />
+        <Process />
+        <Engines />
         <KitShowcase />
-        <Pipeline />
-        <Gallery />
+        <Proof />
       </main>
 
-      <footer className="border-t border-white/8">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-8 text-xs text-slate">
-          <span>
-            Built with Gemini, Parallel Search and the Rive editor, driven over MCP.
-          </span>
-          <span className="num text-slate/60">MIT</span>
+      <footer id="close" className="rule-t">
+        <div className="mx-auto max-w-[1400px] px-6 py-16 lg:pl-[224px]">
+          <p className="display max-w-[20ch] text-[clamp(1.75rem,3.5vw,2.5rem)]">
+            Describe it. <em>Then watch it ship.</em>
+          </p>
+          <div className="mt-10 flex flex-wrap items-baseline justify-between gap-4 rule-t pt-6">
+            <p className="text-[13px] text-dim">
+              Built with Gemini, Parallel and the Rive editor, driven over MCP.
+            </p>
+            <p className="num text-[11px] text-dim/60">MIT</p>
+          </div>
         </div>
       </footer>
     </div>
