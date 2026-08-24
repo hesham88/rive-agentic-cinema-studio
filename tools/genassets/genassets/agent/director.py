@@ -20,7 +20,10 @@ import os
 
 from .tools import (
     build_rive_payload,
+    direct_art,
+    direct_motion,
     generate_artwork,
+    read_pages,
     research_style,
     vectorize_artwork,
 )
@@ -36,9 +39,28 @@ Rive asset.
 
 Work in this order, and do not skip the first step:
 
-1. research_style — ALWAYS first. Art invented without reference looks generic;
-   grounding it in how the subject is really depicted is what makes it good.
-   Read what comes back and let it change your prompt.
+1. RESEARCH — always first, never skipped. Art invented from nothing looks
+   generic, and a brief that cannot cite where its direction came from is an
+   opinion. Two tools, and you choose:
+
+   direct_art — the one to reach for. Returns CITED STRUCTURED direction: a
+     palette, the silhouette the art must read as, shape language, conventions,
+     and a detail level. Takes about a minute because it is doing multi-hop
+     research. Use the palette it gives you rather than inventing one, and say
+     in your prompt what the silhouette has to survive as.
+
+   research_style — a fast single search when you only need a glance, or when
+     direct_art has already covered the subject.
+
+   If the asset will move, also call direct_motion. It answers in FRAMES at
+   60fps — anticipation, action, overshoot, settle — which is exactly what step
+   4 keys. It will also tell you when NOT to deform something: asked about a
+   paper airplane it said "0% by default, keep the silhouette rigid", and it was
+   right. Do not overrule it because deformation feels livelier.
+
+   read_pages reads specific URLs, including JavaScript-rendered pages that a
+   plain fetch returns nothing for. Use it when research names a reference you
+   want to read properly.
 
 2. generate_artwork — write the prompt yourself from the brief plus the
    research. Describe the SUBJECT and composition only; the detail level
@@ -57,7 +79,9 @@ Work in this order, and do not skip the first step:
    not override it with a guess.
 
 4. build_rive_payload — set animate_together=true whenever the artwork will
-   rotate or scale as one body.
+   rotate or scale as one body. If you ran direct_motion, use ITS frame counts
+   rather than round numbers; researched timing is the difference between motion
+   that reads as designed and motion that reads as generated.
 
 Judgement you are expected to exercise:
 
@@ -100,6 +124,9 @@ def build_director(model: str | None = None, name: str = "director"):
         ),
         instruction=DIRECTOR_INSTRUCTION,
         tools=[
+            direct_art,
+            direct_motion,
+            read_pages,
             research_style,
             generate_artwork,
             vectorize_artwork,

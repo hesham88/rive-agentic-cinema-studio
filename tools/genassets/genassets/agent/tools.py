@@ -118,6 +118,112 @@ def research_style(subject: str, medium: str = "flat vector illustration") -> di
         return _fail(str(e), context="", sources=[])
 
 
+def direct_art(subject: str, medium: str = "2D vector illustration") -> dict:
+    """Research how a subject is really drawn, as CITED STRUCTURED data.
+
+    Stronger than research_visual_style: that returns prose excerpts a model has
+    to interpret, while this returns typed fields the pipeline consumes directly
+    — a palette the vectoriser can quantise to, a silhouette the art has to pass,
+    a detail level that picks the colour budget. Every field carries the URLs it
+    came from, so a generated asset can show its own provenance.
+
+    Slower (about a minute) because it is doing multi-hop research rather than
+    one search round trip. Worth it once per asset; use research_visual_style
+    for a quick look.
+
+    Args:
+        subject: What is being depicted, e.g. "a paper airplane".
+        medium: The intended rendering style.
+
+    Returns:
+        ok, palette, silhouette, shape_language, conventions, detail_level,
+        context (grounding text for the image prompt), sources, citations.
+    """
+    try:
+        from ..parallel import ParallelClient
+
+        report = ParallelClient().direct_art(subject, medium=medium)
+        c = report.content if isinstance(report.content, dict) else {}
+        return _ok(
+            palette=c.get("palette", []),
+            silhouette=c.get("silhouette", ""),
+            shape_language=c.get("shape_language", ""),
+            conventions=c.get("conventions", []),
+            detail_level=c.get("detail_level", "standard"),
+            context=report.as_prompt_context(),
+            sources=report.sources,
+            citations={f.field_name: [c2.url for c2 in f.citations] for f in report.basis},
+            seconds=report.seconds,
+        )
+    except Exception as e:
+        return _fail(str(e), palette=[], context="", sources=[])
+
+
+def direct_motion(subject: str) -> dict:
+    """Research how a subject is really ANIMATED, in frames we can key.
+
+    Returns beat durations at 60fps — anticipation, action, overshoot, settle —
+    that map onto the motion engine's generators, plus easing, secondary motion
+    and how much (if any) the subject should squash.
+
+    That last field is the one that most changes output. Asked about a paper
+    airplane it answered "0% by default: keep the silhouette rigid", which is
+    correct and is the opposite of the instinct to deform everything.
+
+    Args:
+        subject: What is moving, e.g. "a paper airplane gliding".
+
+    Returns:
+        ok, primary_motion, frame_timings, easing, secondary_motion,
+        squash_stretch, sources, citations.
+    """
+    try:
+        from ..parallel import ParallelClient
+
+        report = ParallelClient().direct_motion(subject)
+        c = report.content if isinstance(report.content, dict) else {}
+        return _ok(
+            primary_motion=c.get("primary_motion", ""),
+            frame_timings=c.get("frame_timings", {}),
+            easing=c.get("easing", ""),
+            secondary_motion=c.get("secondary_motion", []),
+            squash_stretch=c.get("squash_stretch", ""),
+            sources=report.sources,
+            citations={f.field_name: [c2.url for c2 in f.citations] for f in report.basis},
+            seconds=report.seconds,
+        )
+    except Exception as e:
+        return _fail(str(e), frame_timings={}, sources=[])
+
+
+def read_pages(urls: list[str]) -> dict:
+    """Read public web pages as clean markdown, including JavaScript-rendered ones.
+
+    A plain fetch returns nothing useful for the Rive marketplace, YouTube, and
+    several design references — they render client-side. This handles those, and
+    PDFs, up to 20 URLs per call.
+
+    Args:
+        urls: Up to 20 public URLs.
+
+    Returns:
+        ok, pages (url, title, text), count.
+    """
+    try:
+        from ..parallel import ParallelClient
+
+        results = ParallelClient().extract(urls)
+        return _ok(
+            pages=[
+                {"url": r.url, "title": r.title, "text": r.summary(2000)}
+                for r in results
+            ],
+            count=len(results),
+        )
+    except Exception as e:
+        return _fail(str(e), pages=[], count=0)
+
+
 def generate_artwork(prompt: str, name: str, reference_context: str = "",
                      detail: str = "standard") -> dict:
     """Generate a raster image from a prompt, then normalise it for tracing.
