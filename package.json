@@ -1,0 +1,28 @@
+{
+  "name": "rive-engine-workspace",
+  "private": true,
+  "version": "0.0.0",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "vitest run --root packages/rive-engine",
+    "test:watch": "vitest --root packages/rive-engine",
+    "typecheck": "tsc -b packages/rive-engine",
+    "dev": "npm run dev --workspace apps/studio",
+    "build": "npm run build --workspace apps/studio",
+    "test:e2e": "npx playwright test --config apps/studio/playwright.config.ts",
+    "agent": "python -m genassets.agent.run",
+    "emulate": "firebase emulators:start --project rive-agentic-studio",
+    "preview": "npm run build && firebase emulators:start --only hosting --project rive-agentic-studio",
+    "deploy": "npm run build && firebase deploy --only hosting --project rive-agentic-studio"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "vitest": "^4.1.11"
+  }
+}

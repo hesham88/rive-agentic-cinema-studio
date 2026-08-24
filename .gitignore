@@ -1,0 +1,89 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# next.js
+.next/
+out/
+build/
+dist/
+next-env.d.ts
+
+# production / bundling
+*.tsbuildinfo
+
+# testing
+coverage/
+playwright-report/
+test-results/
+blob-report/
+.playwright/
+
+# environment
+.env
+.env.*
+!.env.example
+
+# vercel
+.vercel
+
+.remember/
+
+# editor / os
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# rive — editor working files are authored in the app, not tracked here.
+# Compiled .riv assets ARE tracked (they are the runtime input).
+*.rev.bak
+
+# python
+__pycache__/
+*.egg-info/
+*.pyc
+.venv/
+
+# ---------------------------------------------------------------------------
+# Private — never publish. This repo is public; git history is permanent.
+# ---------------------------------------------------------------------------
+
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*credentials*
+*secret*
+service-account*.json
+gcp-*.json
+
+# Local agent tooling — see .git/info/exclude for machine-specific paths
+.remember/
+AGENTS.md
+GEMINI.md
+.cursor/
+.cursorrules
+.github/copilot-instructions.md
+
+# Internal operations: owner identity, working agreements, request log
+_OPERATIONS/
+
+# Scratch
+.out/
+scratchpad/
+*.local
+
+# next static export
+apps/studio/out/
+.firebase/
+
+# Playwright's UI capture output. Diagnostic, regenerated on demand, and
+# large — the repo is not where design screenshots belong.
+apps/studio/ui-shots/
+apps/studio/test-results/
