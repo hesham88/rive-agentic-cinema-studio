@@ -52,36 +52,33 @@ test('the controls are real focusable elements, not canvas hit targets', async (
 });
 
 /**
- * Capture the pixels of one element.
+ * Capture what Rive actually drew.
  *
- * Deliberately NOT `locator.screenshot()`: an element screenshot of a WebGL
- * canvas comes back blank in this browser, because the drawing buffer is not
- * preserved between frames. Two blank captures compare equal, so a test built
- * on them passes no matter what the page does. Clipping a page screenshot goes
- * through the compositor instead and captures what is actually on screen.
+ * A FULL-PAGE screenshot — NOT `page.screenshot({ clip })` and not
+ * `locator.screenshot()`. Neither of those composites the WebGL layer in this
+ * browser: both return a flat rectangle, so two captures compare equal and any
+ * test built on them passes regardless of what the page does.
+ *
+ * That was demonstrated, not assumed. Through a clipped capture, an
+ * editor-authored file and `scene.riv` — which plays a 286-frame camera move —
+ * both measured as "unchanged", while the same page captured full-page differs
+ * byte-for-byte. The earlier note here claimed element screenshots were the
+ * problem and clipping was the fix; clipping has the same fault.
+ *
+ * Full-page is coarser: anything else animating on the page also registers. For
+ * these tests only the control under test is moving, so a difference is
+ * attributable.
  */
-async function pixels(page: import('@playwright/test').Page, locator: import('@playwright/test').Locator) {
-  const box = await locator.boundingBox();
-  if (!box) throw new Error('element has no box to capture');
-  return page.screenshot({ clip: box });
+async function pixels(page: import('@playwright/test').Page) {
+  return page.screenshot();
 }
 
-/**
- * Wait until what Rive draws inside `locator` differs from `baseline`.
- *
- * Polling rather than sleeping a fixed time: several WASM runtimes and WebGL
- * contexts share this page, and how long the first frame after a change takes
- * depends on what else is warming up. A fixed wait that is long enough on an
- * idle page is not long enough in a full suite run, which turns a correct
- * feature into a flaky test.
- */
 async function expectRedraw(
   page: import('@playwright/test').Page,
-  locator: import('@playwright/test').Locator,
   baseline: Buffer,
 ) {
   await expect
-    .poll(async () => Buffer.compare(baseline, await pixels(page, locator)), {
+    .poll(async () => Buffer.compare(baseline, await pixels(page)), {
       timeout: 15_000,
       message: 'Rive never redrew the control after it was driven',
     })
@@ -102,13 +99,13 @@ test('driving a control changes what Rive draws', async ({ page }) => {
   // alone — proving nothing about Rive.
   await slider.focus();
   await page.waitForTimeout(400);
-  const before = await pixels(page, stage);
+  const before = await pixels(page);
 
   await slider.fill('0');
 
   // With focus held constant, the Rive-drawn fill bar is the only thing left
   // that can differ.
-  await expectRedraw(page, stage, before);
+  await expectRedraw(page, before);
 });
 
 test('the kit writes real values into the Rive view model', async ({ page }) => {
@@ -122,9 +119,9 @@ test('the kit writes real values into the Rive view model', async ({ page }) => 
   const toggle = page.getByRole('switch', { name: 'Motion blur' });
   await expect(toggle).toBeVisible();
 
-  const on = await pixels(page, toggle);
+  const on = await pixels(page);
   await toggle.click();
-  await expectRedraw(page, toggle, on);
+  await expectRedraw(page, on);
 });
 
 test('the render button reports its own state', async ({ page }) => {
