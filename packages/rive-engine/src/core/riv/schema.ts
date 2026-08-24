@@ -28,6 +28,11 @@ export const TypeKey = {
   keyedProperty: 26,
   keyFrameDouble: 30,
   keyFrameColor: 37,
+  // One object with a sourceId, not a mask per shape. Unlocks wipes, masked
+  // reveals, and a fill that follows an arbitrary silhouette.
+  clippingShape: 42,
+  text: 134,
+  textValueRun: 135,
   linearAnimation: 31,
   stateMachine: 53,
   stateMachineLayer: 57,
@@ -164,6 +169,17 @@ export const Prop = {
   dataBindPropertyKey: p(586, FieldType.uint),
   dataBindFlags: p(587, FieldType.uint),
   sourcePathIds: p(588, FieldType.string),
+
+  // Clipping
+  clipSourceId: p(92, FieldType.uint),
+  clipFillRule: p(93, FieldType.uint),
+  clipIsVisible: p(94, FieldType.uint),
+
+  // Text is THREE objects: Text holds layout, TextValueRun holds the
+  // characters and points at a style. That is why the runtime addresses a run
+  // rather than a text object when setting a value.
+  textValue: p(268, FieldType.string),
+  textStyleId: p(272, FieldType.uint),
 
   // Transition conditions
   bindableBooleanValue: p(634, FieldType.uint),
