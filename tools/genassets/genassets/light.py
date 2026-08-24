@@ -264,7 +264,10 @@ def build_lantern(mcp: RiveMCP, *, kelvin: float = CANDLE_K,
     b.transparent_artboard(ab)
 
     warm = kelvin_to_hex(kelvin)
-    stops = falloff_stops(kelvin, steps=5)
+    # The halo is the widest light in the piece, so it needs the most stops:
+    # Rive interpolates linearly between them, and across a 280px radius a
+    # five-stop gradient shows its first straight ramp as a visible edge.
+    stops = falloff_stops(kelvin, steps=8)
 
     def radial(name: str, *, x: float, y: float, w: float, h: float,
                stop_list: list[dict[str, Any]]) -> tuple[str, str]:
