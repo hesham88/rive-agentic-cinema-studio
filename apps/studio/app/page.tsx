@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Opening } from './Opening';
+import { Why } from './Why';
 import { Process } from './Process';
 import { Engines } from './Engines';
 import { KitShowcase } from './KitShowcase';
@@ -51,6 +52,7 @@ export default function Home() {
 
       <main>
         <Opening />
+        <Why />
         <Process />
         <Engines />
         <KitShowcase />

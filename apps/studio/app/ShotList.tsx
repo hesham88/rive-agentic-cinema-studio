@@ -25,7 +25,8 @@ export interface Shot {
 
 export const SHOTS: readonly Shot[] = [
   { id: 'open', label: 'open', frame: 0 },
-  { id: 'pipeline', label: 'process', frame: 64 },
+  { id: 'why', label: 'why', frame: 42 },
+  { id: 'pipeline', label: 'process', frame: 88 },
   { id: 'engines', label: 'engines', frame: 110 },
   { id: 'kit', label: 'interface', frame: 168 },
   { id: 'proof', label: 'proof', frame: 216 },
