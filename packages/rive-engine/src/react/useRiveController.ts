@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCanvasResync } from './useCanvasResync';
 import { useRive } from '@rive-app/react-webgl2';
 import { EventType } from '@rive-app/webgl2';
 import type { Rive, RiveFile, StateMachineInput } from '@rive-app/webgl2';
@@ -103,6 +104,10 @@ export function useRiveController(params: RiveControllerParams): RiveControllerS
       : null,
     { shouldResizeCanvasToContainer: true },
   );
+
+  // Without this the drawing buffer stays at the 300x150 HTML default and
+  // the artboard renders into nothing. See useCanvasResync.
+  useCanvasResync(rive);
 
   // Bumped whenever the instance re-initialises. `rive` keeps the same object
   // identity across load/reset, so derived state needs an explicit signal.

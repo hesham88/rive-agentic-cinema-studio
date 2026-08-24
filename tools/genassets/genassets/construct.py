@@ -50,7 +50,8 @@ from .facet import Point, commands_from_polygon, polygon_from_commands, split_po
 __all__ = [
     "KAPPA", "Palette", "PALETTES", "Light", "KEY_UPPER_LEFT",
     "ellipse", "capsule", "tapered", "wedge", "polygon",
-    "transform", "band_polygon", "crescent", "crescent_corners", "clip_to",
+    "transform", "band_polygon", "crescent", "crescent_corners", "clip_to", "is_convex",
+    "union_outline",
     "smooth_polygon", "shade_form", "contact_shadow", "tint",
     "delta_e", "merge_near_duplicates",
     "DEFAULT_BANDS", "RIM_BAND", "Form",
@@ -331,6 +332,168 @@ def band_polygon(points: list[Point], light: Light,
     return bands
 
 
+def _fill(poly: list[Point], grid: bytearray, w: int, h: int,
+          ox: float, oy: float, scale: float) -> None:
+    """Scanline-fill one polygon into a boolean grid, even-odd rule."""
+    if len(poly) < 3:
+        return
+    gy = [(p[1] - oy) * scale for p in poly]
+    gx = [(p[0] - ox) * scale for p in poly]
+    lo = max(0, int(min(gy)))
+    hi = min(h - 1, int(max(gy)) + 1)
+    n = len(poly)
+    for y in range(lo, hi + 1):
+        yc = y + 0.5
+        xs: list[float] = []
+        for i in range(n):
+            j = (i + 1) % n
+            y0, y1 = gy[i], gy[j]
+            if (y0 <= yc < y1) or (y1 <= yc < y0):
+                t = (yc - y0) / (y1 - y0)
+                xs.append(gx[i] + t * (gx[j] - gx[i]))
+        xs.sort()
+        row = y * w
+        for k in range(0, len(xs) - 1, 2):
+            a = max(0, int(xs[k] + 0.5))
+            b = min(w - 1, int(xs[k + 1] + 0.5))
+            for x in range(a, b + 1):
+                grid[row + x] = 1
+
+
+#: Moore neighbourhood, clockwise from due east.
+_MOORE = ((1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1))
+
+
+def _trace(grid: bytearray, w: int, h: int) -> list[tuple[int, int]]:
+    """Follow the outer boundary of the filled region (Moore-neighbour tracing).
+
+    The scan must resume from the BACKTRACK CELL — the background cell the walk
+    arrived from — not from the direction of travel. Resuming from the direction
+    of travel makes the walk circle a single cell and return to its start after
+    four steps, which is what a first attempt here did.
+
+    Scanning row-major guarantees the first filled cell has an empty neighbour
+    to its west, so the initial backtrack is known rather than guessed.
+    """
+    start = next((i for i, v in enumerate(grid) if v), -1)
+    if start < 0:
+        return []
+    sx, sy = start % w, start // w
+
+    def filled(x: int, y: int) -> bool:
+        return 0 <= x < w and 0 <= y < h and bool(grid[y * w + x])
+
+    px, py = sx, sy
+    bx, by = sx - 1, sy          # the empty cell to the west
+    contour = [(px, py)]
+
+    for _ in range(w * h * 4):
+        # Index of the backtrack cell in the Moore ring around p.
+        try:
+            idx = _MOORE.index((bx - px, by - py))
+        except ValueError:
+            break
+        moved = False
+        for k in range(1, 9):
+            d = (idx + k) % 8
+            nx, ny = px + _MOORE[d][0], py + _MOORE[d][1]
+            if filled(nx, ny):
+                # The backtrack becomes the cell examined just before this one.
+                prev = (d - 1) % 8
+                bx, by = px + _MOORE[prev][0], py + _MOORE[prev][1]
+                px, py = nx, ny
+                contour.append((px, py))
+                moved = True
+                break
+        if not moved or ((px, py) == (sx, sy) and len(contour) > 2):
+            break
+    return contour
+
+
+def union_outline(polys: Sequence[list[Point]], *, resolution: int = 260,
+                  simplify: float = 0.5) -> list[Point]:
+    """Merge overlapping forms into ONE silhouette.
+
+    Why this is not optional
+    ------------------------
+    A subject assembled from opaque forms stacked back to front is how cut-out
+    animation works, and it survives a thumbnail. It does not survive being
+    looked at closely: the forms that stick out — fins, snouts, limbs — share no
+    edge with the body, so each one is shaded as its own little volume and the
+    result reads as parts arranged in the shape of an animal rather than one
+    animal. That was the last structural fault in the rendered dolphin, and no
+    amount of adjusting ratios addresses it, because the fault is that the body
+    has no single outline to shade.
+
+    Rasterise-and-trace rather than exact boolean geometry. Greiner-Hormann
+    would give an analytically perfect union and would also need every
+    degenerate case handled correctly — coincident edges, a vertex exactly on
+    another edge, a form touching at one point — each of which appears the
+    moment forms are placed by ratio. A raster union has one failure mode
+    instead of a dozen: it is resolution-limited. That is a knob, and one whose
+    error is bounded and visible, which is the better trade for artwork whose
+    outline is then simplified and smoothed anyway.
+
+    `resolution` is the grid's long edge. 260 puts the sampling error near a
+    third of a percent of the artwork, well under the simplify tolerance that
+    follows, so raising it makes no visible difference and costs real time.
+
+    `simplify` is in grid cells. It is the parameter that matters: the traced
+    contour is one point per boundary cell, and reducing it is necessary, but
+    reducing it too far destroys the shape. At 1.6 a dolphin came back as 30
+    points and rendered as a torn spike — the outline was correct and the
+    simplifier threw it away. 0.5 keeps about 135 points, which carries the
+    curve of a flank and the notch of a fluke both.
+    """
+    pts = [p for poly in polys for p in poly]
+    if not pts:
+        return []
+    min_x = min(p[0] for p in pts)
+    max_x = max(p[0] for p in pts)
+    min_y = min(p[1] for p in pts)
+    max_y = max(p[1] for p in pts)
+    span = max(max_x - min_x, max_y - min_y) or 1.0
+    scale = (resolution - 4) / span
+    # One cell of margin, so a form flush with the bounding box still has a
+    # background cell outside it for the tracer to walk along.
+    ox, oy = min_x - 2 / scale, min_y - 2 / scale
+    w = int((max_x - ox) * scale) + 3
+    h = int((max_y - oy) * scale) + 3
+
+    grid = bytearray(w * h)
+    for poly in polys:
+        _fill(poly, grid, w, h, ox, oy, scale)
+
+    contour = _trace(grid, w, h)
+    if len(contour) < 3:
+        return []
+
+    from .svgdoc import simplify_commands
+    cmds = [{"commandType": "moveTo" if i == 0 else "lineTo",
+             "x": ox + (x + 0.5) / scale, "y": oy + (y + 0.5) / scale}
+            for i, (x, y) in enumerate(contour)]
+    kept = simplify_commands(cmds, tolerance=simplify / scale)
+    return [(c["x"], c["y"]) for c in kept]
+
+
+def is_convex(poly: list[Point], *, tol: float = 1e-9) -> bool:
+    """True when every turn around the polygon goes the same way."""
+    n = len(poly)
+    if n < 3:
+        return False
+    sign = 0
+    for i in range(n):
+        a, b, c = poly[i], poly[(i + 1) % n], poly[(i + 2) % n]
+        cross = ((b[0] - a[0]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[0] - b[0]))
+        if abs(cross) <= tol:
+            continue
+        s = 1 if cross > 0 else -1
+        if sign and s != sign:
+            return False
+        sign = s
+    return True
+
+
 def clip_to(subject: list[Point], clip: list[Point]) -> list[Point]:
     """Intersect a polygon with a convex clipping polygon.
 
@@ -356,6 +519,16 @@ def clip_to(subject: list[Point], clip: list[Point]) -> list[Point]:
     """
     if len(subject) < 3 or len(clip) < 3:
         return []
+    if not is_convex(clip):
+        # Sutherland-Hodgman clips against each edge's INFINITE half-plane, so a
+        # concave clip polygon quietly removes geometry that was inside it —
+        # here, feeding it a merged body outline removed the marking entirely.
+        # Raising beats returning a wrong region that renders as missing art.
+        raise ValueError(
+            "clip_to needs a convex clipping polygon; this one is concave. "
+            "Clip a marking to the individual primitive it sits on, not to a "
+            "merged group outline."
+        )
 
     # Orientation decides which side of an edge counts as inside, so measure it
     # rather than assuming: recipes build some forms clockwise and others not.
@@ -391,7 +564,8 @@ def clip_to(subject: list[Point], clip: list[Point]) -> list[Point]:
 
 
 def smooth_polygon(points: list[Point], *, corners: set[int] | None = None,
-                   tension: float = 1.0) -> list[dict]:
+                   tension: float = 1.0,
+                   corner_angle: float | None = None) -> list[dict]:
     """Fit a closed cubic-bezier through a point list.
 
     Why this exists
@@ -416,14 +590,51 @@ def smooth_polygon(points: list[Point], *, corners: set[int] | None = None,
     n = len(points)
     if n < 3:
         raise ValueError(f"a closed curve needs at least 3 points, got {n}")
-    corners = corners or set()
+    corners = set(corners or ())
+    if corner_angle is not None:
+        # A traced outline has genuine corners — where a fluke meets a peduncle,
+        # or a fin leaves the flank. Rounding those is what turns a merged body
+        # into a blob, so any vertex turning more sharply than this stays sharp.
+        for i in range(n):
+            a, b, c = points[(i - 1) % n], points[i], points[(i + 1) % n]
+            v1 = (b[0] - a[0], b[1] - a[1])
+            v2 = (c[0] - b[0], c[1] - b[1])
+            m1, m2 = math.hypot(*v1), math.hypot(*v2)
+            if m1 < 1e-9 or m2 < 1e-9:
+                continue
+            cosang = max(-1.0, min(1.0, (v1[0] * v2[0] + v1[1] * v2[1]) / (m1 * m2)))
+            if math.degrees(math.acos(cosang)) > corner_angle:
+                corners.add(i)
 
     def tangent(i: int) -> tuple[float, float]:
-        """Half the vector between the neighbours, scaled — zero at a corner."""
+        """The neighbour-to-neighbour vector, scaled — and CLAMPED.
+
+        Plain Catmull-Rom sets the tangent from the neighbours alone, which is
+        fine when points are evenly spaced and disastrous when they are not: a
+        long chord beside a short one produces a tangent longer than the short
+        chord, and the curve loops back on itself. Feeding it a traced outline,
+        whose spacing is wildly uneven after simplification, tore the dolphin's
+        silhouette into spikes.
+
+        Clamping the tangent to a third of the SHORTER adjacent chord is the
+        standard cure. A cubic segment cannot overshoot its endpoints once its
+        handles are inside that bound, so the curve stays within the polygon it
+        is smoothing.
+        """
         if i in corners:
             return 0.0, 0.0
-        prv, nxt = points[(i - 1) % n], points[(i + 1) % n]
-        return ((nxt[0] - prv[0]) / 6 * tension, (nxt[1] - prv[1]) / 6 * tension)
+        prv, cur, nxt = points[(i - 1) % n], points[i], points[(i + 1) % n]
+        tx = (nxt[0] - prv[0]) / 6 * tension
+        ty = (nxt[1] - prv[1]) / 6 * tension
+        length = math.hypot(tx, ty)
+        if length < 1e-12:
+            return 0.0, 0.0
+        limit = min(math.hypot(cur[0] - prv[0], cur[1] - prv[1]),
+                    math.hypot(nxt[0] - cur[0], nxt[1] - cur[1])) / 3
+        if length > limit:
+            k = limit / length
+            tx, ty = tx * k, ty * k
+        return tx, ty
 
     tans = [tangent(i) for i in range(n)]
     cmds: list[dict] = [{"commandType": "moveTo", "x": points[0][0], "y": points[0][1]}]
@@ -518,6 +729,11 @@ class Form:
     #: An explicit local colour for this material, normally built with `tint`
     #: from a palette entry so the set stays harmonious.
     local: str | None = None
+    #: Forms sharing a group name are merged into ONE silhouette before
+    #: shading, so the light reads across the whole body instead of treating
+    #: each fin as its own little volume. The group is drawn at the position of
+    #: its first member.
+    group: str | None = None
     #: Name of an earlier form this one is a marking ON. The geometry is cut to
     #: that form's outline, so a marking placed by ratio still ends where the
     #: body ends instead of overhanging it.

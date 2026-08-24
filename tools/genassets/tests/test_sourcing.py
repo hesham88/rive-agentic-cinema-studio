@@ -134,3 +134,25 @@ def test_attribution_is_not_duplicated_on_resave(tmp_path) -> None:
     art.save(tmp_path)
     record = (tmp_path / "ATTRIBUTION.md").read_text(encoding="utf-8")
     assert record.count("https://s/1") == 1
+
+
+# --- trademarks ------------------------------------------------------------
+
+@pytest.mark.parametrize("title", [
+    "Fox Broadcasting Company logo 2019", "Dolphin-logo", "Jellyfish Media logo",
+    "Matra Sports logo", "Fox wordmark orange", "Some Network emblem",
+])
+def test_brand_assets_are_recognised(title: str) -> None:
+    """A permissive licence on a file depicting a trademark grants no trademark
+    rights. Seven of the first twenty-five files fetched were corporate logos."""
+    from genassets.sourcing import looks_like_a_brand
+    assert looks_like_a_brand(title)
+
+
+@pytest.mark.parametrize("title", [
+    "Sea Turtle", "A Butterfly 2", "Green turtle", "Seahorse lifecycle",
+    "Sloop psf", "Bottlenose dolphin",
+])
+def test_real_illustrations_are_not_flagged(title: str) -> None:
+    from genassets.sourcing import looks_like_a_brand
+    assert not looks_like_a_brand(title)

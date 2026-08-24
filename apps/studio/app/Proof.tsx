@@ -1,6 +1,7 @@
 'use client';
 
 import { Fit, Layout, useRive } from '@rive-app/react-webgl2';
+import { useCanvasResync } from 'rive-engine/react';
 import { useReveal } from './useScrollProgress';
 
 /**
@@ -71,7 +72,7 @@ const PIECES: readonly Piece[] = [
 function Tile({ piece, index }: { piece: Piece; index: number }) {
   const ref = useReveal<HTMLElement>(index * 80);
 
-  const { RiveComponent } = useRive({
+  const { rive, RiveComponent } = useRive({
     src: piece.file,
     artboard: piece.artboard,
     stateMachines: piece.stateMachine,
@@ -81,6 +82,8 @@ function Tile({ piece, index }: { piece: Piece; index: number }) {
     // cropping a generated asset hides the thing the tile exists to show.
     layout: new Layout({ fit: Fit.Contain }),
   });
+
+  useCanvasResync(rive);
 
   return (
     <article ref={ref} className="reveal flex flex-col">

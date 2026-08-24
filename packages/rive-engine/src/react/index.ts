@@ -14,3 +14,4 @@ export * from './ViewModelControls';
 export * from './useRiveChannels';
 export * from './useHeroMotion';
 export * from './ui/RiveControls';
+export { useCanvasResync } from './useCanvasResync';

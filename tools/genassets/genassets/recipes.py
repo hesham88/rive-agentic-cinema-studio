@@ -28,7 +28,7 @@ from dataclasses import dataclass, field, replace
 from .construct import (
     KEY_UPPER_LEFT, PALETTES, Form, Light, Palette,
     clip_to, contact_shadow, ellipse, merge_near_duplicates, shade_form,
-    smooth_polygon, tapered, tint, transform, wedge,
+    smooth_polygon, tapered, tint, transform, union_outline, wedge,
 )
 
 __all__ = ["Recipe", "Built", "RECIPES", "build", "sea_turtle", "dolphin", "butterfly"]
@@ -219,24 +219,25 @@ def dolphin(u: float = 100.0) -> Recipe:
     forms.append(Form("pectoral-far",
                       tapered(-u * 0.10, u * 0.10, -u * 0.72, u * 0.66,
                               u * 0.30, u * 0.10), local=FIN_FAR))
-    forms.append(Form("body", ellipse(0, 0, u * 1.55, u * 0.60, segments=20), local=FLANK))
+    forms.append(Form("body", ellipse(0, 0, u * 1.55, u * 0.60, segments=20), local=FLANK,
+                      group="body"))
     forms.append(Form("rostrum",
                       tapered(u * 1.30, u * 0.04, u * 2.16, u * 0.14,
-                              u * 0.44, u * 0.16), local=ROSTRUM))
+                              u * 0.44, u * 0.16), local=ROSTRUM, group="body"))
     forms.append(Form("melon", ellipse(u * 1.06, -u * 0.20, u * 0.36, u * 0.24,
-                                       segments=12), local=MELON, rim=False))
+                                       segments=12), local=MELON, rim=False, group="body"))
     forms.append(Form("dorsal",
                       wedge((u * 0.16, -u * 1.16), (-u * 0.30, -u * 0.44),
-                            (u * 0.42, -u * 0.46), round_base=0.12), local=FIN))
+                            (u * 0.42, -u * 0.46), round_base=0.12), local=FIN, group="body"))
     forms.append(Form("peduncle",
                       tapered(-u * 1.34, u * 0.02, -u * 2.02, -u * 0.06,
-                              u * 0.46, u * 0.16, round_end=False), local=FLANK))
+                              u * 0.46, u * 0.16, round_end=False), local=FLANK, group="body"))
     forms.append(Form("fluke-upper",
                       tapered(-u * 1.96, -u * 0.04, -u * 2.52, -u * 0.46,
-                              u * 0.20, u * 0.30), local=FIN))
+                              u * 0.20, u * 0.30), local=FIN, group="body"))
     forms.append(Form("fluke-lower",
                       tapered(-u * 1.96, -u * 0.04, -u * 2.48, u * 0.40,
-                              u * 0.20, u * 0.28), local=FIN))
+                              u * 0.20, u * 0.28), local=FIN, group="body"))
     forms.append(Form("pectoral-near",
                       tapered(u * 0.10, u * 0.28, -u * 0.62, u * 0.94,
                               u * 0.34, u * 0.12), local=FIN))
@@ -465,6 +466,10 @@ def build(recipe: Recipe, *, light: Light = KEY_UPPER_LEFT,
     # with. Shading first and clipping after would leave highlights hanging in
     # the water where the overhang used to be.
     outlines = {f.name: polygon_from_commands(f.commands) for f in recipe.forms}
+    # Group outlines are deliberately NOT clip targets. A merged body is
+    # concave, and the clipper needs a convex parent; more to the point, a
+    # marking belongs to the part it sits on — a jaw stripe to the rostrum, not
+    # to the whole animal — so the individual primitive is also the right answer.
     resolved: list[Form] = []
     for form in recipe.forms:
         if form.clip:
@@ -485,7 +490,36 @@ def build(recipe: Recipe, *, light: Light = KEY_UPPER_LEFT,
             form = replace(form, commands=smooth_polygon(cut))
         resolved.append(form)
 
+    # Merge each body group into ONE silhouette before shading.
+    #
+    # Shading the members separately is what made the first renders read as
+    # parts arranged in the shape of an animal: a pectoral fin sharing no edge
+    # with the flank got its own highlight, its own terminator and its own rim,
+    # so it announced itself as a separate object. One outline gives one light.
+    #
+    # Order is preserved by emitting the merged form where its FIRST member sat,
+    # since that member's depth is what the recipe reasoned about.
+    merged: list[Form] = []
+    seen: set[str] = set()
     for form in resolved:
+        if not form.group:
+            merged.append(form)
+            continue
+        if form.group in seen:
+            continue
+        seen.add(form.group)
+        members = [f for f in resolved if f.group == form.group]
+        outline = union_outline([polygon_from_commands(f.commands) for f in members])
+        if len(outline) < 3:
+            raise ValueError(
+                f"group {form.group!r} merged to nothing - its members may not "
+                f"overlap, and a group whose parts are disjoint is not a body"
+            )
+        merged.append(replace(form, name=form.group,
+                              commands=smooth_polygon(outline, corner_angle=52),
+                              group=None))
+
+    for form in merged:
         shapes.extend(shade_form(form, light, palette, reference_span=span))
     shapes = merge_near_duplicates(shapes, threshold=merge)
     return Built(name=recipe.name, shapes=shapes, palette=palette,

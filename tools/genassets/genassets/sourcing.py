@@ -53,6 +53,7 @@ __all__ = [
     "SourcingError", "LicenceRejected", "SourcedArt",
     "ALLOWED_LICENCES", "REJECTED_PATTERNS", "ATTRIBUTION_FILE",
     "sanitise_svg", "licence_ok", "search_commons", "fetch_art",
+    "BRAND_PATTERNS", "looks_like_a_brand",
 ]
 
 COMMONS_API = "https://commons.wikimedia.org/w/api.php"
@@ -77,6 +78,24 @@ REJECTED_PATTERNS = (
     "-sa", " sa", "share", "-nc", " nc", "noncommercial", "non-commercial",
     "-nd", " nd", "noderiv", "fair use", "gfdl",
 )
+
+
+#: Title fragments that mark a file as a brand asset rather than a drawing.
+#: A permissive licence on a file DEPICTING a trademark grants no trademark
+#: rights, and the two are entirely separate permissions. Keyword search does
+#: not know that: "fox" returns Fox Broadcasting, "dolphin" returns the Dolphin
+#: emulator, "jellyfish" returns Jellyfish Media. Seven of the first
+#: twenty-five files fetched were corporate logos.
+BRAND_PATTERNS = (
+    "logo", "wordmark", "brand", "emblem", "trademark",
+    " inc", "corporation", "company", "channel", "media", "network",
+)
+
+
+def looks_like_a_brand(title: str) -> bool:
+    """True when a title suggests a trademark rather than an illustration."""
+    low = f" {title.lower()} "
+    return any(pat in low for pat in BRAND_PATTERNS)
 
 
 class SourcingError(RuntimeError):
@@ -247,7 +266,8 @@ def search_commons(subject: str, *, limit: int = 10,
             "licence": licence,
             "artist": _strip_tags((meta.get("Artist") or {}).get("value", ""))[:80],
             "bytes": size,
-            "allowed": licence_ok(licence),
+            "brand": looks_like_a_brand(page.get("title", "")),
+            "allowed": licence_ok(licence) and not looks_like_a_brand(page.get("title", "")),
             "too_big": size > max_bytes,
         })
     return sorted(out, key=lambda c: (not c["allowed"], c["too_big"], c["bytes"]))

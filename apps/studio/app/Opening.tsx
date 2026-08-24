@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useCanvasResync } from 'rive-engine/react';
 import { Fit, Layout, useRive } from '@rive-app/react-webgl2';
 import { HeroMark } from './HeroMark';
 import { useEffect, useRef, useState } from 'react';
@@ -52,6 +53,8 @@ export function Opening() {
     layout: new Layout({ fit: Fit.Contain }),
     onLoadError: () => setFailed(true),
   });
+
+  useCanvasResync(rive);
 
   // The runtime exposes no frame cursor, so the readout runs on a wall clock in
   // step with the looping timeline rather than reaching into internals.

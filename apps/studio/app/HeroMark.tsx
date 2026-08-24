@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Fit, Layout, useRive } from '@rive-app/react-webgl2';
-import { useHeroMotion } from 'rive-engine/react';
+import { useHeroMotion, useCanvasResync } from 'rive-engine/react';
 
 /**
  * The mark, gliding.
@@ -31,6 +31,8 @@ export function HeroMark({ className = '' }: { className?: string }) {
     onLoadError: () => setFailed(true),
   });
 
+  useCanvasResync(rive);
+
   const flying = useHeroMotion(rive ?? null);
 
   useEffect(() => {
@@ -50,5 +52,7 @@ export function HeroMark({ className = '' }: { className?: string }) {
     );
   }
 
-  return <RiveComponent className={className} />;
+  // `h-full w-full` is not optional: without a CSS size the runtime
+  // allocates a zero-sized buffer and the mark never appears.
+  return <RiveComponent className={`block h-full w-full ${className ?? ''}`} />;
 }
