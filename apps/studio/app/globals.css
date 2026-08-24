@@ -1,0 +1,217 @@
+@import 'tailwindcss';
+
+/*
+ * The UI kit's components live in `packages/rive-engine`, outside this app's
+ * directory, so Tailwind's automatic source detection never sees them and their
+ * classes are never generated. Without this the controls render at zero size —
+ * canvases load, nothing is visible.
+ */
+@source '../../../packages/rive-engine/src';
+
+/*
+ * Palette sampled from the artwork this studio actually generated — the night
+ * scene's sky gradient and the rocket's own colours. Warm key against cool
+ * shadow, which is how film lights a subject.
+ */
+@theme {
+  --color-void: #070a18;
+  --color-deep: #0b1026;
+  --color-mid: #1b2a5e;
+  --color-rive: #2a3895;
+  --color-ignite: #ea5a20;
+  --color-flame: #f9d366;
+  --color-paper: #f2f5fa;
+  --color-slate: #7d8aa3;
+
+  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: var(--color-void);
+  color: var(--color-paper);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Numbers are content here, so they get tabular figures and real tracking. */
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-slate);
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+}
+
+/* ---------------------------------------------------------------------------
+ * Glass.
+ *
+ * The reason this page can carry glass honestly: there is a live WebGL canvas
+ * running behind it, so `backdrop-filter` samples moving pixels rather than a
+ * static gradient. The saturate() is what stops blurred dark scenes from going
+ * muddy grey — it pulls the sky's blue and the rocket's ember back up.
+ *
+ * The ::before is a one-pixel top highlight. Real glass catches light on its
+ * top edge; without it a blurred panel just looks like a translucent rectangle.
+ * ------------------------------------------------------------------------- */
+.glass {
+  position: relative;
+  background: color-mix(in srgb, var(--color-deep) 62%, transparent);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 14px;
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.06) inset,
+    0 18px 50px -20px rgb(0 0 0 / 0.75);
+}
+
+.glass::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.35) 22%,
+    rgb(255 255 255 / 0.35) 78%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* Lighter weight for tiles that sit in a grid — full glass twelve times over
+   is noise, so the gallery gets a thinner pane. */
+.glass-thin {
+  background: color-mix(in srgb, var(--color-deep) 45%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 12px;
+  transition:
+    border-color 0.35s ease,
+    transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1),
+    box-shadow 0.35s ease;
+}
+
+.glass-thin:hover {
+  border-color: rgb(255 255 255 / 0.22);
+  transform: translateY(-3px);
+  box-shadow: 0 24px 60px -28px rgb(0 0 0 / 0.9);
+}
+
+/* ---------------------------------------------------------------------------
+ * Ambient field.
+ *
+ * Two slow-drifting radial washes in the palette's warm and cool poles. They
+ * sit under the glass so the blur always has colour to work with, even in
+ * sections where no canvas is playing.
+ * ------------------------------------------------------------------------- */
+.aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.aurora::before,
+.aurora::after {
+  content: '';
+  position: absolute;
+  width: 60vw;
+  height: 60vw;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.35;
+}
+
+.aurora::before {
+  top: -20%;
+  left: -10%;
+  background: radial-gradient(circle, var(--color-rive), transparent 65%);
+  animation: drift-a 28s ease-in-out infinite alternate;
+}
+
+.aurora::after {
+  bottom: -25%;
+  right: -12%;
+  background: radial-gradient(circle, var(--color-ignite), transparent 65%);
+  opacity: 0.22;
+  animation: drift-b 34s ease-in-out infinite alternate;
+}
+
+@keyframes drift-a {
+  to {
+    transform: translate3d(8vw, 6vh, 0) scale(1.15);
+  }
+}
+
+@keyframes drift-b {
+  to {
+    transform: translate3d(-7vw, -5vh, 0) scale(1.1);
+  }
+}
+
+/* A single hairline in the ignition colour, used only to mark the live edge of
+   the timeline. Spending the accent in one place keeps it meaningful. */
+.playhead {
+  box-shadow: 0 0 0 1px var(--color-ignite), 0 0 18px -2px var(--color-ignite);
+}
+
+/* Scroll reveal. The transform is tiny on purpose — content that flies in from
+   far away reads as a template. */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.7, 0.3, 1),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.reveal[data-shown='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-flame);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
