@@ -100,31 +100,45 @@ def kelvin_to_hex(kelvin: float, alpha: int = 255) -> str:
 def falloff_stops(
     kelvin: float,
     *,
-    steps: int = 5,
+    steps: int = 8,
     exponent: float = 2.0,
     core_alpha: int = 255,
+    spread: float = 7.0,
 ) -> list[dict[str, Any]]:
-    """Gradient stops approximating inverse-square falloff for a radial light.
+    """Gradient stops for a radial light, shaped so it reads as light.
 
-    `position` is a percentage of the radius, `alpha` follows
-    `1 / (1 + d)**exponent` normalised so the centre is `core_alpha` and the rim
-    is fully transparent. `exponent = 2` is physical; lower spreads the light
-    further and reads softer, higher tightens it to a point.
+    `position` is a percentage of the radius and `alpha` follows
+    `1 / (1 + spread * d) ** exponent`, normalised to reach exactly zero at the
+    rim.
 
-    More steps make a smoother curve at the cost of file size. Five is the point
-    where adding another stop stops being visible at typical sizes.
+    **`spread` is what makes this look like a lamp rather than a disc.** The
+    obvious formulation — `1 / (1 + d) ** 2` across d in 0..1 — is inverse-square
+    arithmetic, but it treats the whole shape as one radius of falloff, so the
+    core is still half-opaque at quarter-radius and the result renders as a flat
+    coin with a soft rim. Real glow has a small bright core and a long faint
+    tail: `spread` sets how many falloff radii fit inside the shape, and 7 puts
+    the half-brightness point at about 6% of the radius, which is roughly where
+    a flame sits inside its own halo.
+
+    **Step count matters as much as the curve.** Rive interpolates linearly
+    between gradient stops, so a five-stop gradient is four straight ramps and
+    the first one — from full to half opacity — is visible as an edge. Eight is
+    where the piecewise line stops reading as a line.
+
+    Raising `exponent` tightens the core further; lowering it spreads the light.
     """
     if steps < 2:
         raise ValueError("a gradient needs at least two stops")
     if exponent <= 0:
         raise ValueError("exponent must be positive")
+    if spread <= 0:
+        raise ValueError("spread must be positive")
 
+    floor = 1.0 / ((1.0 + spread) ** exponent)
     stops: list[dict[str, Any]] = []
     for i in range(steps):
         d = i / (steps - 1)  # 0 at the core, 1 at the rim
-        # Normalised inverse-square: 1 at d=0, 0 at d=1.
-        raw = 1.0 / ((1.0 + d) ** exponent)
-        floor = 1.0 / (2.0 ** exponent)
+        raw = 1.0 / ((1.0 + spread * d) ** exponent)
         norm = (raw - floor) / (1.0 - floor)
         alpha = int(round(core_alpha * max(0.0, min(1.0, norm))))
         stops.append({"color": kelvin_to_hex(kelvin, alpha), "position": d * 100.0})
@@ -265,17 +279,18 @@ def build_lantern(mcp: RiveMCP, *, kelvin: float = CANDLE_K,
         return s["id"], s["pathId"]
 
     # 1. The pool of light the lantern casts on the ground — widest, furthest back.
-    beam, _ = radial("cast-pool", x=130, y=286, w=230, h=64,
-                     stop_list=falloff_stops(kelvin, steps=5, exponent=1.4,
-                                             core_alpha=140))
+    beam, _ = radial("cast-pool", x=130, y=286, w=250, h=70,
+                     stop_list=falloff_stops(kelvin, steps=8, exponent=1.4,
+                                             core_alpha=120, spread=4.0))
     # 2. The halo around the lamp itself.
-    halo, _ = radial("halo", x=130, y=150, w=240, h=240, stop_list=stops)
+    halo, _ = radial("halo", x=130, y=150, w=280, h=280, stop_list=stops)
     # 3. The lantern body: a glass box with a warm interior.
     b.rect(ab, "glass", x=130, y=150, w=96, h=120, radius=10,
            color="#1affffff", stroke="#66ffffff", stroke_width=2)
     # 4. The flame core, brightest and smallest.
-    flame, _ = radial("flame", x=130, y=158, w=54, h=76,
-                      stop_list=falloff_stops(kelvin, steps=4, exponent=2.6))
+    flame, _ = radial("flame", x=130, y=158, w=58, h=80,
+                      stop_list=falloff_stops(kelvin, steps=6, exponent=2.6,
+                                              spread=3.0))
     # 5. Hardware: the cap and the hanging cord.
     b.rect(ab, "cap", x=130, y=86, w=104, h=16, radius=4, color="#ff2a3140")
     b.rect(ab, "cord", x=130, y=40, w=3, h=76, color="#ff3b4354")
