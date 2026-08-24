@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Fit, Layout, useRive } from '@rive-app/react-webgl2';
+import { HeroMark } from './HeroMark';
 import { useEffect, useRef, useState } from 'react';
 
 /**
@@ -87,6 +88,9 @@ export function Opening() {
 
       <div className="relative z-10 mx-auto grid min-h-dvh max-w-[1400px] items-center gap-14 px-6 pb-20 pt-28 lg:grid-cols-[1fr_minmax(0,540px)] lg:gap-12 lg:pl-[224px] xl:gap-16">
         <div>
+          {/* The mark this studio generated for itself, gliding. */}
+          <HeroMark className="mb-6 h-[110px] w-[165px] lg:mb-8" />
+
           <p className="eyebrow whitespace-nowrap">Agentic studio · web &amp; cinema</p>
 
           <h1 className="display mt-6 text-balance text-[clamp(2.5rem,5vw,4.25rem)]">

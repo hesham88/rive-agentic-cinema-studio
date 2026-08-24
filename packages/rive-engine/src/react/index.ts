@@ -12,4 +12,5 @@ export * from './ManifestTree';
 export * from './InputControls';
 export * from './ViewModelControls';
 export * from './useRiveChannels';
+export * from './useHeroMotion';
 export * from './ui/RiveControls';
