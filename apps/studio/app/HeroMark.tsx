@@ -52,7 +52,5 @@ export function HeroMark({ className = '' }: { className?: string }) {
     );
   }
 
-  // `h-full w-full` is not optional: without a CSS size the runtime
-  // allocates a zero-sized buffer and the mark never appears.
-  return <RiveComponent className={`block h-full w-full ${className ?? ''}`} />;
+  return <RiveComponent className={className} />;
 }

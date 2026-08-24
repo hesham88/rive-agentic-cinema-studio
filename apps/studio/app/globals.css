@@ -197,29 +197,3 @@ body {
     transform: none;
   }
 }
-
-/* Rive canvases must be given a CSS size by us.
-   ------------------------------------------------------------------------
-   The runtime sizes its backing store from the canvas element's own bounding
-   box, multiplied by devicePixelRatio. A canvas with no CSS size measures 0,
-   so the runtime allocates a 0x0 buffer, draws nothing, and never re-measures
-   — the element is left at `width: 0px; height: 0px` and the artboard is
-   invisible with no error anywhere. Every canvas on this page was in that
-   state: fourteen live WebGL contexts, all drawing into nothing.
-
-   It reads as a broken widget rather than a broken layout, which is why it
-   survived several passes: the file loads, the state machine runs, the inputs
-   respond, and the only thing missing is pixels.
-
-   Making it a rule rather than a prop means a new mount cannot reintroduce it
-   by forgetting a class. The parent still owns the dimensions. */
-canvas {
-  display: block;
-  /* `!important` because the runtime writes `width: 0px; height: 0px` as an
-     INLINE style, and an inline declaration beats a normal stylesheet rule.
-     Once the element measures non-zero the runtime's own ResizeObserver picks
-     up the real box and allocates a correct backing store, so this only has to
-     win the first measurement. */
-  width: 100% !important;
-  height: 100% !important;
-}
