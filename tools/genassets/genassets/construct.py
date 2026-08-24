@@ -51,6 +51,7 @@ __all__ = [
     "KAPPA", "Palette", "PALETTES", "Light", "KEY_UPPER_LEFT",
     "ellipse", "capsule", "tapered", "wedge", "polygon",
     "transform", "band_polygon", "crescent", "shade_form", "contact_shadow", "tint",
+    "delta_e", "merge_near_duplicates",
     "DEFAULT_BANDS", "RIM_BAND", "Form",
 ]
 
@@ -462,8 +463,20 @@ def shade_form(form: Form, light: Light, palette: Palette, *,
 
     # Shadow and highlight are crescents whose inner edge follows the form.
     # See `crescent` for why straight-line banding was abandoned.
+    # Boundary fractions along the light axis, from the craft research:
+    # hot spot 0.22, terminator 0.72, bounce from 0.90. The consequence that
+    # matters is that the DARKEST band is not at the silhouette edge — it sits
+    # at 0.72-0.90, and 0.90-1.00 lifts again from bounced light. Putting the
+    # darkest value hard on the edge is named there as the single most common
+    # lighting error in generated art, and the first version of this function
+    # made exactly that mistake: both shadow crescents ran to the outline.
+    #
+    # The bounce band is what fixes it. It is painted after the core shadow and
+    # reclaims the outermost sliver, so the dark mass reads as sitting inside
+    # the form rather than being a dark outline drawn around it.
     shadow_pts = crescent(pts, light, inset=0.30, coverage=0.46)
     core_pts = crescent(pts, light, inset=0.62, coverage=0.30)
+    bounce_pts = crescent(pts, light, inset=0.88, coverage=0.40)
     hi_pts = crescent(pts, light, inset=0.78, coverage=0.18, toward_light=True)
 
     # The base goes down first at full curved fidelity, and the tonal regions
@@ -492,6 +505,8 @@ def shade_form(form: Form, light: Light, palette: Palette, *,
     regions = [
         ("halftone", _mix(base, palette.shadow, 0.42), shadow_pts),
         ("shadow", _mix(base, palette.shadow, 0.78), core_pts),
+        ("bounce", _mix(_mix(base, palette.shadow, 0.55), palette.bounce, 0.78),
+         bounce_pts),
         ("highlight", _mix(base, palette.rim, 0.34), hi_pts),
     ]
     if form.rim:
@@ -526,3 +541,75 @@ def contact_shadow(cx: float, cy: float, width: float, *,
         "paths": [{"commands": ellipse(cx, cy, rx, rx * squash)}],
         "paints": [{"color": f"#{round(opacity * 255):02x}{palette.shadow.lstrip('#')}"}],
     }
+
+
+# --- perceptual quantisation ----------------------------------------------
+
+def _to_lab(hex_colour: str) -> tuple[float, float, float]:
+    """sRGB to CIE L*a*b*, D65. Needed because RGB distance is not perceptual:
+    two greens 20 apart in RGB can be indistinguishable while two blues the same
+    distance apart are obviously different."""
+    h = hex_colour.lstrip("#")
+    r, g, b = (int(h[i:i + 2], 16) / 255 for i in (0, 2, 4))
+    # Undo the sRGB transfer function.
+    r, g, b = (c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+               for c in (r, g, b))
+    x = (0.4124 * r + 0.3576 * g + 0.1805 * b) / 0.95047
+    y = (0.2126 * r + 0.7152 * g + 0.0722 * b)
+    z = (0.0193 * r + 0.1192 * g + 0.9505 * b) / 1.08883
+    f = lambda t: t ** (1 / 3) if t > 0.008856 else (7.787 * t + 16 / 116)
+    fx, fy, fz = f(x), f(y), f(z)
+    return 116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)
+
+
+def delta_e(a: str, b: str) -> float:
+    """CIE76 colour difference. Roughly: under 1 is imperceptible, 2-3 is
+    perceptible only side by side, above 5 is clearly two colours."""
+    la, aa, ba = _to_lab(a)
+    lb, ab, bb = _to_lab(b)
+    return math.sqrt((la - lb) ** 2 + (aa - ab) ** 2 + (ba - bb) ** 2)
+
+
+def merge_near_duplicates(shapes: list[dict], *, threshold: float = 3.0) -> list[dict]:
+    """Snap perceptually indistinguishable colours onto one value.
+
+    The stage the pipeline never had. The research that set the 24-36 colour
+    band said in the same breath to quantise by perceptual distance and merge
+    tiny regions — and skipping it is why the one traced asset that met the
+    quality bar still came back with 84 colours, most of them invisible
+    neighbours of each other.
+
+    It matters twice over. A colour nobody can distinguish still costs a path
+    at runtime, and it still counts against the band, so an asset can be
+    rejected for richness it does not visually have.
+
+    Colours are merged into the FIRST one seen, and shapes are drawn back to
+    front, so a detail added late snaps onto the body colour it sits against
+    rather than the reverse.
+    """
+    if threshold <= 0:
+        return shapes
+    canon: dict[str, str] = {}
+    kept: list[str] = []
+    for shape in shapes:
+        colour = shape["paints"][0]["color"]
+        if colour in canon:
+            continue
+        alpha, rgb = colour[:3], "#" + colour[3:]
+        match = next(
+            (k for k in kept
+             if k[:3] == alpha and delta_e(rgb, "#" + k[3:]) < threshold),
+            None,
+        )
+        if match:
+            canon[colour] = match
+        else:
+            canon[colour] = colour
+            kept.append(colour)
+
+    out = []
+    for shape in shapes:
+        shape = {**shape, "paints": [{**shape["paints"][0],
+                                      "color": canon[shape["paints"][0]["color"]]}]}
+        out.append(shape)
+    return out

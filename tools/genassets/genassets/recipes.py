@@ -27,7 +27,8 @@ from dataclasses import dataclass, field
 
 from .construct import (
     KEY_UPPER_LEFT, PALETTES, Form, Light, Palette,
-    contact_shadow, ellipse, shade_form, tapered, tint, transform, wedge,
+    contact_shadow, ellipse, merge_near_duplicates, shade_form, tapered, tint,
+    transform, wedge,
 )
 
 __all__ = ["Recipe", "Built", "RECIPES", "build", "sea_turtle", "dolphin", "butterfly"]
@@ -436,8 +437,14 @@ RECIPES = {"sea-turtle": sea_turtle, "dolphin": dolphin, "butterfly": butterfly}
 
 
 def build(recipe: Recipe, *, light: Light = KEY_UPPER_LEFT,
-          ground: bool = False, unit: float = 100.0) -> Built:
-    """Realise a recipe into shaded shapes, back to front."""
+          ground: bool = False, unit: float = 100.0,
+          merge: float = 3.0) -> Built:
+    """Realise a recipe into shaded shapes, back to front.
+
+    `merge` is the CIE76 threshold for collapsing indistinguishable colours.
+    Pass 0 to keep every generated tone, which is only useful for inspecting
+    what the shader produced before quantisation.
+    """
     palette = PALETTES[recipe.palette]
     shapes: list[dict] = []
     if ground and recipe.footprint:
@@ -445,6 +452,7 @@ def build(recipe: Recipe, *, light: Light = KEY_UPPER_LEFT,
                                      palette=palette))
     for form in recipe.forms:
         shapes.extend(shade_form(form, light, palette))
+    shapes = merge_near_duplicates(shapes, threshold=merge)
     return Built(name=recipe.name, shapes=shapes, palette=palette,
                  envelope=recipe.envelope, bones=recipe.bones,
                  motion_notes=recipe.motion_notes)

@@ -144,12 +144,37 @@ def test_tint_clamps_rather_than_wrapping_value() -> None:
     assert tint("#000000", val=-0.9) == "#000000"
 
 
-def test_shade_form_emits_the_four_tonal_steps_plus_rim() -> None:
+def test_shade_form_emits_the_full_tonal_ladder() -> None:
     out = shade_form(Form("f", ellipse(0, 0, 50, 40, segments=16)),
                      KEY_UPPER_LEFT, PALETTES["underwater-shallow"])
     names = [s["name"].rsplit("-", 1)[-1] for s in out]
-    assert names == ["base", "halftone", "shadow", "highlight", "rim"]
+    assert names == ["base", "halftone", "shadow", "bounce", "highlight", "rim"]
     assert len({s["paints"][0]["color"] for s in out}) == len(out), "tones must differ"
+
+
+def test_the_darkest_band_is_not_on_the_silhouette_edge() -> None:
+    """The single most common lighting error in generated art, per the craft
+    research — and the one the first version of `shade_form` committed.
+
+    A real form shows the terminator at ~0.72 along the light axis and the
+    darkest value at 0.72-0.90, with 0.90-1.00 lifting again from bounced
+    light. Painting the darkest value hard against the outline instead reads as
+    a dark stroke drawn around the shape.
+
+    So the bounce band must be painted AFTER the core shadow — later means on
+    top — and must be lighter than it.
+    """
+    out = shade_form(Form("f", ellipse(0, 0, 60, 60, segments=24)),
+                     KEY_UPPER_LEFT, PALETTES["underwater-shallow"])
+    by_name = {s["name"].rsplit("-", 1)[-1]: i for i, s in enumerate(out)}
+    assert by_name["bounce"] > by_name["shadow"], "bounce must overlay the core shadow"
+
+    def luminance(shape):
+        c = shape["paints"][0]["color"][3:]
+        r, g, b = (int(c[i:i + 2], 16) for i in (0, 2, 4))
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+    assert luminance(out[by_name["bounce"]]) > luminance(out[by_name["shadow"]])
 
 
 def test_the_base_keeps_the_true_curve() -> None:
@@ -261,3 +286,54 @@ def test_recipes_scale_by_their_base_unit() -> None:
         return max(xs) - min(xs)
 
     assert extent(large) == pytest.approx(extent(small) * 4, rel=1e-6)
+
+
+# --- perceptual quantisation ----------------------------------------------
+
+def test_delta_e_ranks_colours_the_way_an_eye_does() -> None:
+    from genassets.construct import delta_e
+    assert delta_e("#8BE3E0", "#8BE3E1") < 1.0, "one bit apart is imperceptible"
+    assert delta_e("#8BE3E0", "#064B67") > 40.0, "key vs shadow is obviously two colours"
+
+
+def test_merge_collapses_invisible_neighbours_and_keeps_real_ones() -> None:
+    from genassets.construct import merge_near_duplicates
+    shapes = [
+        {"name": "a", "paints": [{"color": "#ff8BE3E0"}], "paths": []},
+        {"name": "b", "paints": [{"color": "#ff8BE3E1"}], "paths": []},
+        {"name": "c", "paints": [{"color": "#ff064B67"}], "paths": []},
+    ]
+    out = merge_near_duplicates(shapes, threshold=3.0)
+    assert len({s["paints"][0]["color"] for s in out}) == 2
+    assert out[0]["paints"][0]["color"] == out[1]["paints"][0]["color"]
+    assert out[2]["paints"][0]["color"] == "#ff064B67"
+
+
+def test_merge_never_crosses_an_alpha_boundary() -> None:
+    """A translucent contact shadow and an opaque body colour are not the same
+    paint, however close their RGB."""
+    from genassets.construct import merge_near_duplicates
+    shapes = [
+        {"name": "a", "paints": [{"color": "#ff064B67"}], "paths": []},
+        {"name": "b", "paints": [{"color": "#59064B67"}], "paths": []},
+    ]
+    out = merge_near_duplicates(shapes, threshold=50.0)
+    assert len({s["paints"][0]["color"] for s in out}) == 2
+
+
+def test_merge_is_what_brings_the_recipes_into_the_colour_band() -> None:
+    """Without quantisation every recipe overshoots on near-duplicates — the
+    same failure that left the one traced asset at 84 colours."""
+    for name in RECIPES:
+        raw = build(RECIPES[name](), merge=0)
+        merged = build(RECIPES[name]())
+        assert len(merged.colours) <= len(raw.colours)
+        assert grade(merged.path_count, len(merged.colours)).passed
+
+
+def test_merge_disabled_keeps_every_tone() -> None:
+    from genassets.construct import merge_near_duplicates
+    shapes = [{"name": str(i), "paints": [{"color": f"#ff8BE3E{i}"}], "paths": []}
+              for i in range(4)]
+    assert len({s["paints"][0]["color"]
+                for s in merge_near_duplicates(shapes, threshold=0)}) == 4
