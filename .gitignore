@@ -60,6 +60,9 @@ __pycache__/
 *.pem
 *credentials*
 *secret*
+# ...but the guard script itself must ship, or a fresh clone has a
+# pre-commit hook pointing at a file that does not exist.
+!scripts/check-credentials.sh
 service-account*.json
 gcp-*.json
 
