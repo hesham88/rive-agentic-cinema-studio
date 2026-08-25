@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCanvasResync } from 'rive-engine/react';
 import { Fit, Layout, useRive } from '@rive-app/react-webgl2';
 import { useEffect, useRef, useState } from 'react';
+import { HeroCollage } from './HeroCollage';
 
 /**
  * The opening shot.
@@ -74,6 +75,7 @@ export function Opening() {
 
   return (
     <section id="open" className="relative isolate min-h-dvh overflow-hidden">
+      <HeroCollage />
       {/* The room: a single warm pool of light behind the monitor, so the
           brightest thing on screen has somewhere to sit. Nothing else in this
           viewport is coloured. */}
@@ -101,19 +103,24 @@ export function Opening() {
               action per view. The monitor is the artwork, so the monitor is the
               only saturated thing above the fold, and the type carries the rest. */}
 
+          {/* 6px gap, not 24. The eyebrow and the headline are ONE unit; the
+              caption's 0.90 leading exists so they can sit this close. */}
           <p className="eyebrow whitespace-nowrap">Agentic studio · web &amp; cinema</p>
 
-          <h1 className="display mt-6 text-balance text-[clamp(2.5rem,5vw,4.25rem)]">
+          {/* clamp() floors at 40px and tops out at the spec's 80px. Tracking
+              rides the same scale via `display-xl`, so the headline is tracked
+              correctly at every width instead of at one. */}
+          <h1 className="display display-xl mt-1.5 text-[clamp(2.5rem,6vw,5rem)]">
             A sentence becomes <em>a scene.</em>
           </h1>
 
-          <p className="mt-7 max-w-[46ch] text-[17px] leading-relaxed text-read">
+          <p className="mt-7 max-w-[52ch] text-[16px] leading-[1.5] text-read">
             Describe what you want. The studio researches how it is really drawn, generates
             the art, traces it to vector, rigs it, animates it, scores it, and ships an
             interactive file the web can run.
           </p>
 
-          <p className="mt-4 max-w-[46ch] text-[15px] leading-relaxed text-dim">
+          <p className="mt-4 max-w-[52ch] text-[14px] leading-[1.5] text-dim">
             Everything on this page was made that way — including the scene beside these
             words, and the camera move framing it.
           </p>
@@ -121,13 +128,13 @@ export function Opening() {
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <Link
               href="/inspect"
-              className="num rounded-sm bg-signal px-5 py-2.5 text-[13px] font-medium text-room transition-opacity hover:opacity-90"
+              className="btn btn-filled"
             >
               open the inspector
             </Link>
             <a
               href="#pipeline"
-              className="num rounded-sm border border-rule px-5 py-2.5 text-[13px] text-read transition-colors hover:border-dim hover:text-bright"
+              className="btn btn-ghost"
             >
               how it works
             </a>
