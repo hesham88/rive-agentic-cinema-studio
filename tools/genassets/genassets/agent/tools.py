@@ -249,7 +249,7 @@ def generate_artwork(prompt: str, name: str, reference_context: str = "",
         hint ("flat", "illustration" or "photo") that vectorize_artwork will use.
     """
     try:
-        from ..gemini import GeminiClient
+        from ..gemini import client as gemini_client
         from ..normalize import normalize
         from ..vectorize import classify
 
@@ -270,7 +270,7 @@ def generate_artwork(prompt: str, name: str, reference_context: str = "",
         full = "\n".join(sections)
 
         raw = WORKDIR / f"{name}.raw"
-        GeminiClient().generate_image(full, raw)
+        gemini_client().generate_image(full, raw)
 
         # Quantize to the level's own budget. This is what collapses JPEG
         # ringing back into the flat regions it surrounds, so the tracer sees
