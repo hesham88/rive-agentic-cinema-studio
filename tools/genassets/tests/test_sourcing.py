@@ -156,3 +156,39 @@ def test_brand_assets_are_recognised(title: str) -> None:
 def test_real_illustrations_are_not_flagged(title: str) -> None:
     from genassets.sourcing import looks_like_a_brand
     assert not looks_like_a_brand(title)
+
+
+# --- background plates -----------------------------------------------------
+
+def test_plate_with_style_fill_across_lines_is_caught() -> None:
+    """The jellyfish case: fill inside `style`, tag spanning many lines."""
+    from genassets.sourcing import has_background_plate
+    svg = '''<svg viewBox="0 0 210 297"><rect
+       y="-0.29" x="-0.44"
+       height="299.0" width="211.0"
+       id="rect3844"
+       style="fill:#000000;fill-opacity:1;stroke:none" /></svg>'''
+    assert has_background_plate(svg)
+
+
+def test_plate_with_no_fill_attribute_is_caught() -> None:
+    """SVG defaults a missing fill to BLACK, not transparent."""
+    from genassets.sourcing import has_background_plate
+    assert has_background_plate('<svg viewBox="0 0 100 100"><rect width="100" height="100"/></svg>')
+
+
+def test_transparent_full_bleed_rect_is_fine() -> None:
+    from genassets.sourcing import has_background_plate
+    assert not has_background_plate(
+        '<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/></svg>')
+
+
+def test_small_rect_is_not_a_plate() -> None:
+    from genassets.sourcing import has_background_plate
+    assert not has_background_plate(
+        '<svg viewBox="0 0 100 100"><rect width="20" height="12" fill="#f00"/></svg>')
+
+
+def test_fetch_refuses_a_file_with_its_own_background() -> None:
+    from genassets.sourcing import has_background_plate
+    assert has_background_plate('<svg viewBox="0 0 50 50"><rect width="50" height="50" fill="#000"/></svg>')

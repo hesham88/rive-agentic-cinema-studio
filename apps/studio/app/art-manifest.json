@@ -1,5 +1,25 @@
 [
  {
+  "subject": "volcano",
+  "file": "/art/volcano.svg",
+  "paths": 535,
+  "kb": 219.5,
+  "title": "Mt Lassen",
+  "artist": "-",
+  "licence": "CC0 1.0",
+  "source": "https://openclipart.org/detail/349207/mt-lassen"
+ },
+ {
+  "subject": "train",
+  "file": "/art/train.svg",
+  "paths": 371,
+  "kb": 119.0,
+  "title": "Auto Train",
+  "artist": "-",
+  "licence": "CC0 1.0",
+  "source": "https://openclipart.org/detail/341653/auto-train"
+ },
+ {
   "subject": "sports car",
   "file": "/art/sports-car.svg",
   "paths": 199,
@@ -20,6 +40,16 @@
   "source": "https://openclipart.org/detail/332907/industrial-welding-robot"
  },
  {
+  "subject": "bicycle",
+  "file": "/art/bicycle.svg",
+  "paths": 134,
+  "kb": 58.3,
+  "title": "Flat Design Race Bicycle",
+  "artist": "-",
+  "licence": "CC0 1.0",
+  "source": "https://openclipart.org/detail/306285/flat-design-race-bicycle"
+ },
+ {
   "subject": "sailing boat",
   "file": "/art/sailing-boat.svg",
   "paths": 111,
@@ -28,6 +58,26 @@
   "artist": "Pearson Scott Foresman",
   "licence": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Sloop_(PSF).svg"
+ },
+ {
+  "subject": "seahorse",
+  "file": "/art/seahorse.svg",
+  "paths": 111,
+  "kb": 258.9,
+  "title": "Silver Stylized Seahorse Silhouette No Background",
+  "artist": "-",
+  "licence": "CC0 1.0",
+  "source": "https://openclipart.org/detail/246581/silver-stylized-seahorse-silhouette-no-background"
+ },
+ {
+  "subject": "dna",
+  "file": "/art/dna.svg",
+  "paths": 89,
+  "kb": 128.0,
+  "title": "Symbolic Dna Sequencing",
+  "artist": "-",
+  "licence": "CC0 1.0",
+  "source": "https://openclipart.org/detail/307233/symbolic-dna-sequencing"
  },
  {
   "subject": "cat",
@@ -70,6 +120,26 @@
   "source": "https://openclipart.org/detail/326562/decorative-butterfly-by-linnaea-mallette-isolated-vectorized"
  },
  {
+  "subject": "rocket",
+  "file": "/art/rocket.svg",
+  "paths": 71,
+  "kb": 47.9,
+  "title": "Animation Of Kliponiuscartoonrocket Using Javascript",
+  "artist": "-",
+  "licence": "CC0 1.0",
+  "source": "https://openclipart.org/detail/279586/animation-of-kliponiuscartoonrocket-using-javascript"
+ },
+ {
+  "subject": "telescope",
+  "file": "/art/telescope.svg",
+  "paths": 62,
+  "kb": 34.6,
+  "title": "James Webb Space Telescope",
+  "artist": "-",
+  "licence": "CC0 1.0",
+  "source": "https://openclipart.org/detail/334985/james-webb-space-telescope"
+ },
+ {
   "subject": "whale",
   "file": "/art/whale.svg",
   "paths": 59,
@@ -78,6 +148,26 @@
   "artist": "-",
   "licence": "CC0 1.0",
   "source": "https://openclipart.org/detail/335745/ocean-whale-remix"
+ },
+ {
+  "subject": "magnet",
+  "file": "/art/magnet.svg",
+  "paths": 53,
+  "kb": 12.7,
+  "title": "Muknud",
+  "artist": "-",
+  "licence": "CC0 1.0",
+  "source": "https://openclipart.org/detail/355345/muknud"
+ },
+ {
+  "subject": "skeleton",
+  "file": "/art/skeleton.svg",
+  "paths": 47,
+  "kb": 103.2,
+  "title": "Vintage Skeleton Couple Dancers Line Art",
+  "artist": "-",
+  "licence": "CC0 1.0",
+  "source": "https://openclipart.org/detail/337583/vintage-skeleton-couple-dancers-line-art"
  },
  {
   "subject": "tropical fish",
@@ -102,12 +192,22 @@
  {
   "subject": "jellyfish",
   "file": "/art/jellyfish.svg",
-  "paths": 42,
-  "kb": 44.7,
-  "title": "Jellyfish Tank",
+  "paths": 33,
+  "kb": 10.3,
+  "title": "Drunken Jellyfish",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/289142/jellyfish-tank"
+  "source": "https://openclipart.org/detail/353676/drunken-jellyfish"
+ },
+ {
+  "subject": "sailboat",
+  "file": "/art/sailboat.svg",
+  "paths": 31,
+  "kb": 17.5,
+  "title": "Origami Sailboat",
+  "artist": "-",
+  "licence": "CC0 1.0",
+  "source": "https://openclipart.org/detail/326640/origami-sailboat"
  },
  {
   "subject": "dolphin",
@@ -138,5 +238,35 @@
   "artist": "-",
   "licence": "CC0 1.0",
   "source": "https://openclipart.org/detail/266931/cartoon-owl-asleep"
+ },
+ {
+  "subject": "tree",
+  "file": "/art/tree.svg",
+  "paths": 19,
+  "kb": 8.8,
+  "title": "Search Tree",
+  "artist": "-",
+  "licence": "CC0 1.0",
+  "source": "https://openclipart.org/detail/324463/search-tree"
+ },
+ {
+  "subject": "human heart",
+  "file": "/art/human-heart.svg",
+  "paths": 17,
+  "kb": 28.9,
+  "title": "Normal Human Heart",
+  "artist": "-",
+  "licence": "CC0 1.0",
+  "source": "https://openclipart.org/detail/348757/normal-human-heart"
+ },
+ {
+  "subject": "airplane",
+  "file": "/art/airplane.svg",
+  "paths": 12,
+  "kb": 6.4,
+  "title": "Airplane Aeroplane Minimal Outline",
+  "artist": "-",
+  "licence": "CC0 1.0",
+  "source": "https://openclipart.org/detail/311083/airplane-aeroplane-minimal-outline"
  }
 ]

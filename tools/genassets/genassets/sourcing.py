@@ -53,7 +53,7 @@ __all__ = [
     "SourcingError", "LicenceRejected", "SourcedArt",
     "ALLOWED_LICENCES", "REJECTED_PATTERNS", "ATTRIBUTION_FILE",
     "sanitise_svg", "licence_ok", "search_commons", "fetch_art",
-    "BRAND_PATTERNS", "looks_like_a_brand",
+    "BRAND_PATTERNS", "looks_like_a_brand", "has_background_plate",
 ]
 
 COMMONS_API = "https://commons.wikimedia.org/w/api.php"
@@ -159,6 +159,63 @@ def sanitise_svg(svg: str) -> tuple[str, list[str]]:
 
 
 # --- licensing ------------------------------------------------------------
+
+_RECT_TAG = re.compile(r"<rect\b.*?>", re.S)
+_VIEWBOX = re.compile(r'viewBox\s*=\s*"([\d.\-eE\s]+)"')
+_RECT_W = re.compile(r'\bwidth\s*=\s*"([\d.eE+-]+)')
+_RECT_H = re.compile(r'\bheight\s*=\s*"([\d.eE+-]+)')
+_RECT_FILL = re.compile(r'fill\s*[:=]\s*"?\s*([#\w(),.\s]+)')
+
+
+def has_background_plate(svg: str) -> bool:
+    """True when an SVG paints its own full-bleed background.
+
+    Such a file cannot sit in a gallery on a shared ground: it renders as an
+    opaque box among transparent art, and on a dark page a black plate reads as
+    a hole punched in the layout. Cheaper to refuse at fetch time than to
+    unpick from a manifest afterwards.
+
+    Three traps, each of which let one file through on an earlier pass:
+
+    * the fill may be an ATTRIBUTE (`fill="#000"`) or live inside a `style`
+      attribute (`style="fill:#000000"`);
+    * the tag may span MANY LINES — Inkscape pretty-prints one attribute per
+      line — so the pattern needs `re.S`;
+    * the fill may be **absent entirely**, and SVG defaults a missing fill to
+      BLACK rather than to transparent. `<rect width="100%" height="100%"/>`
+      is an opaque black plate, and it is the case that looks worst on a dark
+      page and the easiest to write a test that misses.
+
+    The word boundaries matter too: without them `stroke-width` matches as
+    `width` and a hairline stroke is read as the rect's dimension.
+    """
+    m = _VIEWBOX.search(svg)
+    if not m:
+        return False
+    parts = m.group(1).split()
+    if len(parts) != 4:
+        return False
+    try:
+        vw, vh = abs(float(parts[2])), abs(float(parts[3]))
+    except ValueError:
+        return False
+    if vw <= 0 or vh <= 0:
+        return False
+
+    for tag in _RECT_TAG.findall(svg):
+        w, h = _RECT_W.search(tag), _RECT_H.search(tag)
+        if not (w and h):
+            continue
+        try:
+            if float(w.group(1)) < vw * 0.92 or float(h.group(1)) < vh * 0.92:
+                continue
+        except ValueError:
+            continue
+        fill = _RECT_FILL.search(tag)
+        if fill is None or fill.group(1).strip().lower() not in ("none", "transparent"):
+            return True
+    return False
+
 
 def licence_ok(licence: str) -> bool:
     """True only for licences compatible with an MIT project.
@@ -300,6 +357,11 @@ def fetch_art(candidate: dict, *, max_bytes: int = 2_000_000) -> SourcedArt:
         raise SourcingError(f"{candidate['file_url']} did not return SVG markup")
 
     clean, removed = sanitise_svg(text)
+    if has_background_plate(clean):
+        raise SourcingError(
+            f"{candidate.get('title', '?')!r} paints its own full-bleed "
+            f"background, so it cannot sit on a shared ground"
+        )
     return SourcedArt(
         title=candidate.get("title", "art"), svg=clean, licence=licence,
         artist=candidate.get("artist", ""), source_url=candidate.get("source_url", ""),

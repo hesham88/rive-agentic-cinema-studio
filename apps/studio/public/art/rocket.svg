@@ -1,0 +1,932 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2"
+   sodipodi:docname="Kliponius-Cartoon-rocket v5.svg"
+   inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+   inkscape:export-xdpi="28.469999"
+   version="1.1"
+   inkscape:export-ydpi="28.469999"
+   inkscape:version="0.48.5 r10040"
+   viewBoxH="0 0 379.32 434.43"
+   height="500"
+   width="440">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient4848"
+       y2="414.51999"
+       gradientUnits="userSpaceOnUse"
+       x2="451.67001"
+       y1="412.29999"
+       x1="412.14999"
+       inkscape:collect="always">
+      <stop
+         id="stop3715"
+         style="stop-color:#939393"
+         offset="0" />
+      <stop
+         id="stop3729"
+         style="stop-color:#393939"
+         offset=".0625" />
+      <stop
+         id="stop3725"
+         style="stop-color:#3a3a3a"
+         offset=".125" />
+      <stop
+         id="stop3723"
+         style="stop-color:#424242"
+         offset=".25" />
+      <stop
+         id="stop3721"
+         style="stop-color:#343434"
+         offset="0.397" />
+      <stop
+         id="stop3727"
+         style="stop-color:#9b9b9b"
+         offset=".72252" />
+      <stop
+         id="stop3717"
+         style="stop-color:#424242"
+         offset="1" />
+    </linearGradient>
+    <filter
+       id="filter4961"
+       inkscape:menu="ABCs"
+       inkscape:menu-tooltip="Draws a black outline around"
+       inkscape:label="Black outline"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         id="feGaussianBlur4963"
+         result="result0"
+         stdDeviation="2"
+         in="SourceAlpha" />
+      <feComposite
+         id="feComposite4965"
+         in2="result0"
+         k3="10"
+         k2="1"
+         result="result3"
+         in="SourceGraphic"
+         operator="arithmetic"
+         k1="0"
+         k4="0" />
+      <feComposite
+         id="feComposite4967"
+         in2="result3"
+         result="result4"
+         in="result3"
+         operator="in" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     bordercolor="#666666"
+     inkscape:pageshadow="2"
+     inkscape:window-y="-8"
+     pagecolor="#ffffff"
+     inkscape:window-height="705"
+     inkscape:window-maximized="1"
+     inkscape:zoom="7.7529146"
+     inkscape:window-x="-8"
+     showgrid="false"
+     borderopacity="1.0"
+     inkscape:current-layer="layer1"
+     inkscape:cx="468.14125"
+     inkscape:cy="321.97089"
+     inkscape:window-width="1366"
+     inkscape:pageopacity="0.0"
+     inkscape:document-units="px" />
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     transform="translate(-99.67,-272.68218)">
+    <g
+       id="g4042"
+       inkscape:export-ydpi="28.700001"
+       inkscape:export-xdpi="28.700001"
+       inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+       transform="translate(565.57,31.574)"
+       sodipodi:insensitive="true">
+      <g
+         id="SpaceAndStars"
+         transform="translate(-636.4,42.426)"
+         sodipodi:insensitive="true">
+        <path
+           id="path2816"
+           sodipodi:rx="164.28572"
+           sodipodi:ry="164.28572"
+           style="fill:#000080;fill-rule:evenodd;stroke:#000000;stroke-width:1px"
+           sodipodi:type="arc"
+           d="m 528.57143,488.07648 c 0,90.7325 -73.55323,164.28572 -164.28572,164.28572 -90.7325,0 -164.28573,-73.55322 -164.28573,-164.28572 0,-90.7325 73.55323,-164.28572 164.28573,-164.28572 90.73249,0 164.28572,73.55322 164.28572,164.28572 z"
+           sodipodi:cy="488.07648"
+           sodipodi:cx="364.28571" />
+        <path
+           id="path3778"
+           sodipodi:nodetypes="ccccc"
+           style="fill:#ffffff"
+           d="m 271.6,377.76 c 9.3209,-0.10056 9.7724,-16.462 11.536,-25.446 -0.40973,9.4532 -2.0143,25.68 7.4643,26.125 -9.5691,-0.81768 -10.172,12.07 -11.027,23.241 1.1552,-10.893 1.2056,-24.116 -7.9732,-23.92 z"
+           inkscape:connector-curvature="0" />
+        <use
+           id="use3780"
+           xlink:href="#path3778"
+           transform="translate(179.4,175.44)"
+           height="1052.3622"
+           width="744.09448"
+           y="0"
+           x="0" />
+        <use
+           id="use3782"
+           xlink:href="#use3780"
+           transform="translate(-222,-27)"
+           height="1052.3622"
+           width="744.09448"
+           y="0"
+           x="0" />
+        <use
+           id="use3784"
+           xlink:href="#use3782"
+           transform="translate(-16.525,-60.808)"
+           height="1052.3622"
+           width="744.09448"
+           y="0"
+           x="0" />
+        <use
+           id="use3786"
+           xlink:href="#use3784"
+           transform="translate(203.53,148.81)"
+           height="1052.3622"
+           width="744.09448"
+           y="0"
+           x="0" />
+        <use
+           id="use3788"
+           xlink:href="#use3786"
+           transform="translate(84,-133)"
+           height="1052.3622"
+           width="744.09448"
+           y="0"
+           x="0" />
+        <use
+           id="use3790"
+           xlink:href="#use3780"
+           transform="matrix(0.63158,0,0,0.63158,182.16,239.62)"
+           height="1052.3622"
+           width="744.09448"
+           y="0"
+           x="0" />
+        <use
+           id="use3792"
+           xlink:href="#use3790"
+           transform="translate(28,-53)"
+           height="1052.3622"
+           width="744.09448"
+           y="0"
+           x="0" />
+        <use
+           id="use3794"
+           xlink:href="#use3792"
+           transform="translate(-63,-19)"
+           height="1052.3622"
+           width="744.09448"
+           y="0"
+           x="0" />
+        <use
+           id="use3796"
+           xlink:href="#use3794"
+           transform="translate(-108.56,-97.556)"
+           height="1052.3622"
+           width="744.09448"
+           y="0"
+           x="0" />
+        <use
+           id="use3798"
+           xlink:href="#use3796"
+           transform="translate(-47.979,25.126)"
+           height="1052.3622"
+           width="744.09448"
+           y="0"
+           x="0" />
+        <use
+           id="use3800"
+           xlink:href="#use3798"
+           transform="translate(62.161,-75.68)"
+           height="1052.3622"
+           width="744.09448"
+           y="0"
+           x="0" />
+        <use
+           id="use3802"
+           xlink:href="#use3800"
+           transform="translate(24.383,-22.889)"
+           height="1052.3622"
+           width="744.09448"
+           y="0"
+           x="0" />
+        <use
+           id="use3804"
+           xlink:href="#use3802"
+           transform="translate(16,268)"
+           height="1052.3622"
+           width="744.09448"
+           y="0"
+           x="0" />
+        <use
+           id="use3806"
+           xlink:href="#use3804"
+           transform="translate(-37,20)"
+           height="1052.3622"
+           width="744.09448"
+           y="0"
+           x="0" />
+        <use
+           id="use3808"
+           xlink:href="#use3806"
+           transform="translate(-95,-57)"
+           height="1052.3622"
+           width="744.09448"
+           y="0"
+           x="0" />
+        <use
+           id="use3914"
+           xlink:href="#use3796"
+           transform="translate(-84.002,1.5086)"
+           height="1052.3622"
+           width="744.09448"
+           y="0"
+           x="0" />
+      </g>
+      <g
+         id="AlienShip"
+         transform="matrix(0.96219,-0.27237,0.27237,0.96219,-764.31,190.69)">
+        <path
+           id="path3870"
+           sodipodi:nodetypes="cscc"
+           style="fill:#002e00;stroke:#000000;stroke-width:1px"
+           d="m 452.15,575.04 c 0,0 12.242,9.7442 25.854,10.274 13.612,0.53033 28.67,-9.6192 28.67,-9.6192 l -54.523,-0.65533 z"
+           inkscape:connector-curvature="0" />
+        <path
+           id="path3872"
+           sodipodi:nodetypes="cscsc"
+           style="fill:#29ff29;fill-opacity:0.38546998;stroke:#000000;stroke-width:1px"
+           d="m 470.23,565.87 c 0,0 0.32209,-7.7454 10.43,-7.7782 9.194,-0.0298 9.546,8.4853 9.546,8.4853 0,0 -4.4194,4.5962 -10.43,3.8891 -6.0104,-0.70711 -9.1924,-4.5962 -9.5459,-4.5962 z"
+           inkscape:connector-curvature="0" />
+        <path
+           id="path3868"
+           sodipodi:nodetypes="ccccc"
+           style="fill:#008000;stroke:#000000;stroke-width:1px"
+           d="m 452.56,574.44 17.67,-8.5674 c 7.7736,3.7576 13.883,2.5213 19.799,0.7071 l 16.963,8.8174 c -17.457,4.554 -30.692,5.5193 -54.432,-0.95711 z"
+           inkscape:connector-curvature="0" />
+        <path
+           id="path3874"
+           style="fill:none;stroke:#000000;stroke-width:1px"
+           d="m 486.38,559.86 4.375,-6.625"
+           inkscape:connector-curvature="0" />
+        <path
+           id="path3876"
+           style="fill:none;stroke:#000000;stroke-width:1px"
+           d="m 473.75,559.49 -2.875,-6.125"
+           inkscape:connector-curvature="0" />
+        <path
+           id="path3878"
+           sodipodi:rx="1.5625"
+           sodipodi:ry="1.5625"
+           style="fill:#cccccc;stroke:#000000"
+           sodipodi:type="arc"
+           d="m 491.8125,553.48718 c 0,0.86295 -0.69956,1.5625 -1.5625,1.5625 -0.86294,0 -1.5625,-0.69955 -1.5625,-1.5625 0,-0.86294 0.69956,-1.5625 1.5625,-1.5625 0.86294,0 1.5625,0.69956 1.5625,1.5625 z"
+           sodipodi:cy="553.48718"
+           sodipodi:cx="490.25" />
+        <path
+           id="path3880"
+           sodipodi:rx="1.5625"
+           sodipodi:ry="1.5625"
+           style="fill:#cccccc;stroke:#000000"
+           sodipodi:type="arc"
+           d="m 491.8125,553.48718 c 0,0.86295 -0.69956,1.5625 -1.5625,1.5625 -0.86294,0 -1.5625,-0.69955 -1.5625,-1.5625 0,-0.86294 0.69956,-1.5625 1.5625,-1.5625 0.86294,0 1.5625,0.69956 1.5625,1.5625 z"
+           transform="translate(-19.438,-0.9375)"
+           sodipodi:cy="553.48718"
+           sodipodi:cx="490.25" />
+      </g>
+      <g
+         id="Planet1"
+         inkscape:transform-center-y="-8.131728"
+         transform="matrix(0.23437,0.75176,-0.75176,0.23437,-111.27,88.057)">
+        <path
+           id="path3891"
+           sodipodi:rx="13.081475"
+           sodipodi:ry="13.081475"
+           style="fill:#800080;stroke:#000000;stroke-width:2.61350012"
+           sodipodi:type="arc"
+           d="m 313.24831,383.0856 c 0,7.2247 -5.85677,13.08148 -13.08147,13.08148 -7.2247,0 -13.08148,-5.85678 -13.08148,-13.08148 0,-7.2247 5.85678,-13.08147 13.08148,-13.08147 7.2247,0 13.08147,5.85677 13.08147,13.08147 z"
+           sodipodi:cy="383.0856"
+           sodipodi:cx="300.16684" />
+        <path
+           id="path3893"
+           sodipodi:rx="5.6568542"
+           sodipodi:ry="3.1819806"
+           style="fill:#530053"
+           sodipodi:type="arc"
+           d="m 302.64172,387.68179 c 0,1.75736 -2.53266,3.18198 -5.65686,3.18198 -3.12419,0 -5.65685,-1.42462 -5.65685,-3.18198 0,-1.75736 2.53266,-3.18198 5.65685,-3.18198 3.1242,0 5.65686,1.42462 5.65686,3.18198 z"
+           transform="matrix(0.87158,0.49026,-0.49026,0.87158,227.5,-93.161)"
+           sodipodi:cy="387.68179"
+           sodipodi:cx="296.98486" />
+        <path
+           id="path3895"
+           sodipodi:nodetypes="csc"
+           style="fill:none;stroke:#808080;stroke-width:1.26989996px"
+           d="m 285.94,382.91 c 0,0 -37.919,2.4749 14.407,2.4749 52.326,0 14.142,-2.74 14.142,-2.74"
+           inkscape:connector-curvature="0" />
+        <path
+           id="path3897"
+           sodipodi:nodetypes="csc"
+           style="fill:none;stroke:#808080;stroke-width:1.26989996px"
+           d="m 285.94,380.91 c 0,0 -37.919,2.4749 14.407,2.4749 52.326,0 14.142,-2.74 14.142,-2.74"
+           inkscape:connector-curvature="0" />
+        <path
+           id="path3899"
+           sodipodi:nodetypes="csc"
+           style="fill:none;stroke:#808080;stroke-width:1.26989996px"
+           d="m 285.94,378.91 c 0,0 -37.919,2.4749 14.407,2.4749 52.326,0 14.142,-2.74 14.142,-2.74"
+           inkscape:connector-curvature="0" />
+      </g>
+    </g>
+    <g
+       id="g4906"
+       style="filter:url(#filter4961)">
+      <g
+         id="g4016"
+         inkscape:export-ydpi="28.700001"
+         inkscape:export-xdpi="28.700001"
+         inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+         transform="translate(-68,74)">
+        <path
+           id="path2846"
+           sodipodi:nodetypes="ccccccccccccccccccccccc"
+           style="fill:#aa4400;stroke:#000000;stroke-width:1px"
+           d="m 349.51,471.52 c -1.2907,-12.543 -7.6294,-17.514 -14.142,-22.223 1.4341,8.5052 2.5024,16.645 0,21.213 -7.9701,-8.2111 -19.389,-13.261 -35.355,-14.142 7.0556,8.0812 11.41,16.162 13.132,24.244 -15.685,-2.1053 -31.826,-2.8429 -49.497,1.0102 9.9623,3.9438 23.611,4.5087 26.264,15.152 -14.189,16.837 -28.979,33.206 -37.376,54.548 9.7547,-5.6836 19.143,-9.9011 26.264,-5.0508 -7.3931,17.09 -11.653,16.637 -22.223,51.518 11.167,-11.254 10.486,-5.2727 15.152,-7.0711 l 39.396,23.234 c -1.0396,5.7536 2.9138,6.5143 -4.0406,18.183 25.485,-14.489 37.719,-30.304 56.569,-45.457 1.4929,7.1168 0.76325,17.264 -5.0508,34.345 21.385,-20.072 26.798,-34.59 33.335,-49.497 7.2116,4.5442 13.967,11.823 19.193,28.284 2.5531,-23.093 -4.0062,-37.073 -9.0914,-52.528 0.80809,-3.7172 25.378,7.7738 28.284,10.102 -3.6087,-15.106 -24.427,-25.427 -24.244,-23.234 4.0366,-4.0406 6.8352,-8.0812 19.193,-12.122 -10.858,-6.9391 -19.619,-4.4438 -29.294,-6.0609 l -46.467,-44.447 z"
+           inkscape:connector-curvature="0" />
+        <g
+           id="g4731">
+          <g
+             id="Flame1">
+            <path
+               id="Flame1A"
+               sodipodi:nodetypes="cscscc"
+               style="fill:#ffcc00;stroke:#000000;stroke-width:1px"
+               d="m 357.14,472.36 c 0,0 -40.577,-21.33 -69.286,18.571 -24.985,34.726 -18.785,136.78 -44.286,174.29 33.845,-35.384 127.72,-59.308 152.86,-90 28.276,-34.529 5,-74.286 5,-74.286 l -44.286,-28.571 z"
+               inkscape:connector-curvature="0" />
+            <path
+               id="Flame1B"
+               sodipodi:nodetypes="cscsccc"
+               style="fill:#ffcc00;stroke:#000000;stroke-width:1px;display:none"
+               d="m 354.32108,473.00041 c 0,0 -35.99498,-19.19627 -63.02009,20.30724 -23.51954,34.38007 -17.96399,127.73247 -41.96927,164.8688 31.85987,-35.03151 117.66711,-53.59387 141.33256,-83.98013 C 417.28179,540.01129 401.428,500.935 401.428,500.935 l -47.10504,-27.93063 z"
+               inkscape:connector-curvature="0"
+               sodipodi:insensitive="true" />
+            <path
+               inkscape:connector-curvature="0"
+               d="m 354.32108,473.00041 c 0,0 -33.07371,-16.63462 -60.09882,22.86889 -23.51954,34.38007 -18.96402,121.96875 -42.9693,159.10508 31.85987,-35.03151 113.82463,-52.31304 137.49008,-82.6993 C 415.36055,538.09005 401.428,500.935 401.428,500.935 l -47.10504,-27.93063 z"
+               style="fill:#ffcc00;stroke:#000000;stroke-width:1px;display:none"
+               sodipodi:nodetypes="cscsccc"
+               id="Flame1C"
+               sodipodi:insensitive="true" />
+            <path
+               id="Flame1D"
+               sodipodi:nodetypes="cscsccc"
+               style="fill:#ffcc00;stroke:#000000;stroke-width:1px;display:none"
+               d="m 354.32108,473.00041 c 0,0 -29.87164,-14.71338 -56.89675,24.79013 -23.51954,34.38007 -22.16609,120.04751 -46.17137,157.18384 31.85987,-35.03151 110.62256,-52.95345 134.28801,-83.33971 C 412.15848,537.44964 401.428,500.935 401.428,500.935 l -47.10504,-27.93063 z"
+               inkscape:connector-curvature="0"
+               sodipodi:insensitive="true" />
+          </g>
+          <g
+             id="Flame2">
+            <path
+               id="Flame2A"
+               sodipodi:nodetypes="csssc"
+               style="fill:#ffff00"
+               d="m 248,660.36 c 49.148,-58.719 85.358,-55.328 114,-89 21.391,-25.148 12,-56 -3,-64 -15,-8 -54.741,-4.9204 -65,28 -11.167,35.833 -11.344,65.656 -46,125 z"
+               inkscape:connector-curvature="0" />
+            <path
+               inkscape:connector-curvature="0"
+               d="m 250.56165,654.59628 c 49.148,-58.719 79.59428,-50.84511 108.23628,-84.51711 C 380.18893,544.93117 374,515.36 359,507.36 c -15,-8 -52.17935,-2.35875 -62.43835,30.56165 -11.167,35.833 -11.344,57.33063 -46,116.67463 z"
+               style="fill:#ffff00;display:none"
+               sodipodi:nodetypes="csssc"
+               id="Flame2B"
+               sodipodi:insensitive="true" />
+            <path
+               id="Flame2C"
+               sodipodi:nodetypes="csssc"
+               style="fill:#ffff00;display:none"
+               d="m 255.04454,653.95587 c 49.148,-58.719 75.11139,-50.2047 103.75339,-83.8767 C 380.18893,544.93117 374,515.36 359,507.36 c -15,-8 -48.97728,-1.07792 -59.23628,31.84248 -11.167,35.833 -10.06318,55.40939 -44.71918,114.75339 z"
+               inkscape:connector-curvature="0"
+               sodipodi:insensitive="true" />
+            <path
+               inkscape:connector-curvature="0"
+               d="m 260.16785,643.70926 c 49.148,-58.719 66.1456,-39.95809 94.7876,-73.63009 C 376.34645,544.93117 374,515.36 359,507.36 c -15,-8 -48.97728,-1.07792 -59.23628,31.84248 -11.167,35.833 -4.93987,45.16278 -39.59587,104.50678 z"
+               style="fill:#ffff00;display:none"
+               sodipodi:nodetypes="csssc"
+               id="Flame2D"
+               sodipodi:insensitive="true" />
+          </g>
+          <path
+             d="m 244.29,664.59 c 1.2567,1.8851 50.299,-82.994 61.575,-106.44 9.9151,-20.618 25.026,-47.13 41.132,-37.789 13.01,7.5465 7.0827,35.355 -17.425,54.96 -20.096,16.077 -87.85,89.786 -85.282,89.272 z"
+             style="opacity:0.7;fill:#ffffff"
+             sodipodi:nodetypes="csssc"
+             id="path3814"
+             inkscape:connector-curvature="0" />
+        </g>
+      </g>
+      <g
+         id="SpaceShip"
+         animaRotate=".5"
+         animaRotate-center-x="220"
+         animaRotate-center-y="440"
+         animaRotate-dur="150">
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="csssc"
+           inkscape:export-ydpi="28.700001"
+           d="m 278.01,635.81 c 0,0 48.748,-1.0915 58.841,-29.419 8.0556,-22.608 -6.7102,-51.479 -22.006,-37.667 -14.772,13.34 3.1614,22.817 2.8086,35.69 -0.47815,17.448 -36.999,31.954 -39.644,31.397 z"
+           style="fill:#cccccc;stroke:#000000;stroke-width:1px"
+           id="path2822"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="csssc"
+           inkscape:export-ydpi="28.700001"
+           d="m 241.74,607.55 c 0,0 -3.6811,-48.621 23.524,-61.436 21.712,-10.228 51.889,1.6435 39.638,18.217 -11.831,16.006 -23.017,-0.91477 -35.793,0.69514 -17.318,2.1822 -28.182,39.946 -27.369,42.525 z"
+           style="fill:#cccccc;stroke:#000000;stroke-width:1px"
+           id="path2824"
+           inkscape:connector-curvature="0" />
+        <path
+           sodipodi:nodetypes="cscscc"
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:transform-center-y="8.2283104"
+           inkscape:transform-center-x="-0.8790582"
+           inkscape:export-ydpi="28.700001"
+           d="m 281.07,543.95 c 0,0 -7.1329,-2.1225 -19.814,6.1186 -12.301,7.9941 -14.127,24.583 -14.127,24.583 0,0 5.656,-16.629 15.023,-21.802 9.3669,-5.1731 19.473,-4.5622 19.473,-4.5622 l -0.55414,-4.338 z"
+           style="fill:#666666"
+           id="path3684"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="cscscc"
+           inkscape:export-ydpi="28.700001"
+           d="m 335.05,581.54 c 0,0 4.5702,5.8734 1.5026,20.683 -2.9756,14.365 -17.766,22.097 -17.766,22.097 0,0 13.435,-11.314 14.849,-21.92 1.4142,-10.607 -2.8284,-19.799 -2.8284,-19.799 l 4.2426,-1.0607 z"
+           style="fill:#666666"
+           id="path3682"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="cscsc"
+           inkscape:export-ydpi="28.700001"
+           d="m 479.14,342.08 c 0,0 -99.72,5.7277 -150,87.143 -55.544,89.94 -61.429,184.29 -61.429,184.29 0,0 101.12,-29.429 168.57,-110 65.324,-78.034 47.143,-160 42.857,-161.43 z"
+           style="fill:#b3b3b3;stroke:#000000;stroke-width:1px"
+           id="path2818"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="cscscc"
+           inkscape:export-ydpi="28.700001"
+           d="m 423.09,360.21 c 0,0 -33.895,7.7806 -68.589,43.841 -44.901,46.669 -66.114,132.58 -66.114,132.58 0,0 18.552,-55.223 77.024,-125.45 13.08,-15.71 51.483,-41.635 64.135,-41.099 3.3543,-3.9062 -6.4557,-10.499 -6.4557,-9.8729 z"
+           style="opacity:0.5;fill:#ffffff"
+           id="path3709"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="csssccc"
+           inkscape:export-ydpi="28.700001"
+           d="m 287.5,525.36 c 0.3736,14.331 -3.768,24.889 1.6104,31.899 5.1499,6.7123 10.41,2.2104 15.39,5.1007 4.7174,2.7383 2.6688,14.166 13.42,17.313 8.1829,2.3957 31.08,-5.3134 31.08,-5.3134 -24.669,13.666 -52.706,26.147 -80,38.5 3.5959,-28.421 10.917,-57.75 18.5,-87.5 z"
+           style="opacity:0.76961;fill:#d3bc5f"
+           id="path2900"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="cscsc"
+           inkscape:export-ydpi="28.700001"
+           d="m 272.73,590.43 c 0,0 1.5824,-9.491 4.7786,-15.386 3.7632,-6.9412 9.4469,-12.19 9.4469,-12.19 0,0 -3.335,7.1203 -6.4552,12.475 -2.8977,4.9727 -7.4755,15.297 -7.7703,15.102 z"
+           style="fill:#ffd300"
+           id="path3680"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="cssc"
+           inkscape:export-ydpi="28.700001"
+           d="m 242.48,646.85 c 6.0983,-16.008 18.426,-45.637 28.435,-58.644 30.211,-39.262 47.733,-26.048 17.859,13.971 -10.1,13.529 -32.446,33.619 -46.294,44.673 z"
+           style="fill:#cccccc;stroke:#000000;stroke-width:0.72014999px"
+           id="path2820"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="ccsc"
+           inkscape:export-ydpi="28.700001"
+           d="m 420.5,355.61 c 11.603,25.513 32.879,40.275 63.146,44.457 0,0 8.8812,-52.166 -1.3964,-60.957 -5.4739,-4.6823 -56.566,10.834 -61.75,16.5 z"
+           style="fill:#333333;stroke:#000000;stroke-width:1px"
+           id="path3838"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="ccccc"
+           inkscape:export-ydpi="28.700001"
+           d="m 302.73,479.86 c 4.9781,58.63 81.382,72.845 85.61,69.701 -11.785,8.6234 -14.479,11.166 -26.264,18.435 -38.381,0.95708 -66.371,-24.495 -70.458,-59.852 3.7271,-13.81 4.0175,-13.801 11.112,-28.284 z"
+           style="fill:none;stroke:#000000;stroke-width:1px"
+           id="path2848"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="cc"
+           inkscape:export-ydpi="28.700001"
+           d="m 295.65,497.79 c 5.4444,30.003 25.549,58.864 74.246,64.902"
+           style="fill:none;stroke:#000000;stroke-width:1px"
+           id="path2850"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 303.23,485.42 -10.607,28.032"
+           style="fill:none;stroke:#000000;stroke-width:1px"
+           id="path2852"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="cc"
+           inkscape:export-ydpi="28.700001"
+           d="m 359.55,567.75 23.486,-17.93"
+           style="fill:none;stroke:#000000;stroke-width:1px"
+           id="path2854"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="cc"
+           inkscape:export-ydpi="28.700001"
+           d="m 295.64,524.53 10.877,-28.499"
+           style="fill:#ff0000;stroke:#000000;stroke-width:1px"
+           id="path2856"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="cc"
+           inkscape:export-ydpi="28.700001"
+           d="m 349.19,566.99 20.708,-19.698"
+           style="fill:none;stroke:#000000;stroke-width:1px"
+           id="path2858"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 316.11,552.85 16.415,-23.234"
+           style="fill:none;stroke:#000000;stroke-width:1px"
+           id="path2860"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 333.28,563.2 20.46,-21.46"
+           style="fill:none;stroke:#000000;stroke-width:1px"
+           id="path2862"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 302.73,539.72 13.385,-25.254"
+           style="fill:none;stroke:#000000;stroke-width:1px"
+           id="path2864"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 305.93,523.93 c -2.6613,-4.652 -4.8917,-9.4731 -4.8917,-10.574 0,-0.43541 1.179,-3.8869 2.6199,-7.6699 l 2.6199,-6.8782 2.3364,4.7136 c 1.285,2.5925 3.256,6.0246 4.3801,7.6271 1.124,1.6024 2.0437,3.0805 2.0437,3.2847 0,0.20419 -1.5459,3.3044 -3.4354,6.8894 l -3.4354,6.5182 -2.2375,-3.9111 z"
+           style="fill:#ff0000;stroke:#1a1a1a;stroke-width:0.5"
+           id="path2866"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 311.58,548.14 c -2.0301,-1.9951 -4.5838,-4.8072 -5.6749,-6.2491 l -1.9837,-2.6216 2.1289,-4.1284 c 1.1709,-2.2706 2.1778,-4.1906 2.2374,-4.2667 0.0597,-0.076 1.0215,1.071 2.1374,2.549 1.1159,1.478 3.9564,4.5889 6.3121,6.913 l 4.2832,4.2258 -2.5006,3.4752 c -1.3753,1.9114 -2.6689,3.5326 -2.8746,3.6027 -0.2057,0.0701 -2.035,-1.5049 -4.0652,-3.5 z"
+           style="fill:#ff0000;stroke:#1a1a1a;stroke-width:0.5"
+           id="path2868"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="ccsc"
+           inkscape:export-ydpi="28.700001"
+           d="m 347.07,569.16 c 43.478,-38.856 83.236,-87.01 123.04,-135.06 0,0 -18.385,46.669 -48.79,79.196 -30.406,32.527 -74.246,57.983 -74.246,55.861 z"
+           style="opacity:0.33332998;fill:#000033"
+           id="path3816"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 335.29,551.61 c -5.0189,-2.6428 -10.923,-6.4101 -11.494,-7.3344 -0.33612,-0.54385 8.6908,-13.604 9.1866,-13.291 0.16901,0.10669 1.7698,1.1725 3.5573,2.3685 1.7875,1.196 6.0926,3.6289 9.567,5.4066 l 6.317,3.2321 -5.749,6.0121 c -3.1619,3.3066 -5.8921,6.0632 -6.067,6.1257 -0.1749,0.0625 -2.568,-1.0712 -5.318,-2.5193 z"
+           style="fill:#ff0000;stroke:#1a1a1a;stroke-width:0.5"
+           id="path2870"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 344.79,565.72 c -4.5047,-0.99639 -9.7748,-2.6302 -9.6419,-2.9891 0.078,-0.21084 1.4426,-1.743 3.0324,-3.4048 l 2.8905,-3.0215 5.8595,1.9717 c 3.2227,1.0845 6.2533,1.975 6.7345,1.9791 0.48125,0.004 0.875,0.10085 0.875,0.21511 0,0.11426 -1.2938,1.4597 -2.875,2.9899 -2.9717,2.8758 -3.4211,3.0235 -6.875,2.2595 z"
+           style="fill:#ff0000;stroke:#1a1a1a;stroke-width:0.5"
+           id="path2872"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 361.42,560.57 c -1.5764,-0.33873 -2.9427,-0.71363 -3.0364,-0.8331 -0.0936,-0.11947 2.4896,-2.7794 5.7406,-5.911 l 5.9109,-5.6938 5.1012,1.0862 c 2.8057,0.59743 5.1822,1.1671 5.281,1.266 0.0989,0.0989 -2.9277,2.5612 -6.7257,5.4718 -7.4165,5.6835 -7.3721,5.6668 -12.272,4.614 z"
+           style="fill:#ff0000;stroke:#1a1a1a;stroke-width:0.5"
+           id="path2876"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 361.01,567.35 c 0.0653,-0.0588 1.4249,-1.101 3.0213,-2.3158 l 2.9026,-2.2088 0.77025,0.12405 c 0.42363,0.0682 0.79068,0.14447 0.81565,0.16945 0.0527,0.0527 -2.2174,1.5492 -4.8446,3.1936 -1.4763,0.92404 -1.9206,1.1445 -2.3062,1.1445 -0.27398,0 -0.42703,-0.0456 -0.35892,-0.10698 z"
+           style="fill:#ff0000;stroke:#1a1a1a;stroke-width:0.125"
+           id="path2878"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 295.03,521.49 c -0.64345,-2.0659 -1.0431,-3.5538 -1.5361,-5.7188 l -0.42696,-1.875 1.7116,-4.5312 c 0.94137,-2.4922 1.7467,-4.5312 1.7897,-4.5312 0.043,0 0.15233,0.29531 0.24306,0.65625 0.32106,1.2773 1.4961,5.0499 1.9952,6.406 l 0.50597,1.3748 -1.8407,4.8431 c -1.0124,2.6637 -1.873,4.8435 -1.9125,4.844 -0.0395,5e-4 -0.27765,-0.66004 -0.52926,-1.4678 z"
+           style="fill:#ff0000;stroke:#1a1a1a;stroke-width:0.125"
+           id="path2880"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 296.78,500.46 c -0.0716,-0.19772 -0.59989,-2.7224 -0.615,-2.9389 -0.0132,-0.18979 2.9638,-7.6259 4.6949,-11.727 l 1.521,-3.6033 0.21751,1.4158 c 0.14795,0.96301 0.17899,1.4957 0.0971,1.6658 -0.0663,0.1375 -1.3647,3.5406 -2.8854,7.5625 -1.5207,4.0219 -2.8093,7.425 -2.8635,7.5625 -0.0784,0.19879 -0.11245,0.21159 -0.16643,0.0625 z"
+           style="fill:#ff0000;stroke:#1a1a1a;stroke-width:0.125"
+           id="path2882"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 298.81,507.57 c -0.56949,-1.9122 -1.0354,-3.9264 -1.0354,-4.4758 0,-0.54947 1.1997,-4.1956 2.666,-8.1025 l 2.666,-7.1034 1.0908,4.1564 c 0.59993,2.286 1.0878,4.3593 1.084,4.6073 -0.006,0.43169 -5.0094,13.865 -5.2968,14.222 -0.0765,0.0951 -0.60502,-1.3917 -1.1745,-3.3039 z"
+           style="fill:#ffffff;stroke:#1a1a1a;stroke-width:0.5"
+           id="path2884"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 292.46,510.16 c -0.11436,-0.85467 -0.20777,-1.7002 -0.2076,-1.879 3.9e-4,-0.39736 2.9782,-8.613 3.1214,-8.612 0.0365,2.6e-4 0.21388,0.67787 0.39416,1.5058 l 0.32778,1.5053 -1.6222,4.2754 c -0.89222,2.3515 -1.6635,4.3841 -1.7139,4.5169 -0.0584,0.15362 -0.16734,-0.32378 -0.29963,-1.3125 z"
+           style="fill:#ffffff;stroke:#1a1a1a;stroke-width:0.125"
+           id="path2886"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 301.87,536.52 c -2.0681,-3.388 -4.2226,-7.7473 -5.3619,-10.849 l -0.34437,-0.9375 1.7911,-4.6875 c 0.9851,-2.5781 1.8344,-4.787 1.8873,-4.9085 0.0713,-0.16385 0.28651,0.22421 0.83168,1.5 1.5381,3.5995 3.9184,8.0818 5.9427,11.191 l 0.97068,1.4907 -2.3099,4.3636 c -1.2705,2.4 -2.3472,4.3636 -2.3928,4.3636 -0.0456,0 -0.50211,-0.68676 -1.0145,-1.5261 z"
+           style="fill:#ffffff;stroke:#1a1a1a;stroke-width:0.125"
+           id="path2888"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 320.87,542.39 c -4.1915,-3.6244 -7.4944,-7.1613 -10.714,-11.474 l -1.2382,-1.6583 3.6978,-6.9868 3.6978,-6.9868 0.29423,0.34565 c 3.1533,3.7044 5.7484,6.4017 8.5808,8.9186 1.5995,1.4213 4.8689,4.0836 5.9036,4.8074 0.29072,0.20334 0.52979,0.40685 0.53125,0.45223 0.002,0.0688 -9.2384,13.225 -9.4891,13.511 -0.045,0.0512 -0.61372,-0.36683 -1.2638,-0.92893 z"
+           style="fill:#ffffff;stroke:#1a1a1a;stroke-width:0.125"
+           id="path2890"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 331.44,561.85 c -4.737,-2.0181 -9.3153,-4.6419 -13.473,-7.7212 -1.2248,-0.9071 -1.3334,-1.0198 -1.1875,-1.2314 0.0883,-0.12814 1.3669,-1.9393 2.8412,-4.0248 l 2.6805,-3.7918 1.2947,0.97468 c 3.0347,2.2847 7.0349,4.8004 10.657,6.702 1.5495,0.81352 4.5338,2.2346 5.3218,2.5343 0.32521,0.12364 0.30864,0.14609 -1.5444,2.092 -1.0302,1.0818 -2.5688,2.6851 -3.419,3.5629 l -1.5459,1.5959 -1.625,-0.6923 z"
+           style="fill:#ffffff;stroke:#1a1a1a;stroke-width:0.125"
+           id="path2892"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 354.31,559.16 c -0.9625,-0.25173 -2.7181,-0.74657 -3.9012,-1.0996 -3.1692,-0.94569 -8.451,-2.8609 -8.4343,-3.0583 0.0161,-0.19089 11.916,-12.587 12.083,-12.587 0.0921,0 0.6264,0.19643 1.1873,0.43651 2.7392,1.1724 9.2886,3.4596 12.605,4.4021 0.43469,0.12352 0.78226,0.28068 0.77238,0.34925 -0.0138,0.0961 -8.7016,8.4145 -12,11.49 l -0.5625,0.52447 -1.75,-0.4577 z"
+           style="fill:#ffffff;stroke:#1a1a1a;stroke-width:0.125"
+           id="path2894"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 355.44,567.33 c -0.4125,-0.0222 -1.657,-0.1241 -2.7654,-0.22636 -1.1085,-0.10227 -2.1116,-0.18594 -2.2292,-0.18594 -0.11754,0 -0.19496,-0.0422 -0.17204,-0.0937 0.0349,-0.0784 4.5354,-4.3909 5.809,-5.5663 l 0.39237,-0.3621 2.6701,0.5629 c 1.4686,0.3096 3.4394,0.69233 4.3796,0.85051 0.94021,0.15818 1.6854,0.32651 1.656,0.37407 -0.0294,0.0476 -1.3139,1.0469 -2.8545,2.2207 -1.5406,1.1738 -2.8864,2.2197 -2.9909,2.3241 -0.1878,0.1878 -1.6129,0.22517 -3.8952,0.10213 z"
+           style="fill:#ffffff;stroke:#1a1a1a;stroke-width:0.125"
+           id="path2896"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 369.02,562.01 c -0.65198,-0.0999 -0.76458,-0.15044 -0.625,-0.28055 0.24438,-0.22779 14.37,-10.994 14.671,-11.182 0.18913,-0.11805 0.5741,-0.13082 1.5597,-0.0517 l 1.3086,0.105 -3.6222,2.6972 c -6.3946,4.7615 -12.18,8.8884 -12.405,8.8494 -0.0507,-0.009 -0.45002,-0.0708 -0.88741,-0.13778 z"
+           style="fill:#ffffff;stroke:#1a1a1a;stroke-width:0.125"
+           id="path2898"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="cccc"
+           inkscape:export-ydpi="28.700001"
+           d="m 242.6,598.86 c 3.4274,-13.038 16.255,-40.172 31.997,-34.825 l 1.0607,-5.6568 c -22.972,0.009 -28.033,20.224 -33.057,40.482 z"
+           style="fill:#ffd300"
+           id="path2902"
+           inkscape:connector-curvature="0" />
+        <path
+           sodipodi:nodetypes="cccc"
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:transform-center-y="0.971385"
+           inkscape:transform-center-x="9.7603523"
+           inkscape:export-ydpi="28.700001"
+           d="m 286.43,634.28 c 12.673,-4.5957 38.532,-19.831 31.78,-35.023 l 5.5374,-1.5693 c 2.0744,22.878 -17.598,29.752 -37.317,36.592 z"
+           style="fill:#ffd300"
+           id="path3676"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="cscsc"
+           inkscape:export-ydpi="28.700001"
+           d="m 289.75,601.36 c 0,0 8.985,-3.4427 14.125,-7.75 6.0517,-5.0714 10.062,-11.688 10.062,-11.688 0,0 -6.3125,4.6875 -10.938,8.8125 -4.2952,3.8309 -13.5,10.375 -13.25,10.625 z"
+           style="fill:#ffd300"
+           id="path3678"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="csssc"
+           inkscape:export-ydpi="28.700001"
+           d="m 251.97,632.45 c 0,0 19.092,-40.659 27.577,-50.558 8.4853,-9.8995 19.494,-16.334 21.567,-14.849 3.3713,2.4142 -4.2137,16.045 -7.9602,22.102 -7.1101,11.495 -28.102,29.063 -41.184,43.305 z"
+           style="fill:#666666"
+           id="path3707"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="cccc"
+           inkscape:export-ydpi="28.700001"
+           d="m 504.5,309.86 -32.5,29 c 2.7904,6.905 7.71,10.261 14.5,10.5 l 18,-39.5 z"
+           style="fill:#333333;stroke:#000000;stroke-width:1px"
+           id="path3840"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="cccccc"
+           inkscape:export-ydpi="28.700001"
+           d="m 503.34,310.01 -30.052,30.406 c -17.78,3.9859 -34.305,11.111 -50.205,19.799 l 6.7175,10.607 c 13.288,-13.375 29.273,-21.357 46.316,-27.224 l 27.224,-33.588 z"
+           style="opacity:0.7;fill:#d9d9d9"
+           id="path3842"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           sodipodi:nodetypes="cccccc"
+           inkscape:export-ydpi="28.700001"
+           d="m 468.5,395.86 c 7.6531,-13.719 10.047,-31.382 12.5,-49 l 14.5,-23 -12,25.5 c -0.55002,17.467 -1.51,34.66 -6,49.5 l -9,-3 z"
+           style="opacity:0.44118;fill:#000000;stroke:#000000;stroke-width:1px"
+           id="path3844"
+           inkscape:connector-curvature="0" />
+        <path
+           inkscape:export-xdpi="28.700001"
+           inkscape:export-filename="/media/disk-1/home/user/Documents/Projects/Krita.org/krocket.png"
+           inkscape:export-ydpi="28.700001"
+           d="m 335,519.36 c 0,0 15,-35 43,-69 28,-34 76,-77 76,-77 0,0 -40,59 -63,91 -23,32 -56,58 -56,55 z"
+           style="opacity:0.19118;fill:#ffffff"
+           id="path3866"
+           inkscape:connector-curvature="0" />
+        <g
+           transform="translate(446.89,360.62)"
+           id="g4843">
+          <path
+             sodipodi:cx="449.51788"
+             sodipodi:cy="415.96606"
+             transform="matrix(0.73241,0.55273,-0.60287,0.79885,-153.12,-470.83)"
+             d="m 473.76155,415.96606 c 0,13.38941 -10.85426,24.24367 -24.24367,24.24367 -13.3894,0 -24.24366,-10.85426 -24.24366,-24.24367 0,-13.3894 10.85426,-24.24366 24.24366,-24.24366 13.38941,0 24.24367,10.85426 24.24367,24.24366 z"
+             sodipodi:type="arc"
+             style="fill:#1a1a1a;stroke:#1a1a1a"
+             sodipodi:ry="24.243662"
+             sodipodi:rx="24.243662"
+             id="path2832" />
+          <path
+             sodipodi:cx="432.97662"
+             sodipodi:cy="412.30426"
+             transform="matrix(0.64805,0.48907,-0.53343,0.70684,-135.51,-393.4)"
+             d="m 453.30594,412.30426 c 0,11.22757 -9.10174,20.32932 -20.32932,20.32932 -11.22757,0 -20.32932,-9.10175 -20.32932,-20.32932 0,-11.22757 9.10175,-20.32932 20.32932,-20.32932 11.22758,0 20.32932,9.10175 20.32932,20.32932 z"
+             sodipodi:type="arc"
+             style="fill:url(#linearGradient4848);stroke:#1a1a1a"
+             sodipodi:ry="20.329321"
+             sodipodi:rx="20.329321"
+             id="path2834" />
+          <path
+             sodipodi:cx="449.51788"
+             sodipodi:cy="415.96606"
+             transform="matrix(0.73241,0.55273,-0.60287,0.79885,-153.12,-470.83)"
+             d="m 470.81748,415.96606 c 0,11.61089 -9.53616,21.02338 -21.2996,21.02338 -11.76344,0 -21.29959,-9.41249 -21.29959,-21.02338 0,-11.61088 9.53615,-21.02337 21.29959,-21.02337 11.76344,0 21.2996,9.41249 21.2996,21.02337 z"
+             sodipodi:type="arc"
+             style="fill:none;stroke:#ffffff;stroke-width:2.14759994"
+             sodipodi:ry="21.023373"
+             sodipodi:rx="21.299593"
+             id="path3733" />
+        </g>
+      </g>
+    </g>
+  </g>
+  <metadata
+     id="metadata4729">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title />
+        <dc:date>2009-12-02T01:52:26</dc:date>
+        <dc:description>A cartoon, 1950's style rocket blasting into space with stars, a planet and a flying saucer in the background. Animation using Javascript, added by Aukipa. Works in Chrome, Edge, Firefox and Internet Explorer.</dc:description>
+        <dc:source>https://openclipart.org/detail/28542/cartoon-rocket-by-kliponius</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Kliponius, Aukipa</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>Animation</rdf:li>
+            <rdf:li>Javascript</rdf:li>
+            <rdf:li>1950s</rdf:li>
+            <rdf:li>alien</rdf:li>
+            <rdf:li>cartoon</rdf:li>
+            <rdf:li>fly</rdf:li>
+            <rdf:li>flying</rdf:li>
+            <rdf:li>flying saucer</rdf:li>
+            <rdf:li>launch</rdf:li>
+            <rdf:li>launching</rdf:li>
+            <rdf:li>planet</rdf:li>
+            <rdf:li>rocket</rdf:li>
+            <rdf:li>space</rdf:li>
+            <rdf:li>star</rdf:li>
+            <rdf:li>unchecked</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:contributor>
+          <cc:Agent>
+            <dc:title>Aukipa</dc:title>
+          </cc:Agent>
+        </dc:contributor>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  
+  
+</svg>

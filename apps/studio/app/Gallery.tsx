@@ -82,7 +82,10 @@ function Tile({
 }) {
   // Staggered by a touch under five frames at 60fps — the offset a
   // hand-animated group uses so a grid reads as arriving, not appearing.
-  const ref = useReveal<HTMLLIElement>((index % 4) * 70 + Math.floor(index / 4) * 40);
+  // Stagger across the row, and cap the row delay. An un-capped
+  // per-row offset would put the last tile most of a second behind the
+  // first, which reads as a slow load rather than an arrival.
+  const ref = useReveal<HTMLLIElement>((index % 4) * 70 + Math.min(Math.floor(index / 4), 3) * 40);
 
   return (
     <li ref={ref} className="reveal group relative bg-panel">
