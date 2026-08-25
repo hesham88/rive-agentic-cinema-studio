@@ -24,5 +24,6 @@
     "@types/react": "^19.2.18",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
-  }
+  },
+  "description": "Rive runtime engine: a dependency-free `core` (camera, motion, light, .riv encoding) plus React hooks and a Rive-rendered UI kit. Consumed from source inside this workspace - `exports` point at src/, so a consumer must transpile it."
 }

@@ -1,5 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": { "outDir": "dist", "rootDir": "src" },
+  // No outDir. `exports` points at `src/` and the app sets
+  // `transpilePackages: ['rive-engine']`, so the app's bundler compiles the
+  // source directly. Emitting to `dist/` produced a parallel copy that nothing
+  // imported and that went stale the moment src/ changed.
+  "compilerOptions": { "noEmit": true, "rootDir": "src" },
   "include": ["src/**/*"]
 }
