@@ -4,8 +4,7 @@ Test fixtures for the inspector's Playwright suite. All are real `.riv` binaries
 
 | File | Source | Notes |
 | --- | --- | --- |
-| `sample.riv` | https://cdn.rive.app/animations/vehicles.riv | Copy of `vehicles.riv`. Primary fixture referenced by `e2e/inspector.spec.ts`. |
-| `vehicles.riv` | https://cdn.rive.app/animations/vehicles.riv | Rive's own public sample, used throughout their docs. |
+| `sample.riv` | https://cdn.rive.app/animations/vehicles.riv | Rive's own public sample. Primary fixture, referenced by `e2e/inspector.spec.ts`. |
 | `juice_v7.riv` | https://cdn.rive.app/animations/juice_v7.riv | Second fixture, smaller. |
 | `corrupt.riv` | generated locally | Deliberately invalid — the literal bytes `not a rive file`. Proves the parse-error path. |
 

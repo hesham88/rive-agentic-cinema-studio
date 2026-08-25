@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { useCanvasResync } from 'rive-engine/react';
 import { Fit, Layout, useRive } from '@rive-app/react-webgl2';
-import { HeroMark } from './HeroMark';
+import { useReducedMotionPause } from 'rive-engine/react';
 import { useEffect, useRef, useState } from 'react';
+import { HeroCollage } from './HeroCollage';
 
 /**
  * The opening shot.
@@ -53,10 +55,25 @@ export function Opening() {
     onLoadError: () => setFailed(true),
   });
 
+  // ORDER MATTERS. The drawing buffer is sized first; only then is the motion
+  // preference applied. Pausing the runtime before it has sized its surface
+  // leaves the canvas at the 300x150 HTML default, drawing into nothing — the
+  // exact failure useCanvasResync exists to prevent, reintroduced from the
+  // other end.
+  useCanvasResync(rive);
+
+  // Ambient playback: stops when the visitor asked for reduced motion.
+  const reducedMotion = useReducedMotionPause(rive ?? null);
+
   // The runtime exposes no frame cursor, so the readout runs on a wall clock in
   // step with the looping timeline rather than reaching into internals.
+  //
+  // It is its own clock, which means it does NOT stop just because the scene
+  // was paused — under reduced motion the graphic froze while the counter kept
+  // spinning beside it, which is both wrong and worse than either alone. The
+  // readout is animation too, so it stops with everything else.
   useEffect(() => {
-    if (!rive) return;
+    if (!rive || reducedMotion) return;
     startedAt.current = performance.now();
     let raf = 0;
     const tick = () => {
@@ -66,12 +83,13 @@ export function Opening() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [rive]);
+  }, [rive, reducedMotion]);
 
   const beat = BEATS.reduce((acc, b, i) => (frame >= b.frame ? i : acc), 0);
 
   return (
     <section id="open" className="relative isolate min-h-dvh overflow-hidden">
+      <HeroCollage />
       {/* The room: a single warm pool of light behind the monitor, so the
           brightest thing on screen has somewhere to sit. Nothing else in this
           viewport is coloured. */}
@@ -89,21 +107,34 @@ export function Opening() {
       <div className="relative z-10 mx-auto grid min-h-dvh max-w-[1400px] items-center gap-14 px-6 pb-20 pt-28 lg:grid-cols-[1fr_minmax(0,540px)] lg:gap-12 lg:pl-[224px] xl:gap-16">
         <div>
           {/* The mark this studio generated for itself, gliding. */}
-          <HeroMark className="mb-6 h-[110px] w-[165px] lg:mb-8" />
+          {/* The hero mark is deliberately absent.
+              It used to sit here: a two-path, two-colour paper plane that the
+              pipeline's own quality gate now rejects (it needs 80-160 paths and
+              24-36 colours). Shipping it beside the sentence "everything on this
+              page was made that way" argued the opposite of what the page claims.
 
+              Its removal is also the palette's own rule applied: ONE chromatic
+              action per view. The monitor is the artwork, so the monitor is the
+              only saturated thing above the fold, and the type carries the rest. */}
+
+          {/* 6px gap, not 24. The eyebrow and the headline are ONE unit; the
+              caption's 0.90 leading exists so they can sit this close. */}
           <p className="eyebrow whitespace-nowrap">Agentic studio · web &amp; cinema</p>
 
-          <h1 className="display mt-6 text-balance text-[clamp(2.5rem,5vw,4.25rem)]">
+          {/* clamp() floors at 40px and tops out at the spec's 80px. Tracking
+              rides the same scale via `display-xl`, so the headline is tracked
+              correctly at every width instead of at one. */}
+          <h1 className="display display-xl mt-1.5 text-[clamp(2.5rem,6vw,5rem)]">
             A sentence becomes <em>a scene.</em>
           </h1>
 
-          <p className="mt-7 max-w-[46ch] text-[17px] leading-relaxed text-read">
+          <p className="mt-7 max-w-[52ch] text-[16px] leading-[1.5] text-read">
             Describe what you want. The studio researches how it is really drawn, generates
             the art, traces it to vector, rigs it, animates it, scores it, and ships an
             interactive file the web can run.
           </p>
 
-          <p className="mt-4 max-w-[46ch] text-[15px] leading-relaxed text-dim">
+          <p className="mt-4 max-w-[52ch] text-[14px] leading-[1.5] text-dim">
             Everything on this page was made that way — including the scene beside these
             words, and the camera move framing it.
           </p>
@@ -111,13 +142,13 @@ export function Opening() {
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <Link
               href="/inspect"
-              className="num rounded-sm bg-lamp px-5 py-2.5 text-[13px] font-medium text-room transition-opacity hover:opacity-90"
+              className="btn btn-filled"
             >
               open the inspector
             </Link>
             <a
               href="#pipeline"
-              className="num rounded-sm border border-rule px-5 py-2.5 text-[13px] text-read transition-colors hover:border-dim hover:text-bright"
+              className="btn btn-ghost"
             >
               how it works
             </a>
@@ -132,7 +163,7 @@ export function Opening() {
                 <div className="flex h-full items-center justify-center px-6 text-center">
                   <p className="num text-[13px] text-dim">
                     scene.riv did not load —{' '}
-                    <code className="text-ember">/riv/scene.riv</code>
+                    <code className="text-glow">/riv/scene.riv</code>
                   </p>
                 </div>
               ) : (
@@ -146,7 +177,9 @@ export function Opening() {
             <div className="flex items-baseline justify-between">
               <p className="eyebrow">CameraMove · scene.riv</p>
               <p className="num text-[11px] text-dim">
-                <span className="text-ember">{String(frame).padStart(3, '0')}</span>
+                <span data-testid="camera-frame" className="text-glow">
+                  {String(frame).padStart(3, '0')}
+                </span>
                 <span className="text-dim/40"> / {TOTAL}</span>
               </p>
             </div>
@@ -156,12 +189,12 @@ export function Opening() {
                 <li key={b.name} className="min-w-0">
                   <div
                     className={`h-px w-full transition-colors duration-500 ${
-                      i <= beat ? 'bg-lamp' : 'bg-rule'
+                      i <= beat ? 'bg-signal' : 'bg-rule'
                     }`}
                   />
                   <p
                     className={`num mt-2 text-[10px] transition-colors duration-500 ${
-                      i === beat ? 'text-ember' : 'text-dim/50'
+                      i === beat ? 'text-glow' : 'text-dim/50'
                     }`}
                   >
                     {String(b.frame).padStart(3, '0')}

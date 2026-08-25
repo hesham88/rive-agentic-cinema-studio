@@ -1,16 +1,17 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCanvasResync } from './useCanvasResync';
 import { useRive } from '@rive-app/react-webgl2';
 import { EventType } from '@rive-app/webgl2';
 import type { Rive, RiveFile, StateMachineInput } from '@rive-app/webgl2';
 import {
   handleKey,
+  inputKind,
   inspectRiveContents,
-  RIVE_INPUT_TYPE,
+  stateMachineInputError,
   type InputInfo,
   type RiveContentsLike,
-  type RiveInputKind,
   type RiveLoadError,
   type RiveManifest,
 } from '../core';
@@ -48,13 +49,6 @@ export interface RiveControllerState {
    * both artboards reported identically, which is the tell.
    */
   generation: number;
-}
-
-function kindOf(type: number): RiveInputKind {
-  if (type === RIVE_INPUT_TYPE.Boolean) return 'boolean';
-  if (type === RIVE_INPUT_TYPE.Number) return 'number';
-  if (type === RIVE_INPUT_TYPE.Trigger) return 'trigger';
-  return 'unknown';
 }
 
 function warn(message: string): void {
@@ -104,12 +98,14 @@ export function useRiveController(params: RiveControllerParams): RiveControllerS
     { shouldResizeCanvasToContainer: true },
   );
 
+  // Without this the drawing buffer stays at the 300x150 HTML default and
+  // the artboard renders into nothing. See useCanvasResync.
+  useCanvasResync(rive);
+
   // Bumped whenever the instance re-initialises. `rive` keeps the same object
   // identity across load/reset, so derived state needs an explicit signal.
   const [generation, setGeneration] = useState(0);
   const bump = useCallback(() => setGeneration((g) => g + 1), []);
-
-  const [inputError, setInputError] = useState<RiveLoadError | null>(null);
 
   useEffect(() => {
     if (!rive) return;
@@ -177,7 +173,7 @@ export function useRiveController(params: RiveControllerParams): RiveControllerS
 
   const wrap = useCallback(
     (raw: StateMachineInput): InputHandle => {
-      const kind = kindOf(raw.type as unknown as number);
+      const kind = inputKind(raw.type as unknown as number);
       const info: InputInfo = { name: raw.name, kind };
       if (kind !== 'trigger') info.initialValue = raw.value;
       if (kind === 'unknown') info.rawType = raw.type as unknown as number;
@@ -205,38 +201,40 @@ export function useRiveController(params: RiveControllerParams): RiveControllerS
     [artboard, stateMachine],
   );
 
-  const inputs = useMemo(() => {
-    if (!rive || !stateMachine) return [];
+  /**
+   * Reads the inputs and reports its own failure.
+   *
+   * The error is RETURNED, not pushed into state. This memo used to call
+   * `setInputError` while rendering, which is a render-phase side effect: it
+   * survived only because React bails out when the next value is `Object.is`
+   * equal to the current one, and it was one dependency change away from a
+   * render loop. Deriving the error alongside the inputs needs no state at all.
+   */
+  const read = useMemo<{ inputs: InputHandle[]; error: RiveLoadError | null }>(() => {
+    if (!rive || !stateMachine) return { inputs: [], error: null };
     void generation;
     try {
       // Returns undefined when the state machine is not instanced — a real
       // failure that must not be laundered into "this machine has no inputs".
       const raw = rive.stateMachineInputs(stateMachine) as StateMachineInput[] | undefined;
       if (raw === undefined) {
-        setInputError({
-          kind: 'parse',
-          message: `State machine "${stateMachine}" is not instanced, so its inputs cannot be read.`,
-        });
-        return [];
+        return { inputs: [], error: stateMachineInputError(stateMachine, 'not-instanced') };
       }
-      setInputError(null);
-      return raw.map(wrap);
+      return { inputs: raw.map(wrap), error: null };
     } catch (err) {
-      setInputError({
-        kind: 'parse',
-        message: `Could not read inputs for state machine "${stateMachine}": ${String(err)}`,
-      });
-      return [];
+      return { inputs: [], error: stateMachineInputError(stateMachine, err) };
     }
   }, [rive, stateMachine, wrap, generation]);
 
+  const inputs = read.inputs;
+
   const error = useMemo<RiveLoadError | null>(() => {
-    if (inputError) return inputError;
+    if (read.error) return read.error;
     if (!manifest) return null;
     return manifest.artboards.length === 0
       ? { kind: 'empty', message: 'This file contains no artboards.' }
       : null;
-  }, [manifest, inputError]);
+  }, [manifest, read.error]);
 
   return { RiveComponent, rive, manifest, inputs, error, generation };
 }

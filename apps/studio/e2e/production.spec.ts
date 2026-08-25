@@ -14,8 +14,12 @@ test('the deployed studio loads and renders a pipeline-authored .riv', async ({ 
   const res = await page.request.get(`${PROD}/riv/widget.riv`);
   expect(res.status()).toBe(200);
   const buf = await res.body();
-  expect(buf.length).toBe(37148);
+  // The MAGIC, not an exact byte count. Pinning the length made a re-export of
+  // widget.riv fail a test that is not about file size; the magic proves the
+  // CDN served a real Rive binary rather than an error page, which is the
+  // thing actually under test here.
   expect(buf.subarray(0, 4).toString()).toBe('RIVE');
+  expect(buf.length).toBeGreaterThan(1024);
 
   await page.setInputFiles('[data-testid="file-input"]', {
     name: 'widget.riv',

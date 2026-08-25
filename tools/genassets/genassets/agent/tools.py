@@ -249,7 +249,7 @@ def generate_artwork(prompt: str, name: str, reference_context: str = "",
         hint ("flat", "illustration" or "photo") that vectorize_artwork will use.
     """
     try:
-        from ..gemini import GeminiClient
+        from ..gemini import client as gemini_client
         from ..normalize import normalize
         from ..vectorize import classify
 
@@ -270,7 +270,7 @@ def generate_artwork(prompt: str, name: str, reference_context: str = "",
         full = "\n".join(sections)
 
         raw = WORKDIR / f"{name}.raw"
-        GeminiClient().generate_image(full, raw)
+        gemini_client().generate_image(full, raw)
 
         # Quantize to the level's own budget. This is what collapses JPEG
         # ringing back into the flat regions it surrounds, so the tracer sees
@@ -288,7 +288,8 @@ def generate_artwork(prompt: str, name: str, reference_context: str = "",
         return _fail(str(e))
 
 
-def vectorize_artwork(png_path: str, name: str, image_class: str = "flat") -> dict:
+def vectorize_artwork(png_path: str, name: str, image_class: str = "flat",
+    strict: bool = True) -> dict:
     """Trace a normalised PNG into SVG, choosing tracer settings by image class.
 
     One setting profile cannot serve all art: the profile that renders an icon
@@ -302,7 +303,12 @@ def vectorize_artwork(png_path: str, name: str, image_class: str = "flat") -> di
             import those as bitmaps instead.
 
     Returns:
-        ok, svg_path, paths, colors, kb.
+        ok, svg_path, paths, colors, kb, meets_standard, grade, notes.
+
+        `meets_standard` is False when the trace is too sparse to be a hero
+        asset. Do NOT import a failing trace — regenerate the art at a higher
+        detail level instead. Pass strict=False only for a deliberately simple
+        mark such as a UI glyph.
     """
     try:
         from ..vectorize import ImageClass, vectorize
@@ -310,11 +316,20 @@ def vectorize_artwork(png_path: str, name: str, image_class: str = "flat") -> di
         WORKDIR.mkdir(parents=True, exist_ok=True)
         svg = WORKDIR / f"{name}.svg"
         result = vectorize(png_path, svg, image_class=ImageClass(image_class))
+
+        # Grade before anything downstream can import it. An asset that traces
+        # to a handful of paths is the failure this project actually shipped,
+        # and it shipped because nothing ever measured the result.
+        from ..standard import grade
+        verdict = grade(result.paths, result.colors, strict=strict)
         return _ok(
             svg_path=str(svg),
             paths=result.paths,
             colors=result.colors,
             kb=round(result.kb, 1),
+            meets_standard=verdict.passed,
+            grade=str(verdict),
+            notes=list(verdict.reasons),
         )
     except Exception as e:
         return _fail(str(e))
@@ -325,6 +340,7 @@ def build_rive_payload(
     artboard_width: int = 500,
     artboard_height: int = 500,
     animate_together: bool = True,
+    motion: str = "static",
 ) -> dict:
     """Convert a traced SVG into the shape payload the Rive editor accepts.
 
@@ -340,6 +356,18 @@ def build_rive_payload(
         animate_together: Give every shape a shared origin. Required if the
             shapes will rotate or scale as one body — otherwise each spins about
             its own centre and the artwork tears apart.
+        motion: What this art will DO once animated, which decides how much of
+            the artboard to leave empty. The artboard clips, so art fitted
+            edge-to-edge loses pieces the moment it moves.
+
+            "static"     — never moves; fills 92% of the frame
+            "ui-widget"  — presses and hovers in place; 85%
+            "swim-cycle" — undulates without travelling; 71%
+            "tumble"     — rotates end over end; 65%
+            "hero-glide" — travels an arc and banks into it; 57%
+
+            Declare the real motion. Naming "static" for art that then banks 18
+            degrees is exactly the bug this parameter exists to prevent.
 
     Returns:
         ok, shapes (the createShapes payload), shape_count, command_count.
@@ -356,6 +384,7 @@ def build_rive_payload(
             parse_svg_document(svg_text),
             artboard_width=artboard_width,
             artboard_height=artboard_height,
+            envelope=motion,
             shared_origin=animate_together,
         )
         total = 0

@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { riv } from './fixtures';
 
-const FIXTURE = 'public/riv/sample.riv';
-const SECOND = 'public/riv/juice_v7.riv';
-const CORRUPT = 'public/riv/corrupt.riv';
+const FIXTURE = riv('sample.riv');
+const SECOND = riv('juice_v7.riv');
+const CORRUPT = riv('corrupt.riv');
 
 test('enumerates artboards from a real .riv file', async ({ page }) => {
   await page.goto('/inspect');

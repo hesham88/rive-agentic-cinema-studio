@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { riv } from './fixtures';
 
-const FILE = 'public/riv/paper-plane-interactive.riv';
+const FILE = riv('paper-plane-interactive.riv');
 
 test('view-model properties are enumerated and settable', async ({ page }) => {
   await page.goto('/inspect');

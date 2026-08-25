@@ -4,8 +4,8 @@ One client for every call, so metering and the spend cap exist once rather than
 being reimplemented per feature. Generation is the only part of this project that
 costs money per run (BIBLE: the ledger exists from the first call, not retrofitted).
 
-Verified live on 2026-08-23 — all four models exist on the owner's key:
-    gemini-3.1-flash-image    (Nano Banana 2)  generateContent   image gen + edit
+Model list re-read from the API on 2026-08-24; see `Models` for the pins.
+    gemini-3-pro-image                         generateContent   image gen + edit
     gemini-omni-flash-preview                  generateContent   multimodal reasoning
     veo-3.1-generate-preview                   predictLongRunning  video (async, poll)
     lyria-3-pro-preview                        generateContent   music
@@ -26,7 +26,11 @@ import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
 
-__all__ = ["GeminiClient", "GeminiError", "SpendCapExceeded", "Models", "Ledger"]
+__all__ = [
+    "GeminiClient", "GeminiError", "SpendCapExceeded", "LedgerError",
+    "Models", "Ledger", "PRICE_USD_PER_CALL",
+    "client", "reset_client",
+]
 
 API_ROOT = "https://generativelanguage.googleapis.com/v1beta"
 
@@ -39,45 +43,160 @@ class SpendCapExceeded(GeminiError):
     pass
 
 
+class LedgerError(GeminiError):
+    pass
+
+
 class Models:
-    IMAGE = "gemini-3.1-flash-image"
+    """Model pins, listed live from the API on 2026-08-24.
+
+    Two image tiers, and the default is the **pro** one. Every asset this
+    project shipped before today was generated on the flash tier and the owner
+    rejected all of them as primitive. Flash is the cheap draft model; it is
+    not what a showcase gets rendered on. `IMAGE_FAST` stays available for
+    throwaway iterations, but it has to be asked for by name — the good tier is
+    what you get by default, so shipping the cheap one is now a deliberate act
+    rather than an accident.
+    """
+
+    #: Feature-quality stills. The default for anything that will be seen.
+    IMAGE = "gemini-3-pro-image"
+    #: Draft tier — fast and cheap, for iterating on composition only.
+    IMAGE_FAST = "gemini-3.1-flash-image"
     OMNI = "gemini-omni-flash-preview"
-    TEXT = "gemini-2.5-flash"
+    #: Was pinned at 2.5-flash long after 3.7 shipped. Text drives the art
+    #: direction prompts, so a stale reasoning model degrades every image.
+    TEXT = "gemini-3.7-flash"
     VIDEO = "veo-3.1-generate-preview"
     MUSIC = "lyria-3-pro-preview"
 
 
+#: Estimated USD per call, by model.
+#:
+#: These are ESTIMATES, not billing truth. Google prices per token and per
+#: generated second, which is not knowable before the call — and the cap has to
+#: refuse a call *before* it is made, or the money is already spent. So each
+#: model carries a deliberately generous per-call figure: the cap errs towards
+#: stopping early rather than towards a surprise.
+#:
+#: Re-check these against the pricing page when a model pin changes.
+PRICE_USD_PER_CALL: dict[str, float] = {
+    Models.TEXT: 0.002,
+    Models.OMNI: 0.01,
+    Models.IMAGE_FAST: 0.01,
+    Models.IMAGE: 0.15,
+    Models.MUSIC: 0.20,
+    Models.VIDEO: 2.00,
+}
+
+#: What an unrecognised model is charged. The most expensive known rate, so a
+#: model pinned in future cannot cost 0.00 and walk straight through the cap.
+UNKNOWN_MODEL_PRICE = max(PRICE_USD_PER_CALL.values())
+
+
 @dataclass
 class Ledger:
-    """Call log plus a hard cap checked BEFORE each request."""
+    """Call log plus a hard budget checked BEFORE each request.
 
+    Two independent limits, because they catch different failures:
+
+      * ``max_usd`` bounds **money**. Counting calls cannot: one Veo call and
+        one flash-text call both count as 1 and differ by a factor of a
+        thousand in price.
+      * ``max_calls`` bounds **iterations**. A cheap model looping inside a
+        generous budget would otherwise run all night.
+
+    ``path`` makes the budget cumulative. An in-memory ledger resets on every
+    ``python -m genassets.agent.run``, so it caps a single run and never the
+    spend that actually shows up on the bill.
+    """
+
+    max_usd: float = 25.0
     max_calls: int = 100
+    path: pathlib.Path | None = None
     calls: list[dict] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if self.path is not None:
+            self.path = pathlib.Path(self.path)
+            self._load()
+
+    # ------------------------------------------------------------- persistence
+
+    def _load(self) -> None:
+        assert self.path is not None
+        if not self.path.exists():
+            return
+        try:
+            data = json.loads(self.path.read_text(encoding="utf-8"))
+            self.calls = list(data["calls"])
+        except Exception as e:
+            # Never fall back to an empty ledger: an unreadable file would
+            # silently hand back a fresh budget, which is precisely the
+            # accident this class exists to prevent.
+            raise LedgerError(
+                f"could not read the spend ledger at {self.path}: {e}. "
+                "Fix or delete it deliberately."
+            ) from e
+
+    def _save(self) -> None:
+        if self.path is None:
+            return
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        payload = {"spent_usd": round(self.spent, 6), "calls": self.calls}
+        self.path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+    # ------------------------------------------------------------------ budget
+
+    @staticmethod
+    def cost_of(model: str) -> float:
+        """Estimated USD for one call to ``model``."""
+        return PRICE_USD_PER_CALL.get(model, UNKNOWN_MODEL_PRICE)
 
     @property
     def count(self) -> int:
         return len(self.calls)
 
-    def check(self) -> None:
+    @property
+    def spent(self) -> float:
+        return sum(c.get("usd", 0.0) for c in self.calls)
+
+    def check(self, model: str) -> None:
+        """Refuse a call that would break either limit. Never spends anything."""
         if self.count >= self.max_calls:
             raise SpendCapExceeded(
-                f"call cap reached ({self.max_calls}). Raise max_calls deliberately."
+                f"call cap reached ({self.max_calls} calls). Raise max_calls deliberately."
+            )
+        projected = self.spent + self.cost_of(model)
+        if projected > self.max_usd:
+            raise SpendCapExceeded(
+                f"budget would be exceeded: ${self.spent:.2f} spent, "
+                f"{model} costs about ${self.cost_of(model):.2f}, "
+                f"cap is ${self.max_usd:.2f}. Raise max_usd deliberately."
             )
 
     def record(self, model: str, kind: str, seconds: float, out_bytes: int) -> None:
-        self.calls.append(
-            {"model": model, "kind": kind, "seconds": round(seconds, 2), "bytes": out_bytes}
-        )
+        self.calls.append({
+            "model": model,
+            "kind": kind,
+            "seconds": round(seconds, 2),
+            "bytes": out_bytes,
+            "usd": self.cost_of(model),
+        })
+        self._save()
 
     def summary(self) -> str:
         if not self.calls:
-            return "no calls"
+            return "no calls, $0.00"
         total = sum(c["seconds"] for c in self.calls)
         by_model: dict[str, int] = {}
         for c in self.calls:
             by_model[c["model"]] = by_model.get(c["model"], 0) + 1
         parts = ", ".join(f"{m}x{n}" for m, n in sorted(by_model.items()))
-        return f"{self.count} calls, {total:.1f}s total ({parts})"
+        return (
+            f"{self.count} calls, ~${self.spent:.2f} of ${self.max_usd:.2f}, "
+            f"{total:.1f}s total ({parts})"
+        )
 
 
 class GeminiClient:
@@ -93,7 +212,7 @@ class GeminiClient:
     # ---------------------------------------------------------------- transport
 
     def _post(self, model: str, method: str, payload: dict) -> dict:
-        self.ledger.check()
+        self.ledger.check(model)
         url = f"{API_ROOT}/models/{model}:{method}?key={self._key}"
         req = urllib.request.Request(
             url, data=json.dumps(payload).encode(), headers={"Content-Type": "application/json"}
@@ -268,3 +387,40 @@ class GeminiClient:
                 return status
             time.sleep(poll_seconds)
         raise GeminiError(f"video operation {name} did not complete within {max_wait}s")
+
+
+# --------------------------------------------------------------------- sharing
+
+#: Where the cumulative ledger lives. Under `.out/`, which is gitignored.
+DEFAULT_LEDGER_PATH = pathlib.Path(__file__).resolve().parents[1] / ".out" / "ledger.json"
+
+_client: GeminiClient | None = None
+
+
+def client() -> GeminiClient:
+    """The one client every call site should use.
+
+    Constructing ``GeminiClient()`` per call gives each call its own empty
+    ledger, which makes both limits per-call: a cap of 100 becomes a cap of 1
+    applied 100 times, and spend never accumulates. Sharing one instance — over
+    one persistent ledger file — is what makes the budget mean anything.
+
+    Override the file with ``GENASSETS_LEDGER``; raise the ceiling with
+    ``GENASSETS_MAX_USD``, deliberately.
+    """
+    global _client
+    if _client is None:
+        path = pathlib.Path(os.environ.get("GENASSETS_LEDGER") or DEFAULT_LEDGER_PATH)
+        ledger = Ledger(
+            max_usd=float(os.environ.get("GENASSETS_MAX_USD", "25.0")),
+            max_calls=int(os.environ.get("GENASSETS_MAX_CALLS", "100")),
+            path=path,
+        )
+        _client = GeminiClient(ledger=ledger)
+    return _client
+
+
+def reset_client() -> None:
+    """Drop the shared client. For tests, and for re-reading the ledger file."""
+    global _client
+    _client = None

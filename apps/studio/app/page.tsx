@@ -4,6 +4,7 @@ import { Why } from './Why';
 import { Process } from './Process';
 import { Engines } from './Engines';
 import { KitShowcase } from './KitShowcase';
+import { Gallery } from './Gallery';
 import { Proof } from './Proof';
 import { ShotList } from './ShotList';
 
@@ -30,19 +31,19 @@ export default function Home() {
           <nav className="flex items-center gap-1">
             <a
               href="#engines"
-              className="num hidden rounded-sm px-3 py-1.5 text-[11px] text-dim transition-colors hover:text-bright sm:inline"
+              className="nav-link hidden px-3 py-1.5 sm:inline"
             >
               engines
             </a>
             <a
               href="#kit"
-              className="num hidden rounded-sm px-3 py-1.5 text-[11px] text-dim transition-colors hover:text-bright sm:inline"
+              className="nav-link hidden px-3 py-1.5 sm:inline"
             >
               interface
             </a>
             <Link
               href="/inspect"
-              className="num rounded-sm border border-rule px-3 py-1.5 text-[11px] text-read transition-colors hover:border-lamp/60 hover:text-lamp"
+              className="btn btn-ghost !py-1.5 !text-[12px]"
             >
               inspector →
             </Link>
@@ -55,6 +56,7 @@ export default function Home() {
         <Why />
         <Process />
         <Engines />
+        <Gallery />
         <KitShowcase />
         <Proof />
       </main>

@@ -74,8 +74,8 @@ const ENGINES: readonly Engine[] = [
 ] as const;
 
 const DOT: Record<Status, string> = {
-  shipped: 'bg-lamp',
-  partial: 'bg-ember',
+  shipped: 'bg-signal',
+  partial: 'bg-glow',
   planned: 'bg-rule',
 };
 

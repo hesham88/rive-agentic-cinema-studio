@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Fit, Layout, useRive } from '@rive-app/react-webgl2';
-import { useHeroMotion } from 'rive-engine/react';
+import { useHeroMotion, useCanvasResync } from 'rive-engine/react';
 
 /**
  * The mark, gliding.
@@ -30,6 +30,8 @@ export function HeroMark({ className = '' }: { className?: string }) {
     layout: new Layout({ fit: Fit.Contain }),
     onLoadError: () => setFailed(true),
   });
+
+  useCanvasResync(rive);
 
   const flying = useHeroMotion(rive ?? null);
 

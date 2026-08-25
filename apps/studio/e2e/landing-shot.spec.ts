@@ -1,15 +1,16 @@
 import { test } from '@playwright/test';
+import { artifactDir } from './fixtures';
 import fs from 'fs';
 
 test('capture the landing surface', async ({ page }) => {
-  fs.mkdirSync('ui-shots', { recursive: true });
+  const shots = artifactDir('ui-shots');
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
 
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/', { waitUntil: 'networkidle' });
   await page.waitForTimeout(3000);
-  await page.screenshot({ path: 'ui-shots/new-01-open.png' });
+  await page.screenshot({ path: `${shots}/new-01-open.png` });
 
   for (const [file, id, wait] of [
     ['new-02-process.png', '#pipeline', 900],
@@ -19,7 +20,7 @@ test('capture the landing surface', async ({ page }) => {
   ] as const) {
     await page.evaluate((sel) => document.querySelector(sel)?.scrollIntoView(), id);
     await page.waitForTimeout(wait);
-    await page.screenshot({ path: `ui-shots/${file}` });
+    await page.screenshot({ path: `${shots}/${file}` });
   }
 
   console.log('PAGE ERRORS: ' + (errors.length ? errors.join(' | ') : 'none'));

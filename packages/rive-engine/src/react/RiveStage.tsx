@@ -27,7 +27,10 @@ export function RiveStage({ component: RiveComponent, className }: RiveStageProp
 
   return (
     <div className={className} data-testid="rive-stage">
-      <RiveComponent />
+      {/* The canvas needs its own CSS size: the runtime measures the element
+          to size its backing store, and an unsized canvas measures 0 and
+          draws nothing. The wrapper owns the dimensions; this fills it. */}
+      <RiveComponent className="block h-full w-full" />
     </div>
   );
 }

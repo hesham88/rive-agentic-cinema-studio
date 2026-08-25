@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { inspectRiveContents } from './inspect';
+import { inputKind, inspectRiveContents, stateMachineInputError } from './inspect';
 import { RIVE_INPUT_TYPE } from './types';
 
 describe('inspectRiveContents', () => {
@@ -88,5 +88,39 @@ describe('inspectRiveContents', () => {
     });
     expect(m.artboards[0]!.stateMachines).toEqual([]);
     expect(m.artboards[0]!.animations).toEqual(['spin']);
+  });
+});
+
+describe('inputKind', () => {
+  it('maps each runtime type constant to its name', () => {
+    expect(inputKind(RIVE_INPUT_TYPE.Boolean)).toBe('boolean');
+    expect(inputKind(RIVE_INPUT_TYPE.Number)).toBe('number');
+    expect(inputKind(RIVE_INPUT_TYPE.Trigger)).toBe('trigger');
+  });
+
+  it('reports an unrecognised type as unknown rather than guessing', () => {
+    // A future runtime input type must surface as unknown, not silently
+    // masquerade as a boolean and get driven with the wrong API.
+    expect(inputKind(99)).toBe('unknown');
+    expect(inputKind(undefined)).toBe('unknown');
+  });
+});
+
+describe('stateMachineInputError', () => {
+  it('names the state machine that could not be instanced', () => {
+    // `stateMachineInputs` returning undefined is a real failure. Laundering it
+    // into "this machine has no inputs" hides a broken file behind an empty
+    // panel that looks deliberate.
+    const e = stateMachineInputError('SM', 'not-instanced');
+    expect(e.kind).toBe('parse');
+    expect(e.message).toContain('SM');
+    expect(e.message).toContain('not instanced');
+  });
+
+  it('preserves the underlying cause when the read throws', () => {
+    const e = stateMachineInputError('SM', new Error('boom'));
+    expect(e.kind).toBe('parse');
+    expect(e.message).toContain('SM');
+    expect(e.message).toContain('boom');
   });
 });

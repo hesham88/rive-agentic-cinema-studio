@@ -62,6 +62,18 @@ npm run deploy           # next build (static export) + firebase deploy
 is client-side, so authentication works unchanged on a static host — and a CDN
 deploy is cheaper, faster, and has no cold start.
 
+**What auth actually does here.** `AuthControl` (mounted on `/inspect` only)
+offers Google sign-in when the `NEXT_PUBLIC_FIREBASE_*` values are present, and
+renders **nothing at all** when they are not. It is deliberately absent from the
+landing page: `useAuth` triggers the dynamic `firebase/auth` import on mount, and
+pulling that chunk into the marketing page's critical path — for a control that
+gates nothing there — measurably delayed hydration, which showed up as Rive
+canvases still unsized several seconds in. Signing in does
+not gate any feature today: loading and inspecting a `.riv` is deliberately
+open, and the account exists so that per-user work can be attributed later. The
+decision of what to show is `lib/auth-state.ts` — pure, no React, no Firebase,
+and unit-tested; `lib/useAuth.ts` is the thin subscription around it.
+
 `firebase.json` sets immutable one-year cache headers on `.riv`, `.wasm`, `.js`,
 `.css` and `.woff2`. Those are content-addressed or versioned, and the `.riv`
 and `.wasm` payloads are the bulk of the transfer.
@@ -102,15 +114,19 @@ editor being open.
 
 ## Secrets
 
-`scripts/check-secrets.sh` runs before every commit via `.githooks/pre-commit`.
+`scripts/check-credentials.sh` runs before every commit via `.githooks/pre-commit`.
 Enable it after cloning:
 
 ```bash
 git config core.hooksPath .githooks
 ```
 
-It scans what is **staged**, not the working tree, because that is what a commit
-will contain. Three layers:
+It has two modes. With no arguments it scans what is **staged**, because that is
+what a commit will contain. With `--range A..B` it scans a commit range, which is
+what CI uses — nothing is ever staged on a build agent, so without the range mode
+the CI invocation would find no staged files, exit 0, and guard nothing.
+
+Either way, three layers:
 
 1. **Forbidden paths** — `.env`, agent tooling directories, `_OPERATIONS/`,
    service-account JSON, `.pem`, `.p12`, `id_rsa`. Caught by path, so a
@@ -123,8 +139,9 @@ will contain. Three layers:
    `GEMINI_API_KEY` and friends. Placeholders (`your-…`, `example`, `<…>`) pass,
    which is what keeps `.env.example` committable.
 
-Verified against three cases: a real key is blocked, a `_OPERATIONS/` path is
-blocked, and `.env.example` placeholders are allowed.
+The scanner has its own tests — `npm run test:secrets`, six cases across both
+modes. A guard with no tests is a guard that is trusted rather than known to
+work, which is the more dangerous of the two.
 
 **If a real key is ever committed, rotate it.** Removing the commit does not
 help — the repository is public and history is permanent.

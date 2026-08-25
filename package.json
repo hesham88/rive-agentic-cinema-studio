@@ -10,16 +10,20 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "vitest run --root packages/rive-engine",
+    "test": "vitest run",
     "test:watch": "vitest --root packages/rive-engine",
-    "typecheck": "tsc -b packages/rive-engine",
+    "typecheck": "tsc --noEmit -p packages/rive-engine && tsc --noEmit -p apps/studio/tsconfig.json",
     "dev": "npm run dev --workspace apps/studio",
     "build": "npm run build --workspace apps/studio",
-    "test:e2e": "npx playwright test --config apps/studio/playwright.config.ts",
+    "test:e2e": "npx playwright test --config apps/studio/playwright.config.ts --project=local",
     "agent": "python -m genassets.agent.run",
     "emulate": "firebase emulators:start --project rive-agentic-studio",
     "preview": "npm run build && firebase emulators:start --only hosting --project rive-agentic-studio",
-    "deploy": "npm run build && firebase deploy --only hosting --project rive-agentic-studio"
+    "deploy": "npm run build && firebase deploy --only hosting --project rive-agentic-studio",
+    "test:e2e:prod": "npx playwright test --config apps/studio/playwright.config.ts --project=production",
+    "test:secrets": "bash scripts/test-check-credentials.sh",
+    "test:py": "python -m pytest tools/genassets/tests -q",
+    "predeploy": "bash scripts/preflight-deploy.sh"
   },
   "devDependencies": {
     "typescript": "^5.6.0",

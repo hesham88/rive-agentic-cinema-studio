@@ -9,51 +9,125 @@
 @source '../../../packages/rive-engine/src';
 
 /* ===========================================================================
- * A colour-grading suite at 4am.
+ * NORTH STAR — "The colourist's suite at 3am."
  *
- * Near-black warm walls, instrument-grey surfaces, one lamp burning, and the
- * footage on the monitor as the only saturated thing in the room.
+ * A grading theatre after everyone has gone home. The walls are void-black with
+ * a blue undertone, because a flat black reads as an empty div and a blue-black
+ * reads as a room. The reference monitor is the only lit surface. One violet
+ * signal lamp on the panel says which control is live.
  *
- * That last line is a rule, not a mood. Every generated asset on this page is
- * full-colour; every piece of chrome around it is achromatic or the lamp. It
- * means our own output is always the brightest thing on screen, which is the
- * whole argument the page is making.
+ * IT REFUSES: warm nostalgia, and an orange accent. Orange is Rive's own
+ * (#ffa41c) — borrowing it would make this look like a fan site for the tool it
+ * is built on. Near-black-plus-vermilion is also the single most common look in
+ * generated design work, so it is a default, not a choice.
  *
- * The ground is warm-black (#0a0908), not blue-black. Blue-black reads as a
- * developer tool; warm-black reads as a room with a light in it.
+ * THE RULE THAT FOLLOWS: chrome is achromatic or violet; SATURATED COLOUR
+ * BELONGS TO THE ARTWORK. Every asset this studio makes is full-colour, and it
+ * is always the most colourful thing on screen. That is the page's argument
+ * expressed as a token.
+ *
+ * Combined from three systems in the refero corpus:
+ *   Frame.io    "midnight cinema projection room" — the blue-undertone void
+ *   Altitude    serif display on dark — print authority, "a private journal
+ *               rather than a dashboard"
+ *   Stability   "lavender pulse in a darkroom" — the violet signal family
  *
  * DO
- *   - hairlines for elevation, never shadows
- *   - the lamp on ONE element per viewport: the active one
- *   - numbers in mono, always tabular — they are content here, not labels
- *   - text hierarchy by luminance, not by weight
+ *   Use --color-signal on exactly ONE element per viewport: the live one.
+ *   Set display type in the serif at 400 — never bold; scale carries weight.
+ *   Keep every numeral in mono and tabular — numbers are content here.
+ *   Apply elevation as a hairline or a surface step, never a shadow.
+ *   Reserve radius 0 for imagery — a frame is square, like a contact sheet.
+ *   Pair each section's eyebrow with a frame number; this is a shot list.
  *
  * DON'T
- *   - no glass, no blur panels: an instrument has matte surfaces
- *   - no second accent colour, ever
- *   - no saturated chrome — colour belongs to the artwork
- *   - no drop shadows
+ *   Never use orange anywhere — it is the tool's colour, not the studio's.
+ *   Do not introduce a second accent; violet is the only chromatic action.
+ *   Don't apply drop shadows, glows or blur to any component.
+ *   Don't set body copy below 15px or above 17px — 16/1.55 is the reading size.
+ *   Never let chrome out-saturate an asset; the artwork wins every time.
+ *   Don't round images or video frames — square corners only.
+ *   Do not use --color-signal for body text; it fails sustained reading.
  * ======================================================================== */
 @theme {
-  /* Surfaces, darkest to lightest */
-  --color-room: #0a0908;
-  --color-wall: #100f0e;
-  --color-panel: #16151a;
-  --color-rule: #262429;
+  /* --- surfaces: void to instrument -------------------------------------
+     Five steps, blue-undertoned. Frame.io's #0a0a13 keeps a near-black from
+     reading as a flat empty div; every step above it is a real surface, not a
+     shadow. Depth here is a SURFACE VALUE, never an elevation effect. */
+  --color-room: #08070d;
+  --color-wall: #0d0c14;
+  --color-panel: #14131d;
+  --color-raise: #1c1a27;
+  --color-rule: #272433;
+  /* The one light plane. The page interrupts itself exactly once — Altitude's
+     move, a single off-white band on an otherwise dark page. */
+  --color-paper: #e9e6e1;
+  --color-ink: #14131d;
 
-  /* Text, by luminance */
-  --color-dim: #6b6873;
-  --color-read: #a5a1ab;
-  --color-bright: #f4f1ec;
+  /* --- text by luminance, never by weight ------------------------------- */
+  --color-dim: #6a6580;
+  --color-read: #a8a3bd;
+  --color-bright: #f2f0f7;
 
-  /* The lamp. One accent. Used on the active element only. */
-  --color-lamp: #ff6a2b;
-  --color-ember: #d9a066;
+  /* --- the signal: ONE accent, ONE action per view ---------------------- */
+  --color-signal: #8b7cff;
+  --color-signal-dim: #6f5fd6;
+  --color-glow: #c9c0ff;
+
+  /* --- type scale: size / line-height / tracking, per role --------------
+     Tracking in px rather than em, as every source system specifies it. The
+     negative tracking at display size is not a nicety: it is the difference
+     between type that reads as set and type that reads as a browser default. */
+  --text-display: 80px;
+  --leading-display: 0.96;
+  --tracking-display: -3.6px;
+
+  --text-heading-lg: 48px;
+  --leading-heading-lg: 1.02;
+  --tracking-heading-lg: -1.92px;
+
+  --text-heading: 28px;
+  --leading-heading: 1.25;
+  --tracking-heading: -0.7px;
+
+  --text-subheading: 20px;
+  --leading-subheading: 1.3;
+  --tracking-subheading: -0.2px;
+
+  --text-body: 16px;
+  --leading-body: 1.5;
+
+  --text-body-sm: 14px;
+  --leading-body-sm: 1.5;
+
+  /* Eyebrows and data. 0.90 leading is Frame.io's — an eyebrow sits TIGHT to
+     the headline it introduces, not floating above it. */
+  --text-caption: 12px;
+  --leading-caption: 0.9;
+  --tracking-caption: 0.72px;
+
+  --text-data: 11px;
+  --leading-data: 1.4;
+  --tracking-data: 0.5px;
+
+  /* --- radius per role --------------------------------------------------
+     The pill-against-square dichotomy is the signature. Uniform rounding is
+     the default that reads as unconsidered. */
+  --radius-frame: 0px;
+  --radius-card: 10px;
+  --radius-control: 4px;
+  --radius-pill: 9999px;
+
+  /* --- spacing: 8px unit ------------------------------------------------ */
+  --spacing-section: 96px;
+  --spacing-card: 24px;
+  --spacing-element: 24px;
 
   --font-display: var(--font-display), Georgia, serif;
   --font-body: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
 }
+
 
 :root {
   color-scheme: dark;
@@ -78,31 +152,56 @@ body {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'zero' 1;
-  letter-spacing: -0.02em;
+  font-size: var(--text-data);
+  line-height: var(--leading-data);
+  letter-spacing: var(--tracking-data);
 }
 
+/* An eyebrow sits TIGHT to the headline it introduces — 0.90 leading, not the
+   1.5 a paragraph gets. Floating it above with body leading is what makes a
+   section opener read as two unrelated elements instead of one unit. */
 .eyebrow {
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.2em;
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  letter-spacing: var(--tracking-caption);
   text-transform: uppercase;
   color: var(--color-dim);
 }
 
-/* A high-contrast serif on warm-black reads as a title card, not a dashboard.
-   That is the single decision the page's character rests on. */
+/* A transitional serif on a blue-black canvas reads as a title card rather
+   than a dashboard, and it is the single decision the page's character rests
+   on. Weight 400 always: the size does the work, the weight whispers.
+
+   Tracking is per SIZE, in px, because that is how it actually behaves — a
+   blanket em value under-tracks a 28px heading and wrecks an 80px display. */
 .display {
   font-family: var(--font-display);
   font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 0.94;
   color: var(--color-bright);
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-heading);
+  text-wrap: balance;
 }
 
+.display-xl {
+  font-size: var(--text-display);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+}
+
+.display-lg {
+  font-size: var(--text-heading-lg);
+  line-height: var(--leading-heading-lg);
+  letter-spacing: var(--tracking-heading-lg);
+}
+
+/* The one italic phrase per headline. Reserved, like the accent it uses. */
 .display em {
   font-style: italic;
-  color: var(--color-ember);
+  color: var(--color-glow);
 }
+
 
 /* ---------------------------------------------------------------------------
  * The timeline.
@@ -115,11 +214,13 @@ body {
   background: linear-gradient(
     to bottom,
     transparent,
-    var(--color-lamp) 12%,
-    var(--color-lamp) 88%,
+    var(--color-signal) 12%,
+    var(--color-signal) 88%,
     transparent
   );
-  box-shadow: 0 0 12px -2px var(--color-lamp);
+  /* No glow. The system's own rule forbids shadows and glows on any
+     component, and a lit hairline against a void reads as light on its own —
+     adding a bloom is the thing that makes an instrument look like a toy. */
 }
 
 .tick {
@@ -137,12 +238,79 @@ body {
  * the work instead — 70ms is about four frames at 60fps, the same offset a
  * hand-animated group uses for overlapping action.
  * ------------------------------------------------------------------------ */
+/* Reveal — a settle, not a fade.
+   ---------------------------------------------------------------------------
+   `translateY(10px)` with one eased curve is the motion every generated page
+   ships, and it reads as a fade because it is one. Real entrance motion has a
+   travel distance you can see and an arrival you can feel.
+
+   Curves are from the measured set in `construction-craft`:
+   ease-out-cubic (0.33,1,0.68,1) for the settle, and ease-out-back for the
+   overshoot on transform so the element arrives slightly past its mark and
+   comes back — three values, not two, which is what the canon calls a settle.
+
+   Opacity leads transform by 120ms. A thing that is already visible while it
+   is still moving reads as arriving; the two locked together reads as a slide. */
 .reveal {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translate3d(0, 22px, 0) scale(0.985);
   transition:
-    opacity 0.75s cubic-bezier(0.2, 0.7, 0.3, 1),
-    transform 0.75s cubic-bezier(0.2, 0.7, 0.3, 1);
+    opacity 0.5s cubic-bezier(0.33, 1, 0.68, 1),
+    transform 0.72s cubic-bezier(0.34, 1.28, 0.64, 1);
+  will-change: opacity, transform;
+}
+
+/* Horizontal variant — for anything entering from the shot-list rail, so the
+   motion agrees with the page's left-to-right reading direction. */
+.reveal-x {
+  opacity: 0;
+  transform: translate3d(-18px, 0, 0);
+  transition:
+    opacity 0.5s cubic-bezier(0.33, 1, 0.68, 1),
+    transform 0.72s cubic-bezier(0.34, 1.28, 0.64, 1);
+}
+.reveal-x[data-shown='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* The signal sweep — one lit element per viewport gets a travelling highlight.
+   Slow enough (5.5s) to read as an instrument idling rather than a loading bar. */
+@keyframes signal-sweep {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+.signal-line {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-signal) 35%,
+    var(--color-glow) 50%,
+    var(--color-signal) 65%,
+    transparent 100%
+  );
+  background-size: 250% 100%;
+  animation: signal-sweep 5.5s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+/* Idle float — 60-frame cycle at 60fps, the canon's figure for an idle bounce.
+   ease-in-out-sine both directions with no rest, so it never appears to stop. */
+@keyframes idle-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -6px, 0);
+  }
+}
+.float {
+  animation: idle-float 1s cubic-bezier(0.37, 0, 0.63, 1) infinite;
 }
 
 .reveal[data-shown='true'] {
@@ -167,17 +335,17 @@ body {
 }
 
 .panel-lit {
-  border-color: color-mix(in srgb, var(--color-lamp) 45%, var(--color-rule));
+  border-color: color-mix(in srgb, var(--color-signal) 45%, var(--color-rule));
 }
 
 *:focus-visible {
-  outline: 2px solid var(--color-lamp);
+  outline: 2px solid var(--color-signal);
   outline-offset: 3px;
   border-radius: 2px;
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--color-lamp) 30%, transparent);
+  background: color-mix(in srgb, var(--color-signal) 30%, transparent);
   color: var(--color-bright);
 }
 
@@ -192,8 +360,114 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .reveal {
+  .reveal,
+  .reveal-x {
     opacity: 1;
     transform: none;
   }
+  .signal-line,
+  .float {
+    animation: none;
+  }
 }
+
+/* ===========================================================================
+ * Components — built to the specifications in
+ * `_OPERATIONS/study/design-library/styles/`, not invented.
+ *
+ * The lesson that produced this block: `components` is the LARGEST field in
+ * every source record — four to five thousand characters of exact padding,
+ * per-role tracking in px, line-height per size, and hover behaviour per
+ * control. Designing from a north star while that sat unread is how a page
+ * ends up atmospheric and unspecific.
+ * ======================================================================== */
+
+/* Ghost is the default voice, filled is the exception.
+   Altitude states it outright: "the filled-inverse version is rare; the ghost
+   is the default voice". A page where every action is filled has no hierarchy
+   left to spend when something genuinely matters. */
+.btn {
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  line-height: 1;
+  padding: 12px 20px;
+  border-radius: var(--radius-pill);
+  transition:
+    background-color 0.28s cubic-bezier(0.33, 1, 0.68, 1),
+    border-color 0.28s cubic-bezier(0.33, 1, 0.68, 1),
+    color 0.28s cubic-bezier(0.33, 1, 0.68, 1),
+    transform 0.12s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--color-rule);
+  color: var(--color-read);
+}
+.btn-ghost:hover {
+  background: var(--color-raise);
+  border-color: var(--color-signal);
+  color: var(--color-bright);
+}
+
+.btn-filled {
+  background: var(--color-signal);
+  border: 1px solid var(--color-signal);
+  color: var(--color-room);
+}
+.btn-filled:hover {
+  background: var(--color-glow);
+  border-color: var(--color-glow);
+}
+
+/* 3 frames down at 60fps. The press is felt, not watched. */
+.btn:active {
+  transform: scale(0.985);
+}
+
+/* A nav link stays nearly invisible until interacted with: underline appears,
+   background NEVER shifts. Frame.io is explicit that the background change is
+   the wrong move here. */
+.nav-link {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  letter-spacing: var(--tracking-caption);
+  color: var(--color-dim);
+  text-decoration: none;
+  transition: color 0.28s cubic-bezier(0.33, 1, 0.68, 1);
+}
+.nav-link:hover {
+  color: var(--color-bright);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Depth is a surface step plus a hairline. Never a shadow. */
+.card {
+  background: var(--color-panel);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-card);
+  padding: var(--spacing-card);
+}
+
+/* The single light interruption. One off-white band on an otherwise dark page
+   is Altitude's move, and it is what stops a long dark page reading as one
+   undifferentiated scroll. */
+.band-paper {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+/* Artwork frames are SQUARE. A frame is a contact sheet, not a card. */
+.frame {
+  border-radius: var(--radius-frame);
+  border: 1px solid var(--color-rule);
+  overflow: hidden;
+}
+
+/* Traffic lights for the terminal chrome — the exact colours every source
+   system quotes, because they are the platform's own. */
+.dot-red { background: #ff5f57; }
+.dot-yellow { background: #febc20; }
+.dot-green { background: #28c840; }

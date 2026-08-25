@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { riv } from './fixtures';
 
 // scene.riv contains three artboards. The Scene artboard is a parallax world
 // (sky, moon, stars, two hill layers) plus a pipeline-generated rocket, all
@@ -6,7 +7,7 @@ import { test, expect } from '@playwright/test';
 // move is the rig transforming inversely to the intended camera.
 test('the scene ships every artboard and animates a camera move', async ({ page }) => {
   await page.goto('/inspect');
-  await page.setInputFiles('[data-testid="file-input"]', 'public/riv/scene.riv');
+  await page.setInputFiles('[data-testid="file-input"]', riv('scene.riv'));
 
   await expect(page.getByTestId('manifest-tree')).toBeVisible();
   const names = (await page.getByTestId('artboard-item').allTextContents()).join('|');
@@ -18,7 +19,7 @@ test('the scene ships every artboard and animates a camera move', async ({ page 
 
 test('selecting the Scene artboard renders its canvas', async ({ page }) => {
   await page.goto('/inspect');
-  await page.setInputFiles('[data-testid="file-input"]', 'public/riv/scene.riv');
+  await page.setInputFiles('[data-testid="file-input"]', riv('scene.riv'));
   await expect(page.getByTestId('manifest-tree')).toBeVisible();
 
   const scene = page.getByTestId('artboard-item').filter({ hasText: 'Scene' });

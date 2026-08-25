@@ -108,7 +108,7 @@ export function Process() {
 
         <p ref={foot} className="reveal num mt-8 rule-t pt-6 text-[13px] text-dim">
           86 KB raster <span className="text-dim/40">→</span>{' '}
-          <span className="text-lamp">868 B vector</span>
+          <span className="text-signal">868 B vector</span>
           <span className="ml-3 font-sans text-[13px] text-dim/70">
             a hundredth the size, infinitely scalable, and animatable
           </span>

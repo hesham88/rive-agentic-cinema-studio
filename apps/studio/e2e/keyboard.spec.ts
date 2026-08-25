@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { riv } from './fixtures';
 
-const FILE = 'public/riv/paper-plane-interactive.riv';
+const FILE = riv('paper-plane-interactive.riv');
 
 test('holding a key drives a bound boolean, releasing restores it', async ({ page }) => {
   await page.goto('/inspect');

@@ -1,11 +1,12 @@
 import { test, expect } from '@playwright/test';
+import { riv } from './fixtures';
 
 // Authored entirely through MCP: shapes from a traced Gemini image, an Idle
 // float timeline, a Hover timeline, a view model, pointer listeners, and a
 // state machine wiring them together.
 test('an interactive .riv authored via MCP exposes its state machine to our engine', async ({ page }) => {
   await page.goto('/inspect');
-  await page.setInputFiles('[data-testid="file-input"]', 'public/riv/paper-plane-interactive.riv');
+  await page.setInputFiles('[data-testid="file-input"]', riv('paper-plane-interactive.riv'));
 
   await expect(page.getByTestId('manifest-tree')).toBeVisible();
   await expect(page.getByTestId('status')).toHaveText('ready');

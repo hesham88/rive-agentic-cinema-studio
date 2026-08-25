@@ -1,6 +1,8 @@
 'use client';
 
 import { Fit, Layout, useRive } from '@rive-app/react-webgl2';
+import { useReducedMotionPause } from 'rive-engine/react';
+import { useCanvasResync } from 'rive-engine/react';
 import { useReveal } from './useScrollProgress';
 
 /**
@@ -71,7 +73,7 @@ const PIECES: readonly Piece[] = [
 function Tile({ piece, index }: { piece: Piece; index: number }) {
   const ref = useReveal<HTMLElement>(index * 80);
 
-  const { RiveComponent } = useRive({
+  const { rive, RiveComponent } = useRive({
     src: piece.file,
     artboard: piece.artboard,
     stateMachines: piece.stateMachine,
@@ -82,6 +84,12 @@ function Tile({ piece, index }: { piece: Piece; index: number }) {
     layout: new Layout({ fit: Fit.Contain }),
   });
 
+  // Sized before paused — see the note in Opening.tsx.
+  useCanvasResync(rive);
+
+  // Ambient playback: stops when the visitor asked for reduced motion.
+  useReducedMotionPause(rive ?? null);
+
   return (
     <article ref={ref} className="reveal flex flex-col">
       <div className="panel relative overflow-hidden">
@@ -89,7 +97,7 @@ function Tile({ piece, index }: { piece: Piece; index: number }) {
           <RiveComponent className="h-full w-full" />
         </div>
         {piece.hint && (
-          <p className="num pointer-events-none absolute bottom-2.5 right-2.5 rounded-sm border border-rule bg-room/80 px-2 py-1 text-[10px] text-ember">
+          <p className="num pointer-events-none absolute bottom-2.5 right-2.5 rounded-sm border border-rule bg-room/80 px-2 py-1 text-[10px] text-glow">
             {piece.hint}
           </p>
         )}
