@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { riv } from './fixtures';
 import { existsSync, readFileSync } from 'node:fs';
 import { toggleRig } from '../../../packages/rive-engine/src/core/riv/toggle';
 
@@ -19,7 +20,7 @@ import { toggleRig } from '../../../packages/rive-engine/src/core/riv/toggle';
  * and hand back a flat rectangle, so two captures always compare equal.
  */
 
-const REFERENCE = 'public/riv/toggle-editor.riv';
+const REFERENCE = riv('toggle-editor.riv');
 
 /**
  * Load bytes into the inspector and select a named artboard.

@@ -1,11 +1,12 @@
 import { test, expect } from '@playwright/test';
+import { riv } from './fixtures';
 
 // widget.riv exports TWO artboards - the plane and the Widget - which is only
 // possible because includeinexport (property key 802) is set on the non-default
 // artboard. Without it Rive silently ships only the default one.
 test('a multi-artboard .riv exposes every artboard', async ({ page }) => {
   await page.goto('/inspect');
-  await page.setInputFiles('[data-testid="file-input"]', 'public/riv/widget.riv');
+  await page.setInputFiles('[data-testid="file-input"]', riv('widget.riv'));
 
   await expect(page.getByTestId('manifest-tree')).toBeVisible();
   const items = page.getByTestId('artboard-item');
@@ -18,7 +19,7 @@ test('a multi-artboard .riv exposes every artboard', async ({ page }) => {
 
 test('the Widget artboard exposes its own view model', async ({ page }) => {
   await page.goto('/inspect');
-  await page.setInputFiles('[data-testid="file-input"]', 'public/riv/widget.riv');
+  await page.setInputFiles('[data-testid="file-input"]', riv('widget.riv'));
   await expect(page.getByTestId('manifest-tree')).toBeVisible();
 
   // Select the Widget artboard.
