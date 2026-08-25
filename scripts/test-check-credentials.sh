@@ -30,7 +30,11 @@ new_repo() {
   echo "$d"
 }
 
-run() { ( cd "$1" && shift && "$SCANNER" "$@" ) > /dev/null 2>&1; echo $?; }
+# Invoked via `bash`, not executed directly. The scripts were committed 100644
+# once, and on Linux that turns every call into "Permission denied" — which
+# surfaced as all six tests failing identically, a symptom that says nothing
+# about the scanner. The mode bit is fixed; this stops it mattering again.
+run() { ( cd "$1" && shift && bash "$SCANNER" "$@" ) > /dev/null 2>&1; echo $?; }
 
 # --- staged mode (the pre-commit path) ---------------------------------------
 

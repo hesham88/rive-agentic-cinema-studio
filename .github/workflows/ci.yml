@@ -84,8 +84,10 @@ jobs:
         with:
           python-version: '3.12'
 
+      # The [dev] extra, not the bare package: pytest is declared there, and
+      # `pip install -e tools/genassets` alone left the runner with no pytest.
       - name: Install the pipeline
-        run: pip install -e tools/genassets
+        run: pip install -e "tools/genassets[dev]"
 
       - name: Pipeline tests
         run: python -m pytest tools/genassets/tests -q
