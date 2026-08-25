@@ -7,7 +7,8 @@
   "title": "Mt Lassen",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/349207/mt-lassen"
+  "source": "https://openclipart.org/detail/349207/mt-lassen",
+  "aspect": 2.07
  },
  {
   "subject": "train",
@@ -17,7 +18,8 @@
   "title": "Auto Train",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/341653/auto-train"
+  "source": "https://openclipart.org/detail/341653/auto-train",
+  "aspect": 1.43
  },
  {
   "subject": "sports car",
@@ -27,7 +29,8 @@
   "title": "Sports Car Cop",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/339753/sports-car-cop"
+  "source": "https://openclipart.org/detail/339753/sports-car-cop",
+  "aspect": 1.62
  },
  {
   "subject": "robot",
@@ -37,7 +40,8 @@
   "title": "Industrial Welding Robot",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/332907/industrial-welding-robot"
+  "source": "https://openclipart.org/detail/332907/industrial-welding-robot",
+  "aspect": null
  },
  {
   "subject": "bicycle",
@@ -47,7 +51,8 @@
   "title": "Flat Design Race Bicycle",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/306285/flat-design-race-bicycle"
+  "source": "https://openclipart.org/detail/306285/flat-design-race-bicycle",
+  "aspect": 1.31
  },
  {
   "subject": "sailing boat",
@@ -57,7 +62,8 @@
   "title": "Sloop (PSF)",
   "artist": "Pearson Scott Foresman",
   "licence": "Public domain",
-  "source": "https://commons.wikimedia.org/wiki/File:Sloop_(PSF).svg"
+  "source": "https://commons.wikimedia.org/wiki/File:Sloop_(PSF).svg",
+  "aspect": 0.94
  },
  {
   "subject": "seahorse",
@@ -67,7 +73,8 @@
   "title": "Silver Stylized Seahorse Silhouette No Background",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/246581/silver-stylized-seahorse-silhouette-no-background"
+  "source": "https://openclipart.org/detail/246581/silver-stylized-seahorse-silhouette-no-background",
+  "aspect": 0.61
  },
  {
   "subject": "dna",
@@ -77,7 +84,8 @@
   "title": "Symbolic Dna Sequencing",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/307233/symbolic-dna-sequencing"
+  "source": "https://openclipart.org/detail/307233/symbolic-dna-sequencing",
+  "aspect": 0.96
  },
  {
   "subject": "cat",
@@ -87,7 +95,8 @@
   "title": "Sad Cat",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/332405/sad-cat"
+  "source": "https://openclipart.org/detail/332405/sad-cat",
+  "aspect": 1.06
  },
  {
   "subject": "bird",
@@ -97,7 +106,8 @@
   "title": "A Pukaka Water Bird In New Zealand",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/322003/a-pukaka-water-bird-in-new-zealand"
+  "source": "https://openclipart.org/detail/322003/a-pukaka-water-bird-in-new-zealand",
+  "aspect": null
  },
  {
   "subject": "cartoon boy",
@@ -107,7 +117,8 @@
   "title": "A Boy Enjoying Chips",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/321933/a-boy-enjoying-chips"
+  "source": "https://openclipart.org/detail/321933/a-boy-enjoying-chips",
+  "aspect": null
  },
  {
   "subject": "butterfly",
@@ -117,7 +128,8 @@
   "title": "Decorative Butterfly By Linnaea Mallette Isolated Vectorized",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/326562/decorative-butterfly-by-linnaea-mallette-isolated-vectorized"
+  "source": "https://openclipart.org/detail/326562/decorative-butterfly-by-linnaea-mallette-isolated-vectorized",
+  "aspect": 1.43
  },
  {
   "subject": "rocket",
@@ -127,7 +139,8 @@
   "title": "Animation Of Kliponiuscartoonrocket Using Javascript",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/279586/animation-of-kliponiuscartoonrocket-using-javascript"
+  "source": "https://openclipart.org/detail/279586/animation-of-kliponiuscartoonrocket-using-javascript",
+  "aspect": null
  },
  {
   "subject": "telescope",
@@ -137,7 +150,8 @@
   "title": "James Webb Space Telescope",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/334985/james-webb-space-telescope"
+  "source": "https://openclipart.org/detail/334985/james-webb-space-telescope",
+  "aspect": 1.0
  },
  {
   "subject": "whale",
@@ -147,7 +161,8 @@
   "title": "Ocean Whale Remix",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/335745/ocean-whale-remix"
+  "source": "https://openclipart.org/detail/335745/ocean-whale-remix",
+  "aspect": 1.5
  },
  {
   "subject": "magnet",
@@ -157,7 +172,8 @@
   "title": "Muknud",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/355345/muknud"
+  "source": "https://openclipart.org/detail/355345/muknud",
+  "aspect": null
  },
  {
   "subject": "skeleton",
@@ -167,7 +183,8 @@
   "title": "Vintage Skeleton Couple Dancers Line Art",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/337583/vintage-skeleton-couple-dancers-line-art"
+  "source": "https://openclipart.org/detail/337583/vintage-skeleton-couple-dancers-line-art",
+  "aspect": 0.68
  },
  {
   "subject": "tropical fish",
@@ -177,7 +194,8 @@
   "title": "Pilot Fish Fixed",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/336612/pilot-fish-fixed"
+  "source": "https://openclipart.org/detail/336612/pilot-fish-fixed",
+  "aspect": 2.82
  },
  {
   "subject": "cartoon girl",
@@ -187,7 +205,8 @@
   "title": "Girl",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/348072/girl"
+  "source": "https://openclipart.org/detail/348072/girl",
+  "aspect": 0.71
  },
  {
   "subject": "jellyfish",
@@ -197,7 +216,8 @@
   "title": "Drunken Jellyfish",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/353676/drunken-jellyfish"
+  "source": "https://openclipart.org/detail/353676/drunken-jellyfish",
+  "aspect": 1.0
  },
  {
   "subject": "sailboat",
@@ -207,7 +227,8 @@
   "title": "Origami Sailboat",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/326640/origami-sailboat"
+  "source": "https://openclipart.org/detail/326640/origami-sailboat",
+  "aspect": 0.67
  },
  {
   "subject": "dolphin",
@@ -217,7 +238,8 @@
   "title": "Tribal Dolphin",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/235598/tribal-dolphin"
+  "source": "https://openclipart.org/detail/235598/tribal-dolphin",
+  "aspect": 1.51
  },
  {
   "subject": "fox",
@@ -227,7 +249,8 @@
   "title": "Arctic Fox",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/355306/arctic-fox"
+  "source": "https://openclipart.org/detail/355306/arctic-fox",
+  "aspect": null
  },
  {
   "subject": "owl",
@@ -237,7 +260,8 @@
   "title": "Cartoon Owl Asleep",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/266931/cartoon-owl-asleep"
+  "source": "https://openclipart.org/detail/266931/cartoon-owl-asleep",
+  "aspect": 1.02
  },
  {
   "subject": "tree",
@@ -247,7 +271,8 @@
   "title": "Search Tree",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/324463/search-tree"
+  "source": "https://openclipart.org/detail/324463/search-tree",
+  "aspect": 1.25
  },
  {
   "subject": "human heart",
@@ -257,7 +282,8 @@
   "title": "Normal Human Heart",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/348757/normal-human-heart"
+  "source": "https://openclipart.org/detail/348757/normal-human-heart",
+  "aspect": 0.76
  },
  {
   "subject": "airplane",
@@ -267,6 +293,7 @@
   "title": "Airplane Aeroplane Minimal Outline",
   "artist": "-",
   "licence": "CC0 1.0",
-  "source": "https://openclipart.org/detail/311083/airplane-aeroplane-minimal-outline"
+  "source": "https://openclipart.org/detail/311083/airplane-aeroplane-minimal-outline",
+  "aspect": 2.95
  }
 ]

@@ -43,9 +43,19 @@ const TILES = [
 ] as const;
 
 export function HeroCollage() {
-  // Widest pieces first — a collage reads better when the biggest tiles are the
-  // most detailed ones, and path count is a fair proxy for detail here.
-  const picks = [...manifest].sort((a, b) => b.paths - a.paths).slice(0, TILES.length);
+  // Square-ish pieces only, THEN richest first.
+  //
+  // Sorting by path count alone put a 1908x923 mountain panorama into a 96px
+  // square tile, where `object-contain` collapsed it to an invisible sliver —
+  // three tiles rendered as empty plates and it read as a broken image. Path
+  // count favours exactly the panoramas that cannot survive the crop, so the
+  // aspect filter has to come first.
+  //
+  // 0.62-1.6 is the band a square tile can hold without the art vanishing.
+  const picks = [...manifest]
+    .filter((p) => p.aspect != null && p.aspect >= 0.62 && p.aspect <= 1.6)
+    .sort((a, b) => b.paths - a.paths)
+    .slice(0, TILES.length);
 
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 hidden xl:block">
