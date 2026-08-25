@@ -1,19 +1,49 @@
 #!/usr/bin/env bash
 # Block secrets from entering the repository.
 #
-# Runs as a pre-commit hook and in CI. Scans what is actually STAGED, not the
-# working tree, because that is what a commit will contain.
+# Two modes, because the two callers see different things:
+#
+#   (no args)          pre-commit. Scans what is STAGED, not the working tree,
+#                      because that is what the commit will contain.
+#   --range A..B       CI. Scans a commit range. Nothing is ever staged on a
+#                      build agent, so without this mode the CI invocation finds
+#                      "no staged files", exits 0, and guards nothing at all.
 #
 # The repo is public and git history is permanent: a key committed once is
 # compromised even if the next commit removes it. This exists so that safety is
 # mechanical rather than a thing someone has to remember.
+#
+# Tested by scripts/test-check-credentials.sh.
 set -euo pipefail
+
+mode=staged
+range=
+case "${1:-}" in
+  --range)
+    mode=range
+    range="${2:-}"
+    [ -z "$range" ] && { echo "usage: $0 --range <A..B>" >&2; exit 2; }
+    ;;
+  "") ;;
+  *) echo "usage: $0 [--range <A..B>]" >&2; exit 2 ;;
+esac
+
+# One pair of accessors, so every rule below is identical in both modes.
+if [ "$mode" = range ]; then
+  changed_files() { git diff --name-only --diff-filter=ACM "$range"; }
+  added_lines()   { git diff -U0 --diff-filter=ACM "$range"; }
+  subject="$range"
+else
+  changed_files() { git diff --cached --name-only --diff-filter=ACM; }
+  added_lines()   { git diff --cached -U0 --diff-filter=ACM; }
+  subject="staged files"
+fi
 
 RED=$'\033[31m'; GREEN=$'\033[32m'; YELLOW=$'\033[33m'; OFF=$'\033[0m'
 fail=0
 
-staged=$(git diff --cached --name-only --diff-filter=ACM || true)
-[ -z "$staged" ] && { echo "${GREEN}no staged files${OFF}"; exit 0; }
+staged=$(changed_files || true)
+[ -z "$staged" ] && { echo "${GREEN}nothing to scan${OFF} ($subject)"; exit 0; }
 
 # --- 1. Files that must never be committed, whatever they contain -------------
 # Matched by path. .gitignore already excludes these; this catches `git add -f`
@@ -43,7 +73,7 @@ declare -a patterns=(
   '"private_key"[[:space:]]*:'                  # GCP service-account JSON
 )
 
-added=$(git diff --cached -U0 --diff-filter=ACM | grep '^+' | grep -v '^+++' || true)
+added=$(added_lines | grep '^+' | grep -v '^+++' || true)
 
 for p in "${patterns[@]}"; do
   # `-e` is required: several patterns begin with '-' (e.g. the PEM header),
@@ -90,4 +120,4 @@ EOM
   exit 1
 fi
 
-echo "${GREEN}secret scan clean${OFF} ($(echo "$staged" | wc -l | tr -d ' ') staged files)"
+echo "${GREEN}secret scan clean${OFF} ($(echo "$staged" | wc -l | tr -d ' ') files in $subject)"

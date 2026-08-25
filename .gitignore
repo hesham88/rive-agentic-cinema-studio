@@ -61,8 +61,10 @@ __pycache__/
 *credentials*
 *secret*
 # ...but the guard script itself must ship, or a fresh clone has a
-# pre-commit hook pointing at a file that does not exist.
+# pre-commit hook pointing at a file that does not exist. Its tests must ship
+# for the same reason: CI runs them, and an untested guard is merely trusted.
 !scripts/check-credentials.sh
+!scripts/test-check-credentials.sh
 service-account*.json
 gcp-*.json
 
@@ -90,3 +92,6 @@ apps/studio/out/
 # large — the repo is not where design screenshots belong.
 apps/studio/ui-shots/
 apps/studio/test-results/
+
+# Cumulative Gemini spend ledger. Local accounting, not shared state.
+tools/genassets/.out/
