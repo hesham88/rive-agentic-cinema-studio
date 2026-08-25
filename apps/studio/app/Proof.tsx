@@ -92,7 +92,7 @@ function Tile({ piece, index }: { piece: Piece; index: number }) {
           <RiveComponent className="h-full w-full" />
         </div>
         {piece.hint && (
-          <p className="num pointer-events-none absolute bottom-2.5 right-2.5 rounded-sm border border-rule bg-room/80 px-2 py-1 text-[10px] text-ember">
+          <p className="num pointer-events-none absolute bottom-2.5 right-2.5 rounded-sm border border-rule bg-room/80 px-2 py-1 text-[10px] text-glow">
             {piece.hint}
           </p>
         )}

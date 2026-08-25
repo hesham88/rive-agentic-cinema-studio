@@ -73,7 +73,7 @@ function Claim({ claim, index }: { claim: (typeof CLAIMS)[number]; index: number
   return (
     <div ref={ref} className="reveal bg-panel p-6">
       <dt className="flex items-baseline gap-3">
-        <span className="num text-[10px] text-lamp">{String(index + 1).padStart(2, '0')}</span>
+        <span className="num text-[10px] text-signal">{String(index + 1).padStart(2, '0')}</span>
         <span className="text-[15px] font-medium text-bright">{claim.k}</span>
       </dt>
       <dd className="mt-2.5 pl-8 text-[14px] leading-relaxed text-read">{claim.v}</dd>

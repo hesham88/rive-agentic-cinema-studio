@@ -227,6 +227,12 @@ def _get(url: str, *, timeout: int = 40) -> bytes:
         raise SourcingError(f"{url} -> HTTP {e.code}") from e
     except urllib.error.URLError as e:
         raise SourcingError(f"{url} -> {e.reason}") from e
+    except (TimeoutError, OSError) as e:
+        # A socket read that stalls raises TimeoutError, which is NOT a
+        # URLError — so without this it escapes as an unhandled exception and
+        # one slow file aborts an entire harvest. Batch fetching from public
+        # galleries hits this regularly.
+        raise SourcingError(f"{url} -> {type(e).__name__}: {e}") from e
 
 
 def _strip_tags(html: str) -> str:

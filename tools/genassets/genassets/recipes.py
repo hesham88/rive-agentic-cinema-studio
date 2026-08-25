@@ -241,6 +241,18 @@ def dolphin(u: float = 100.0) -> Recipe:
     forms.append(Form("pectoral-near",
                       tapered(u * 0.10, u * 0.28, -u * 0.62, u * 0.94,
                               u * 0.34, u * 0.12), local=FIN))
+    forms.append(Form("pectoral-near-edge",
+                      tapered(u * 0.02, u * 0.36, -u * 0.60, u * 0.90,
+                              u * 0.10, u * 0.05), local=DORSAL,
+                      shade=False, clip="pectoral-near"))
+    forms.append(Form("pectoral-far-edge",
+                      tapered(-u * 0.16, u * 0.16, -u * 0.70, u * 0.62,
+                              u * 0.09, u * 0.045), local=BODY_DARK,
+                      shade=False, clip="pectoral-far"))
+    forms.append(Form("fluke-keel",
+                      tapered(-u * 2.00, -u * 0.02, -u * 2.40, -u * 0.34,
+                              u * 0.07, u * 0.04), local=DORSAL,
+                      shade=False, clip="fluke-upper"))
     forms.insert(2, Form("cape", ellipse(-u * 0.04, -u * 0.34, u * 1.30, u * 0.26,
                                          segments=18), local=DORSAL, rim=False, clip="body"))
     forms.insert(3, Form("belly", ellipse(u * 0.06, u * 0.42, u * 1.06, u * 0.18,
@@ -257,6 +269,15 @@ def dolphin(u: float = 100.0) -> Recipe:
                               u * 0.20, u * 0.09), local=VENTRAL, rim=False, clip="rostrum"))
     forms.append(Form("blowhole", ellipse(u * 0.86, -u * 0.42, u * 0.09, u * 0.05,
                                           segments=8), local=BODY_DARK, shade=False))
+    # The melon crease and the blowhole ridge — small, but they are what stop a
+    # dolphin's head reading as a smooth cone.
+    forms.append(Form("melon-crease",
+                      tapered(u * 1.24, -u * 0.06, u * 0.72, -u * 0.30,
+                              u * 0.05, u * 0.03), local=DORSAL,
+                      shade=False, clip="body"))
+    forms.append(Form("blowhole-ridge",
+                      ellipse(u * 0.86, -u * 0.36, u * 0.13, u * 0.04, segments=8),
+                      local=DORSAL, shade=False, clip="body"))
     forms.append(Form("peduncle-keel",
                       tapered(-u * 1.40, u * 0.16, -u * 1.98, u * 0.06,
                               u * 0.16, u * 0.08), local=DORSAL, rim=False, clip="peduncle"))
@@ -267,8 +288,15 @@ def dolphin(u: float = 100.0) -> Recipe:
     # Rake marks: the pale healed scars every wild bottlenose carries. Small,
     # irregular and asymmetric - which is also what stops the flank reading as
     # an airbrushed panel.
+    # Merging the body into one silhouette costs the paths its parts used to
+    # carry, so the detail that replaces them has to be real. A wild bottlenose
+    # is covered in rake marks — healed scars from other dolphins' teeth — and
+    # they run in near-parallel sets, at varying lengths, never evenly spaced.
     for j, (rx, ry, rl) in enumerate(((-0.30, -0.18, 0.34), (-0.12, -0.06, 0.28),
-                                      (-0.44, 0.04, 0.24))):
+                                      (-0.44, 0.04, 0.24), (-0.26, -0.10, 0.30),
+                                      (-0.08, -0.16, 0.22), (-0.38, -0.02, 0.26),
+                                      (-0.18, 0.06, 0.20), (0.06, -0.12, 0.24),
+                                      (-0.50, -0.08, 0.18), (-0.02, 0.02, 0.26))):
         forms.append(Form(
             f"rake-{j + 1}",
             tapered(u * rx, u * ry, u * (rx + rl), u * (ry + 0.06),
@@ -281,6 +309,19 @@ def dolphin(u: float = 100.0) -> Recipe:
     forms.append(Form("dorsal-edge",
                       tapered(u * 0.14, -u * 1.12, -u * 0.24, -u * 0.48,
                               u * 0.07, u * 0.13), local=DORSAL, rim=False, clip="dorsal"))
+    # Speckling along the flank where countershading fades into the belly — a
+    # real bottlenose marking, and the transition a hard-edged cape cannot make
+    # on its own.
+    for j, (sx, sy, sr) in enumerate(((-0.66, 0.22, 0.05), (-0.40, 0.28, 0.04),
+                                      (-0.14, 0.30, 0.045), (0.14, 0.26, 0.035),
+                                      (0.42, 0.20, 0.04), (-0.54, 0.14, 0.03),
+                                      (-0.02, 0.18, 0.03), (0.30, 0.10, 0.035))):
+        forms.append(Form(
+            f"speckle-{j + 1}",
+            ellipse(u * sx, u * sy, u * sr, u * sr * 0.8, segments=8),
+            local=DORSAL, shade=False, clip="body",
+        ))
+
     forms.append(Form("eye", ellipse(u * 1.02, -u * 0.06, u * 0.06, u * 0.07,
                                      segments=8), role="shadow", shade=False))
 

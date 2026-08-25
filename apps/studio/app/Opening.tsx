@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useCanvasResync } from 'rive-engine/react';
 import { Fit, Layout, useRive } from '@rive-app/react-webgl2';
-import { HeroMark } from './HeroMark';
 import { useEffect, useRef, useState } from 'react';
 
 /**
@@ -92,7 +91,15 @@ export function Opening() {
       <div className="relative z-10 mx-auto grid min-h-dvh max-w-[1400px] items-center gap-14 px-6 pb-20 pt-28 lg:grid-cols-[1fr_minmax(0,540px)] lg:gap-12 lg:pl-[224px] xl:gap-16">
         <div>
           {/* The mark this studio generated for itself, gliding. */}
-          <HeroMark className="mb-6 h-[110px] w-[165px] lg:mb-8" />
+          {/* The hero mark is deliberately absent.
+              It used to sit here: a two-path, two-colour paper plane that the
+              pipeline's own quality gate now rejects (it needs 80-160 paths and
+              24-36 colours). Shipping it beside the sentence "everything on this
+              page was made that way" argued the opposite of what the page claims.
+
+              Its removal is also the palette's own rule applied: ONE chromatic
+              action per view. The monitor is the artwork, so the monitor is the
+              only saturated thing above the fold, and the type carries the rest. */}
 
           <p className="eyebrow whitespace-nowrap">Agentic studio · web &amp; cinema</p>
 
@@ -114,7 +121,7 @@ export function Opening() {
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <Link
               href="/inspect"
-              className="num rounded-sm bg-lamp px-5 py-2.5 text-[13px] font-medium text-room transition-opacity hover:opacity-90"
+              className="num rounded-sm bg-signal px-5 py-2.5 text-[13px] font-medium text-room transition-opacity hover:opacity-90"
             >
               open the inspector
             </Link>
@@ -135,7 +142,7 @@ export function Opening() {
                 <div className="flex h-full items-center justify-center px-6 text-center">
                   <p className="num text-[13px] text-dim">
                     scene.riv did not load —{' '}
-                    <code className="text-ember">/riv/scene.riv</code>
+                    <code className="text-glow">/riv/scene.riv</code>
                   </p>
                 </div>
               ) : (
@@ -149,7 +156,7 @@ export function Opening() {
             <div className="flex items-baseline justify-between">
               <p className="eyebrow">CameraMove · scene.riv</p>
               <p className="num text-[11px] text-dim">
-                <span className="text-ember">{String(frame).padStart(3, '0')}</span>
+                <span className="text-glow">{String(frame).padStart(3, '0')}</span>
                 <span className="text-dim/40"> / {TOTAL}</span>
               </p>
             </div>
@@ -159,12 +166,12 @@ export function Opening() {
                 <li key={b.name} className="min-w-0">
                   <div
                     className={`h-px w-full transition-colors duration-500 ${
-                      i <= beat ? 'bg-lamp' : 'bg-rule'
+                      i <= beat ? 'bg-signal' : 'bg-rule'
                     }`}
                   />
                   <p
                     className={`num mt-2 text-[10px] transition-colors duration-500 ${
-                      i === beat ? 'text-ember' : 'text-dim/50'
+                      i === beat ? 'text-glow' : 'text-dim/50'
                     }`}
                   >
                     {String(b.frame).padStart(3, '0')}

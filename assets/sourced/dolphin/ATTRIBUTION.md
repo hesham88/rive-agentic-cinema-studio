@@ -6,3 +6,7 @@ Vector art sourced from open repositories. Every file below is licensed for reus
 | --- | --- | --- | --- | --- |
 | `201905-bottlenosedolphin.svg` | 201905 BottlenoseDolphin | DataBase Center for Life Science (DBCLS) | CC BY 4.0 | https://commons.wikimedia.org/wiki/File:201905_BottlenoseDolphin.svg |
 | `dolphin-head.svg` | Dolphin head | Petwoe | Public domain | https://commons.wikimedia.org/wiki/File:Dolphin_head.svg |
+| `dolphin-pattern.svg` | Dolphin Pattern | - | CC0 1.0 | https://openclipart.org/detail/288761/dolphin-pattern |
+| `dolphin.svg` | Dolphin | - | CC0 1.0 | https://openclipart.org/detail/269678/dolphin |
+| `jumping-dolphin.svg` | Jumping Dolphin | - | CC0 1.0 | https://openclipart.org/detail/244710/jumping-dolphin |
+| `tribal-dolphin.svg` | Tribal Dolphin | - | CC0 1.0 | https://openclipart.org/detail/235598/tribal-dolphin |

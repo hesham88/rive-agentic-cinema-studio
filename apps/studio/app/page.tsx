@@ -4,6 +4,7 @@ import { Why } from './Why';
 import { Process } from './Process';
 import { Engines } from './Engines';
 import { KitShowcase } from './KitShowcase';
+import { Gallery } from './Gallery';
 import { Proof } from './Proof';
 import { ShotList } from './ShotList';
 
@@ -42,7 +43,7 @@ export default function Home() {
             </a>
             <Link
               href="/inspect"
-              className="num rounded-sm border border-rule px-3 py-1.5 text-[11px] text-read transition-colors hover:border-lamp/60 hover:text-lamp"
+              className="num rounded-sm border border-rule px-3 py-1.5 text-[11px] text-read transition-colors hover:border-signal/60 hover:text-signal"
             >
               inspector →
             </Link>
@@ -55,6 +56,7 @@ export default function Home() {
         <Why />
         <Process />
         <Engines />
+        <Gallery />
         <KitShowcase />
         <Proof />
       </main>

@@ -7,3 +7,7 @@ Vector art sourced from open repositories. Every file below is licensed for reus
 | `seahorse-connect-the-dots.svg` | Seahorse - connect the dots | arkaline | CC0 | https://commons.wikimedia.org/wiki/File:Seahorse_-_connect_the_dots.svg |
 | `seahorse-lifecycle.svg` | Seahorse lifecycle | Shyamal | CC0 | https://commons.wikimedia.org/wiki/File:Seahorse_lifecycle.svg |
 | `heraldry-fish-123.svg` | Heraldry Fish 123 | Mrmw | CC0 | https://commons.wikimedia.org/wiki/File:Heraldry_Fish_123.svg |
+| `silver-stylized-seahorse-silhouette-no-background.svg` | Silver Stylized Seahorse Silhouette No Background | - | CC0 1.0 | https://openclipart.org/detail/246581/silver-stylized-seahorse-silhouette-no-background |
+| `silver-stylized-seahorse-silhouette.svg` | Silver Stylized Seahorse Silhouette | - | CC0 1.0 | https://openclipart.org/detail/246580/silver-stylized-seahorse-silhouette |
+| `spectral-stylized-seahorse-silhouette-no-background.svg` | Spectral Stylized Seahorse Silhouette No Background | - | CC0 1.0 | https://openclipart.org/detail/246579/spectral-stylized-seahorse-silhouette-no-background |
+| `spectral-stylized-seahorse-silhouette.svg` | Spectral Stylized Seahorse Silhouette | - | CC0 1.0 | https://openclipart.org/detail/246578/spectral-stylized-seahorse-silhouette |
