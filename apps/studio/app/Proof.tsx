@@ -1,6 +1,7 @@
 'use client';
 
 import { Fit, Layout, useRive } from '@rive-app/react-webgl2';
+import { useReducedMotionPause } from 'rive-engine/react';
 import { useCanvasResync } from 'rive-engine/react';
 import { useReveal } from './useScrollProgress';
 
@@ -83,7 +84,11 @@ function Tile({ piece, index }: { piece: Piece; index: number }) {
     layout: new Layout({ fit: Fit.Contain }),
   });
 
+  // Sized before paused — see the note in Opening.tsx.
   useCanvasResync(rive);
+
+  // Ambient playback: stops when the visitor asked for reduced motion.
+  useReducedMotionPause(rive ?? null);
 
   return (
     <article ref={ref} className="reveal flex flex-col">

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useCanvasResync } from 'rive-engine/react';
 import { Fit, Layout, useRive } from '@rive-app/react-webgl2';
+import { useReducedMotionPause } from 'rive-engine/react';
 import { useEffect, useRef, useState } from 'react';
 import { HeroCollage } from './HeroCollage';
 
@@ -54,12 +55,25 @@ export function Opening() {
     onLoadError: () => setFailed(true),
   });
 
+  // ORDER MATTERS. The drawing buffer is sized first; only then is the motion
+  // preference applied. Pausing the runtime before it has sized its surface
+  // leaves the canvas at the 300x150 HTML default, drawing into nothing — the
+  // exact failure useCanvasResync exists to prevent, reintroduced from the
+  // other end.
   useCanvasResync(rive);
+
+  // Ambient playback: stops when the visitor asked for reduced motion.
+  const reducedMotion = useReducedMotionPause(rive ?? null);
 
   // The runtime exposes no frame cursor, so the readout runs on a wall clock in
   // step with the looping timeline rather than reaching into internals.
+  //
+  // It is its own clock, which means it does NOT stop just because the scene
+  // was paused — under reduced motion the graphic froze while the counter kept
+  // spinning beside it, which is both wrong and worse than either alone. The
+  // readout is animation too, so it stops with everything else.
   useEffect(() => {
-    if (!rive) return;
+    if (!rive || reducedMotion) return;
     startedAt.current = performance.now();
     let raf = 0;
     const tick = () => {
@@ -69,7 +83,7 @@ export function Opening() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [rive]);
+  }, [rive, reducedMotion]);
 
   const beat = BEATS.reduce((acc, b, i) => (frame >= b.frame ? i : acc), 0);
 
@@ -163,7 +177,9 @@ export function Opening() {
             <div className="flex items-baseline justify-between">
               <p className="eyebrow">CameraMove · scene.riv</p>
               <p className="num text-[11px] text-dim">
-                <span className="text-glow">{String(frame).padStart(3, '0')}</span>
+                <span data-testid="camera-frame" className="text-glow">
+                  {String(frame).padStart(3, '0')}
+                </span>
                 <span className="text-dim/40"> / {TOTAL}</span>
               </p>
             </div>

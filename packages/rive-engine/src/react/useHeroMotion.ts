@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { Rive } from '@rive-app/webgl2';
+import { usePrefersReducedMotion } from './usePrefersReducedMotion';
 
 /**
  * Drives the hero mark's glide.
@@ -50,6 +51,7 @@ const DEFAULTS: Required<HeroMotionOptions> = {
 
 export function useHeroMotion(rive: Rive | null, options: HeroMotionOptions = {}) {
   const [ready, setReady] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
   const pointer = useRef({ x: 0, y: 0 });
   const smoothed = useRef({ x: 0, y: 0 });
 
@@ -76,6 +78,17 @@ export function useHeroMotion(rive: Rive | null, options: HeroMotionOptions = {}
     const glide = vm.number('glide');
     if (!lift || !bank || !glide) return;
     setReady(true);
+
+    // Reduced motion: place the mark at rest and stop. No rAF loop, and no
+    // pointer listener either — a mark that chases the cursor is still motion,
+    // and the preference is about motion, not about animation loops
+    // specifically. The artwork stays fully visible; only the movement goes.
+    if (reducedMotion) {
+      glide.value = o.origin.x;
+      lift.value = o.origin.y;
+      bank.value = 0;
+      return;
+    }
 
     const onPointer = (e: PointerEvent) => {
       // Normalised to the viewport, so the pull is the same on any screen.
@@ -128,9 +141,12 @@ export function useHeroMotion(rive: Rive | null, options: HeroMotionOptions = {}
       cancelAnimationFrame(raf);
       window.removeEventListener('pointermove', onPointer);
     };
-    // `rive` alone: the settings ref is read live inside the loop, so a prop
-    // change takes effect without restarting the clock.
-  }, [rive]);
+    // `rive` and the motion preference. The settings ref is read live inside
+    // the loop, so an ordinary prop change takes effect without restarting the
+    // clock; flipping the preference must tear the loop down, so it belongs
+    // here rather than in the ref.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rive, reducedMotion]);
 
   return ready;
 }

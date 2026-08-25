@@ -13,5 +13,7 @@ export * from './InputControls';
 export * from './ViewModelControls';
 export * from './useRiveChannels';
 export * from './useHeroMotion';
+export * from './usePrefersReducedMotion';
+export * from './useReducedMotionPause';
 export * from './ui/RiveControls';
 export { useCanvasResync } from './useCanvasResync';
