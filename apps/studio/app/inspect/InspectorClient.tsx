@@ -14,6 +14,7 @@ import {
   type RiveSource,
   type Selection,
 } from 'rive-engine/react';
+import { AuthControl } from '../AuthControl';
 
 /**
  * Loads one source and owns the single Rive instance for it.
@@ -95,11 +96,14 @@ export function InspectorClient() {
 
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-6 p-8">
-      <header>
-        <h1 className="text-2xl font-semibold">Rive Inspector</h1>
-        <p className="text-sm opacity-70">
-          Load a .riv file to enumerate its artboards, state machines, and inputs.
-        </p>
+      <header className="flex items-start justify-between gap-6">
+        <div>
+          <h1 className="text-2xl font-semibold">Rive Inspector</h1>
+          <p className="text-sm opacity-70">
+            Load a .riv file to enumerate its artboards, state machines, and inputs.
+          </p>
+        </div>
+        <AuthControl />
       </header>
 
       <input
