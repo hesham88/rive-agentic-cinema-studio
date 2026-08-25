@@ -52,10 +52,17 @@ def key_to_alpha(
     """
     src, dst = pathlib.Path(src), pathlib.Path(dst)
     im = Image.open(src).convert("RGBA")
-    arr = np.asarray(im).astype(np.int16)
+    # int32, NOT int16. A channel difference reaches 255, and 255 squared is
+    # 65025 — past int16's 32767, so the square wraps NEGATIVE and the distance
+    # comes out far too small. Measured: subject (20,120,200) against a magenta
+    # key computed 84.3 instead of 269.5, which is inside the default tolerance
+    # of 90, so the SUBJECT was keyed out and the background kept. It also
+    # produced sqrt-of-negative NaNs for other colour pairs, and a NaN fails the
+    # `<= tolerance` test silently, leaving background behind.
+    arr = np.asarray(im).astype(np.int32)
 
     rgb = arr[..., :3]
-    dist = np.sqrt(((rgb - np.array(key, dtype=np.int16)) ** 2).sum(axis=-1))
+    dist = np.sqrt(((rgb - np.array(key, dtype=np.int32)) ** 2).sum(axis=-1))
     mask = dist <= tolerance
 
     out = arr.copy()
